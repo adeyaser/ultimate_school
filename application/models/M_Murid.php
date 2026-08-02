@@ -47,18 +47,62 @@ class M_Murid extends CI_Model {
     {
         $this->db->trans_start();
 
-        $user_data['role'] = 'murid';
-        $user_data['password'] = password_hash($user_data['password'], PASSWORD_BCRYPT);
-        $this->db->insert('users', $user_data);
-        $user_id = $this->db->insert_id();
+        // 1. Check if user with this email or username already exists to prevent MySQL 1062 error
+        $user_id = null;
+        if (!empty($user_data['email'])) {
+            $existing_user = $this->db->get_where('users', array('email' => $user_data['email']))->row_array();
+            if ($existing_user) {
+                $user_id = $existing_user['id'];
+            }
+        }
+        if (!$user_id && !empty($user_data['username'])) {
+            $existing_user = $this->db->get_where('users', array('username' => $user_data['username']))->row_array();
+            if ($existing_user) {
+                $user_id = $existing_user['id'];
+            }
+        }
 
-        $murid_data['user_id'] = $user_id;
-        $this->db->insert('murid', $murid_data);
-        $murid_id = $this->db->insert_id();
+        if ($user_id) {
+            $update_u = array(
+                'full_name' => $user_data['full_name'],
+                'phone'     => $user_data['phone'],
+                'address'   => $user_data['address'],
+                'status'    => 'active',
+                'role'      => 'murid'
+            );
+            if (isset($user_data['jenjang'])) {
+                $update_u['jenjang'] = $user_data['jenjang'];
+            }
+            $this->db->where('id', $user_id);
+            $this->db->update('users', $update_u);
+        } else {
+            $user_data['role'] = 'murid';
+            $user_data['password'] = password_hash($user_data['password'], PASSWORD_BCRYPT);
+            $this->db->insert('users', $user_data);
+            $user_id = $this->db->insert_id();
+        }
+
+        // 2. Check if murid record for this user_id already exists
+        $existing_murid = $this->db->get_where('murid', array('user_id' => $user_id))->row_array();
+        if ($existing_murid) {
+            $murid_id = $existing_murid['id'];
+            $this->db->where('id', $murid_id);
+            $this->db->update('murid', $murid_data);
+        } else {
+            $murid_data['user_id'] = $user_id;
+            $this->db->insert('murid', $murid_data);
+            $murid_id = $this->db->insert_id();
+        }
 
         if ($ortu_data) {
-            $ortu_data['murid_id'] = $murid_id;
-            $this->db->insert('orang_tua', $ortu_data);
+            $existing_ortu = $this->db->get_where('orang_tua', array('murid_id' => $murid_id))->row_array();
+            if ($existing_ortu) {
+                $this->db->where('id', $existing_ortu['id']);
+                $this->db->update('orang_tua', $ortu_data);
+            } else {
+                $ortu_data['murid_id'] = $murid_id;
+                $this->db->insert('orang_tua', $ortu_data);
+            }
         }
 
         $this->db->trans_complete();
