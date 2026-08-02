@@ -1,7 +1,7 @@
 <?php
 defined('BASEPATH') OR exit('No direct script access allowed');
 
-class PpdbAdmin extends MY_Controller {
+class Ppdbadmin extends MY_Controller {
 
     public function __construct()
     {

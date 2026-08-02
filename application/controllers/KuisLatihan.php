@@ -1,7 +1,7 @@
 <?php
 defined('BASEPATH') OR exit('No direct script access allowed');
 
-class KuisLatihan extends MY_Controller {
+class Kuislatihan extends MY_Controller {
 
     public function __construct()
     {
