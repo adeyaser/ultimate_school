@@ -74,7 +74,7 @@
             />
             <div class="d-flex flex-column lh-1">
               <span class="brand-text fw-bold text-white fs-6">ULTIMATE <span class="fw-normal">SCHOOL</span></span>
-              <span class="badge <?= $badge_color ?> mt-1 me-auto fw-bold" style="font-size: 0.65rem;"><i class="bi bi-mortarboard-fill me-1"></i> MODE <?= $jenjang ?></span>
+              <span class="badge <?= $badge_color ?> mt-1 me-auto fw-bold" style="font-size: 0.65rem;"><i class="bi bi-mortarboard-fill me-1"></i> <?= $jenjang ?></span>
             </div>
           </a>
         </div>
