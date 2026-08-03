@@ -332,3 +332,46 @@
     </div>
   </div>
 </div>
+
+<script>
+document.addEventListener('DOMContentLoaded', function() {
+  const jenjangSelect = document.querySelector('select[name="jenjang"]');
+  const mainNpsn = document.querySelector('input[name="npsn"]');
+  const mainKepala = document.querySelector('input[name="kepala_sekolah"]');
+
+  const npsnSd = document.querySelector('input[name="npsn_sd"]');
+  const npsnSmp = document.querySelector('input[name="npsn_smp"]');
+  const npsnSma = document.querySelector('input[name="npsn_sma"]');
+
+  const kepalaSd = document.querySelector('input[name="kepala_sd"]');
+  const kepalaSmp = document.querySelector('input[name="kepala_smp"]');
+  const kepalaSma = document.querySelector('input[name="kepala_sma"]');
+
+  function syncMainFields() {
+    if (!jenjangSelect) return;
+    const mode = jenjangSelect.value;
+    if (mode === 'SD') {
+      if (npsnSd && npsnSd.value) mainNpsn.value = npsnSd.value;
+      if (kepalaSd && kepalaSd.value) mainKepala.value = kepalaSd.value;
+    } else if (mode === 'SMP') {
+      if (npsnSmp && npsnSmp.value) mainNpsn.value = npsnSmp.value;
+      if (kepalaSmp && kepalaSmp.value) mainKepala.value = kepalaSmp.value;
+    } else if (mode === 'SMA' || mode === 'SMK') {
+      if (npsnSma && npsnSma.value) mainNpsn.value = npsnSma.value;
+      if (kepalaSma && kepalaSma.value) mainKepala.value = kepalaSma.value;
+    }
+  }
+
+  if (jenjangSelect) {
+    jenjangSelect.addEventListener('change', syncMainFields);
+  }
+
+  if (npsnSd) npsnSd.addEventListener('input', function() { if (jenjangSelect && jenjangSelect.value === 'SD') mainNpsn.value = this.value; });
+  if (npsnSmp) npsnSmp.addEventListener('input', function() { if (jenjangSelect && jenjangSelect.value === 'SMP') mainNpsn.value = this.value; });
+  if (npsnSma) npsnSma.addEventListener('input', function() { if (jenjangSelect && (jenjangSelect.value === 'SMA' || jenjangSelect.value === 'SMK')) mainNpsn.value = this.value; });
+
+  if (kepalaSd) kepalaSd.addEventListener('input', function() { if (jenjangSelect && jenjangSelect.value === 'SD') mainKepala.value = this.value; });
+  if (kepalaSmp) kepalaSmp.addEventListener('input', function() { if (jenjangSelect && jenjangSelect.value === 'SMP') mainKepala.value = this.value; });
+  if (kepalaSma) kepalaSma.addEventListener('input', function() { if (jenjangSelect && (jenjangSelect.value === 'SMA' || jenjangSelect.value === 'SMK')) mainKepala.value = this.value; });
+});
+</script>

@@ -13,7 +13,30 @@ class Sekolah extends MY_Controller {
     public function index()
     {
         $data['title']     = 'Kelola Company Profile & Jenjang Sekolah';
-        $data['sekolah']   = $this->M_Sekolah->get_school_profile();
+        $sekolah           = $this->M_Sekolah->get_school_profile();
+
+        $active_j = $this->session->userdata('active_jenjang');
+        if (empty($active_j)) {
+            $active_j = isset($sekolah['jenjang']) ? $sekolah['jenjang'] : 'SMP';
+        }
+
+        if ($active_j === 'SD' && !empty($sekolah['npsn_sd'])) {
+            $sekolah['npsn'] = $sekolah['npsn_sd'];
+        } elseif ($active_j === 'SMP' && !empty($sekolah['npsn_smp'])) {
+            $sekolah['npsn'] = $sekolah['npsn_smp'];
+        } elseif ($active_j === 'SMA' && !empty($sekolah['npsn_sma'])) {
+            $sekolah['npsn'] = $sekolah['npsn_sma'];
+        }
+
+        if ($active_j === 'SD' && !empty($sekolah['kepala_sd'])) {
+            $sekolah['kepala_sekolah'] = $sekolah['kepala_sd'];
+        } elseif ($active_j === 'SMP' && !empty($sekolah['kepala_smp'])) {
+            $sekolah['kepala_sekolah'] = $sekolah['kepala_smp'];
+        } elseif ($active_j === 'SMA' && !empty($sekolah['kepala_sma'])) {
+            $sekolah['kepala_sekolah'] = $sekolah['kepala_sma'];
+        }
+
+        $data['sekolah']   = $sekolah;
         $data['faqs']      = $this->M_Sekolah->get_faqs();
         $data['fasilitas'] = $this->M_Sekolah->get_fasilitas();
 
@@ -41,12 +64,12 @@ class Sekolah extends MY_Controller {
             }
         }
 
-        // 2. Process Hero Media File Upload if provided
+        // 2. Process Hero Media Upload if provided
         $hero_media_path = $this->input->post('hero_media', true);
         if (!empty($_FILES['hero_media_file']['name'])) {
             $config_hero['upload_path']   = './uploads/';
             $config_hero['allowed_types'] = 'gif|jpg|png|jpeg|webp|mp4|webm';
-            $config_hero['max_size']      = 51200; // 50MB
+            $config_hero['max_size']      = 20480; // 20MB
             $config_hero['encrypt_name']  = TRUE;
 
             $this->load->library('upload', $config_hero);
@@ -58,17 +81,40 @@ class Sekolah extends MY_Controller {
             }
         }
 
+        $selected_jenjang = $this->input->post('jenjang', true) ? $this->input->post('jenjang', true) : 'SMP';
+        $npsn_main        = $this->input->post('npsn', true);
+        $kepala_main      = $this->input->post('kepala_sekolah', true);
+
+        $npsn_sd   = $this->input->post('npsn_sd', true) ? $this->input->post('npsn_sd', true) : $npsn_main;
+        $npsn_smp  = $this->input->post('npsn_smp', true) ? $this->input->post('npsn_smp', true) : $npsn_main;
+        $npsn_sma  = $this->input->post('npsn_sma', true) ? $this->input->post('npsn_sma', true) : $npsn_main;
+
+        $kepala_sd  = $this->input->post('kepala_sd', true) ? $this->input->post('kepala_sd', true) : $kepala_main;
+        $kepala_smp = $this->input->post('kepala_smp', true) ? $this->input->post('kepala_smp', true) : $kepala_main;
+        $kepala_sma = $this->input->post('kepala_sma', true) ? $this->input->post('kepala_sma', true) : $kepala_main;
+
+        if ($selected_jenjang === 'SD') {
+            $npsn_sd   = $npsn_main;
+            $kepala_sd = $kepala_main;
+        } elseif ($selected_jenjang === 'SMP') {
+            $npsn_smp   = $npsn_main;
+            $kepala_smp = $kepala_main;
+        } elseif ($selected_jenjang === 'SMA') {
+            $npsn_sma   = $npsn_main;
+            $kepala_sma = $kepala_main;
+        }
+
         $save_data = array(
             'nama_sekolah'    => $this->input->post('nama_sekolah', true),
-            'jenjang'         => $this->input->post('jenjang', true) ? $this->input->post('jenjang', true) : 'SMP',
-            'npsn'            => $this->input->post('npsn', true),
-            'npsn_sd'         => $this->input->post('npsn_sd', true),
-            'npsn_smp'        => $this->input->post('npsn_smp', true),
-            'npsn_sma'        => $this->input->post('npsn_sma', true),
-            'kepala_sekolah'  => $this->input->post('kepala_sekolah', true),
-            'kepala_sd'       => $this->input->post('kepala_sd', true),
-            'kepala_smp'      => $this->input->post('kepala_smp', true),
-            'kepala_sma'      => $this->input->post('kepala_sma', true),
+            'jenjang'         => $selected_jenjang,
+            'npsn'            => $npsn_main,
+            'npsn_sd'         => $npsn_sd,
+            'npsn_smp'        => $npsn_smp,
+            'npsn_sma'        => $npsn_sma,
+            'kepala_sekolah'  => $kepala_main,
+            'kepala_sd'       => $kepala_sd,
+            'kepala_smp'      => $kepala_smp,
+            'kepala_sma'      => $kepala_sma,
             'telepon'         => $this->input->post('telepon', true),
             'email'           => $this->input->post('email', true),
             'website'         => $this->input->post('website', true),
