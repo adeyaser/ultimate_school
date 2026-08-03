@@ -6,9 +6,12 @@
         </div>
         <!--end::To the end-->
         <!--begin::Copyright-->
+        <?php
+          $footer_name = !empty($school_info['nama_sekolah']) ? $school_info['nama_sekolah'] : 'Ultimate School';
+        ?>
         <strong>
           Copyright &copy; <?= date('Y') ?>&nbsp;
-          <a href="#" class="text-decoration-none">Ultimate School System</a>.
+          <a href="#" class="text-decoration-none"><?= htmlspecialchars($footer_name) ?> System</a>.
         </strong>
         All rights reserved.
         <!--end::Copyright-->

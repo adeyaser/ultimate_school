@@ -68,8 +68,11 @@
         </div>
       </div>
       
+      <?php
+        $login_school_name = !empty($school_info['nama_sekolah']) ? $school_info['nama_sekolah'] : 'Ultimate School';
+      ?>
       <div class="text-center text-muted fs-7 mt-4">
-        &copy; <?= date('Y') ?> Ultimate School System. AdminLTE v4.1.0 Integrated.
+        &copy; <?= date('Y') ?> <?= htmlspecialchars($login_school_name) ?> System. AdminLTE v4.1.0 Integrated.
       </div>
     </div>
 
