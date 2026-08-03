@@ -79,34 +79,55 @@
             </li>
 
             <!-- User Menu Dropdown-->
+            <?php
+              $u_info     = !empty($user_data) ? $user_data : array();
+              $u_name     = !empty($u_info['full_name']) ? $u_info['full_name'] : ($this->session->userdata('full_name') ? $this->session->userdata('full_name') : 'Administrator');
+              $u_email    = !empty($u_info['email']) ? $u_info['email'] : ($this->session->userdata('email') ? $this->session->userdata('email') : 'admin@ultimateschool.com');
+              $u_role     = !empty($u_info['role']) ? $u_info['role'] : ($this->session->userdata('role') ? $this->session->userdata('role') : 'super_admin');
+              $u_photo    = (!empty($u_info['photo']) && file_exists(FCPATH . $u_info['photo'])) ? base_url($u_info['photo']) : base_url('dist/assets/img/avatar.png');
+
+              $role_map = array(
+                  'super_admin'    => array('label' => 'Super Admin',    'badge' => 'text-bg-danger'),
+                  'admin'          => array('label' => 'Admin Sekolah',  'badge' => 'text-bg-primary'),
+                  'kepala_sekolah' => array('label' => 'Kepala Sekolah', 'badge' => 'text-bg-dark'),
+                  'guru'           => array('label' => 'Guru',           'badge' => 'text-bg-success'),
+                  'wali_kelas'     => array('label' => 'Wali Kelas',     'badge' => 'text-bg-info text-white'),
+                  'murid'          => array('label' => 'Siswa / Murid',  'badge' => 'text-bg-warning text-dark'),
+                  'orang_tua'      => array('label' => 'Orang Tua',      'badge' => 'text-bg-secondary')
+              );
+
+              $r_label = isset($role_map[$u_role]) ? $role_map[$u_role]['label'] : ucwords(str_replace('_', ' ', $u_role));
+              $r_badge = isset($role_map[$u_role]) ? $role_map[$u_role]['badge'] : 'text-bg-primary';
+            ?>
             <li class="nav-item dropdown user-menu">
               <a href="#" class="nav-link dropdown-toggle d-flex align-items-center" data-bs-toggle="dropdown">
                 <img
-                  src="<?= base_url('dist/assets/img/avatar.png') ?>"
+                  src="<?= $u_photo ?>"
                   class="user-image rounded-circle shadow-sm me-2"
                   alt="User Image"
                   width="32"
                   height="32"
                 />
-                <span class="d-none d-md-inline fw-bold me-1"><?= isset($user['full_name']) ? $user['full_name'] : 'Administrator' ?></span>
-                <span class="badge text-bg-primary text-capitalize fs-7"><?= isset($user['role']) ? str_replace('_', ' ', $user['role']) : 'Admin' ?></span>
+                <span class="d-none d-md-inline fw-bold me-2 text-dark"><?= htmlspecialchars($u_name) ?></span>
+                <span class="badge <?= $r_badge ?> fs-7 px-2 py-1"><?= htmlspecialchars($r_label) ?></span>
               </a>
               <ul class="dropdown-menu dropdown-menu-lg dropdown-menu-end shadow border-0 rounded-4 p-3">
                 <!-- User image -->
                 <li class="user-header text-bg-primary rounded-3 text-center p-3 mb-3">
                   <img
-                    src="<?= base_url('dist/assets/img/avatar.png') ?>"
+                    src="<?= $u_photo ?>"
                     class="rounded-circle shadow mb-2"
                     alt="User Image"
                     width="64"
                     height="64"
                   />
-                  <h6 class="fw-bold mb-0"><?= isset($user['full_name']) ? $user['full_name'] : 'Administrator' ?></h6>
-                  <small class="opacity-90"><?= isset($user['email']) ? $user['email'] : 'admin@ultimateschool.com' ?></small>
+                  <h6 class="fw-bold mb-1"><?= htmlspecialchars($u_name) ?></h6>
+                  <small class="opacity-90 d-block mb-2"><?= htmlspecialchars($u_email) ?></small>
+                  <span class="badge text-bg-light text-primary fw-bold px-3 py-1"><?= htmlspecialchars($r_label) ?></span>
                 </li>
                 <!-- Menu Footer-->
                 <li class="d-grid gap-2">
-                  <a href="<?= base_url('auth/logout') ?>" class="btn btn-danger fw-bold rounded-pill">
+                  <a href="<?= base_url('auth/logout') ?>" class="btn btn-danger fw-bold rounded-3">
                     <i class="bi bi-box-arrow-right me-1"></i> Logout / Keluar
                   </a>
                 </li>
