@@ -7,8 +7,8 @@ if (!function_exists('verify_turnstile')) {
             return false;
         }
 
-        // Official Cloudflare Testing Secret Key (Always Passes 200 OK)
-        $secret_key = '1x0000000000000000000000000000000AA';
+        // Production Cloudflare Turnstile Secret Key
+        $secret_key = '0x4AAAAAAEE-iKnZUbSg4lWJcaT_lVDJM-U';
         $ip = isset($_SERVER['REMOTE_ADDR']) ? $_SERVER['REMOTE_ADDR'] : '';
 
         $url = 'https://challenges.cloudflare.com/turnstile/v0/siteverify';
@@ -43,8 +43,8 @@ if (!function_exists('verify_turnstile')) {
 
 if (!function_exists('render_turnstile')) {
     function render_turnstile() {
-        // Official Cloudflare Universal Testing Site Key (Always Passes 200 OK on all domains)
-        $site_key = '1x00000000000000000000AA';
+        // Production Cloudflare Turnstile Site Key
+        $site_key = '0x4AAAAAAEE-iFEgOIaxfmmK';
         return '<div class="cf-turnstile my-3 d-flex justify-content-center" data-sitekey="' . $site_key . '"></div>';
     }
 }
