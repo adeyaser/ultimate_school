@@ -23,8 +23,11 @@
               <p class="mb-0 opacity-90">Mata Pelajaran: <?= $bank_soal['nama_mapel'] ?> | Kelas: <?= $bank_soal['nama_kelas'] ?> | Total: <?= $bank_soal['jumlah_soal'] ?> Soal</p>
             </div>
             <div>
+              <button class="btn btn-light btn-lg fw-bold shadow-sm me-2 text-primary" data-bs-toggle="modal" data-bs-target="#modalImportMassalSoal">
+                <i class="bi bi-file-earmark-arrow-up-fill me-2"></i> Import Massal / Copas Soal & Kunci
+              </button>
               <button class="btn btn-warning btn-lg fw-bold shadow-sm" data-bs-toggle="modal" data-bs-target="#modalTambahSoalItem">
-                <i class="bi bi-plus-circle-fill me-2"></i> Tambah Soal Baru
+                <i class="bi bi-plus-circle-fill me-2"></i> Tambah Soal Satuan
               </button>
             </div>
           </div>
@@ -128,6 +131,36 @@
         <div class="modal-footer">
           <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Batal</button>
           <button type="submit" class="btn btn-primary fw-bold">Simpan Butir Soal</button>
+        </div>
+      </form>
+    </div>
+  </div>
+</div>
+
+<!-- Modal Import Massal / Copas Soal & Kunci -->
+<div class="modal fade" id="modalImportMassalSoal" tabindex="-1">
+  <div class="modal-dialog modal-xl modal-dialog-centered">
+    <div class="modal-content border-0 shadow-lg rounded-4">
+      <form action="<?= base_url('banksoal/import_massal') ?>" method="post">
+        <input type="hidden" name="bank_soal_id" value="<?= $bank_soal['id'] ?>" />
+        <div class="modal-header bg-success text-white p-3">
+          <h5 class="modal-title fw-bold"><i class="bi bi-lightning-charge-fill me-2"></i> Fast Copy-Paste / Import Massal Soal & Kunci Jawaban</h5>
+          <button type="button" class="btn-close btn-close-white" data-bs-dismiss="modal"></button>
+        </div>
+        <div class="modal-body p-4">
+          <div class="alert alert-info border-0 shadow-sm rounded-3 mb-3">
+            <h6 class="fw-bold mb-1"><i class="bi bi-info-circle-fill me-1"></i> Cara Penggunaan Parser Massal:</h6>
+            <small class="d-block">Copy & Paste seluruh teks dokumen soal (Microsoft Word / PDF / Teks Biasa) langsung ke dalam kotak teks di bawah. Sistem secara otomatis mendeteksi nomor soal (`1.`, `2.`), opsi jawaban (`a.`, `b.`, `c.`, `d.`), teks bacaan, serta tabel / blok `KUNCI JAWABAN` & Pembahasannya!</small>
+          </div>
+
+          <div class="mb-3">
+            <label class="form-label fw-bold text-dark"><i class="bi bi-file-text me-1 text-success"></i> Tempelkan Teks Soal & Kunci Jawaban Di Sini *</label>
+            <textarea name="raw_text" class="form-control font-monospace text-dark bg-light" rows="14" style="font-size: 0.88rem;" placeholder="Copas seluruh teks soal dan kunci jawaban di sini... Contoh:&#10;&#10;Teks Bacaan untuk soal nomor 1 dan 2:&#10;Liburan sekolah kali ini...&#10;&#10;1. Apa yang dilakukan Rina?&#10;a. Berenang&#10;b. Membuat istana pasir&#10;c. Tidur&#10;d. Membaca&#10;&#10;KUNCI JAWABAN&#10;1. B (Membuat istana pasir)&#10;2. A" required></textarea>
+          </div>
+        </div>
+        <div class="modal-footer bg-light p-3">
+          <button type="button" class="btn btn-secondary px-4 rounded-pill" data-bs-dismiss="modal">Batal</button>
+          <button type="submit" class="btn btn-success fw-bold px-4 rounded-pill"><i class="bi bi-magic me-1"></i> Proses & Import Massal Soal</button>
         </div>
       </form>
     </div>

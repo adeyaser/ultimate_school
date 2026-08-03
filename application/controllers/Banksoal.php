@@ -100,4 +100,26 @@ class Banksoal extends MY_Controller {
         $this->session->set_flashdata('success', 'Soal berhasil dihapus.');
         redirect('banksoal/detail/' . $bank_soal_id);
     }
+
+    public function import_massal()
+    {
+        $bank_soal_id = $this->input->post('bank_soal_id', true);
+        $raw_text     = $this->input->post('raw_text');
+
+        if (empty($raw_text)) {
+            $this->session->set_flashdata('error', 'Teks soal massal tidak boleh kosong.');
+            redirect('banksoal/detail/' . $bank_soal_id);
+            return;
+        }
+
+        $total_imported = $this->M_BankSoal->parse_and_import_bulk_soal($bank_soal_id, $raw_text);
+
+        if ($total_imported > 0) {
+            $this->session->set_flashdata('success', "Berhasil mengimpor $total_imported soal & kunci jawaban otomatis ke bank soal!");
+        } else {
+            $this->session->set_flashdata('error', 'Gagal memproses teks soal. Pastikan format penulisan nomor soal (1. 2. 3.) dan opsi (a. b. c. d.) sesuai.');
+        }
+
+        redirect('banksoal/detail/' . $bank_soal_id);
+    }
 }
