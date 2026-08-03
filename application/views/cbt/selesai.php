@@ -21,11 +21,11 @@
               <?php if (isset($hasil['nilai_total'])): ?>
                 <div class="p-4 bg-light rounded-4 border mb-4">
                   <h6 class="text-uppercase text-secondary fw-bold mb-1">Skor Akhir Ujian</h6>
-                  <h1 class="display-3 fw-bold text-primary mb-2"><?= number_format($hasil['nilai_total'], 2) ?></h1>
+                  <h1 class="display-3 fw-bold text-primary mb-2"><?= round($hasil['nilai_total']) ?></h1>
                   <?php if ($hasil['is_lulus']): ?>
-                    <span class="badge text-bg-success fs-6 px-4 py-2 rounded-pill"><i class="bi bi-patch-check-fill me-1"></i> DIKATEGORIKAN LULUS (Skor ≥ 6.00)</span>
+                    <span class="badge text-bg-success fs-6 px-4 py-2 rounded-pill"><i class="bi bi-patch-check-fill me-1"></i> DIKATEGORIKAN LULUS (Skor ≥ 60)</span>
                   <?php else: ?>
-                    <span class="badge text-bg-warning text-dark fs-6 px-4 py-2 rounded-pill"><i class="bi bi-exclamation-diamond-fill me-1"></i> BELUM LULUS (Skor < 6.00)</span>
+                    <span class="badge text-bg-warning text-dark fs-6 px-4 py-2 rounded-pill"><i class="bi bi-exclamation-diamond-fill me-1"></i> BELUM LULUS (Skor < 60)</span>
                   <?php endif; ?>
                 </div>
               <?php endif; ?>
