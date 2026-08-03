@@ -90,59 +90,51 @@
                 </tr>
               </thead>
               <tbody>
-                <?php if (empty($pengumpulan_list)): ?>
+                <?php $no = 1; foreach ($pengumpulan_list as $p): ?>
                   <tr>
-                    <td colspan="9" class="text-center py-5 text-muted">
-                      <i class="bi bi-inbox fs-1 d-block mb-2 opacity-50"></i> Belum ada siswa yang mengumpulkan tugas ini.
+                    <td><?= $no++ ?></td>
+                    <td><strong><?= htmlspecialchars($p['nama_murid']) ?></strong></td>
+                    <td><code><?= htmlspecialchars($p['nisn']) ?></code></td>
+                    <td>
+                      <small class="text-muted">
+                        <i class="bi bi-calendar-event me-1"></i> <?= date('d M Y H:i', strtotime($p['tanggal_kumpul'])) ?>
+                      </small>
+                    </td>
+                    <td>
+                      <small class="text-dark"><?= $p['catatan_jawaban'] ? htmlspecialchars(mb_substr($p['catatan_jawaban'], 0, 80)) . '...' : '-' ?></small>
+                    </td>
+                    <td>
+                      <?php if ($p['file_jawaban']): ?>
+                        <a href="<?= base_url('uploads/tugas/' . $p['file_jawaban']) ?>" target="_blank" class="btn btn-sm btn-outline-primary">
+                          <i class="bi bi-download me-1"></i> Unduh
+                        </a>
+                      <?php else: ?>
+                        <span class="text-muted">-</span>
+                      <?php endif; ?>
+                    </td>
+                    <td>
+                      <?php if ($p['status'] == 'Dinilai'): ?>
+                        <span class="badge text-bg-success px-3 py-1"><i class="bi bi-check-circle-fill me-1"></i> Dinilai</span>
+                      <?php elseif ($p['status'] == 'Revisi'): ?>
+                        <span class="badge text-bg-warning text-dark px-3 py-1"><i class="bi bi-arrow-repeat me-1"></i> Revisi</span>
+                      <?php else: ?>
+                        <span class="badge text-bg-info px-3 py-1"><i class="bi bi-hourglass-split me-1"></i> Dikumpulkan</span>
+                      <?php endif; ?>
+                    </td>
+                    <td>
+                      <?php if ($p['nilai'] !== null): ?>
+                        <span class="badge text-bg-dark fs-6 px-3 py-1"><?= $p['nilai'] ?></span>
+                      <?php else: ?>
+                        <span class="text-muted">-</span>
+                      <?php endif; ?>
+                    </td>
+                    <td class="text-center">
+                      <button type="button" class="btn btn-sm btn-primary fw-bold px-3" data-bs-toggle="modal" data-bs-target="#modalNilai_<?= $p['id'] ?>">
+                        <i class="bi bi-pencil-square me-1"></i> Beri Nilai
+                      </button>
                     </td>
                   </tr>
-                <?php else: ?>
-                  <?php $no = 1; foreach ($pengumpulan_list as $p): ?>
-                    <tr>
-                      <td><?= $no++ ?></td>
-                      <td><strong><?= $p['nama_murid'] ?></strong></td>
-                      <td><code><?= $p['nisn'] ?></code></td>
-                      <td>
-                        <small class="text-muted">
-                          <i class="bi bi-calendar-event me-1"></i> <?= date('d M Y H:i', strtotime($p['tanggal_kumpul'])) ?>
-                        </small>
-                      </td>
-                      <td>
-                        <small class="text-dark"><?= $p['catatan_jawaban'] ? htmlspecialchars(mb_substr($p['catatan_jawaban'], 0, 80)) . '...' : '-' ?></small>
-                      </td>
-                      <td>
-                        <?php if ($p['file_jawaban']): ?>
-                          <a href="<?= base_url('uploads/tugas/' . $p['file_jawaban']) ?>" target="_blank" class="btn btn-sm btn-outline-primary">
-                            <i class="bi bi-download me-1"></i> Unduh
-                          </a>
-                        <?php else: ?>
-                          <span class="text-muted">-</span>
-                        <?php endif; ?>
-                      </td>
-                      <td>
-                        <?php if ($p['status'] == 'Dinilai'): ?>
-                          <span class="badge text-bg-success px-3 py-1"><i class="bi bi-check-circle-fill me-1"></i> Dinilai</span>
-                        <?php elseif ($p['status'] == 'Revisi'): ?>
-                          <span class="badge text-bg-warning text-dark px-3 py-1"><i class="bi bi-arrow-repeat me-1"></i> Revisi</span>
-                        <?php else: ?>
-                          <span class="badge text-bg-info px-3 py-1"><i class="bi bi-hourglass-split me-1"></i> Dikumpulkan</span>
-                        <?php endif; ?>
-                      </td>
-                      <td>
-                        <?php if ($p['nilai'] !== null): ?>
-                          <span class="badge text-bg-dark fs-6 px-3 py-1"><?= $p['nilai'] ?></span>
-                        <?php else: ?>
-                          <span class="text-muted">-</span>
-                        <?php endif; ?>
-                      </td>
-                      <td class="text-center">
-                        <button type="button" class="btn btn-sm btn-primary fw-bold px-3" data-bs-toggle="modal" data-bs-target="#modalNilai_<?= $p['id'] ?>">
-                          <i class="bi bi-pencil-square me-1"></i> Beri Nilai
-                        </button>
-                      </td>
-                    </tr>
-                  <?php endforeach; ?>
-                <?php endif; ?>
+                <?php endforeach; ?>
               </tbody>
             </table>
           </div>
