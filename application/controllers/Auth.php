@@ -6,6 +6,7 @@ class Auth extends MY_Controller {
     public function __construct()
     {
         parent::__construct();
+        $this->load->helper('turnstile');
         $this->load->model('M_Auth');
     }
 

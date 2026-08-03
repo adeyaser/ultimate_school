@@ -7,7 +7,7 @@ class Home extends CI_Controller {
     {
         parent::__construct();
         $this->load->database();
-        $this->load->helper(array('url', 'html', 'form'));
+        $this->load->helper(array('url', 'html', 'form', 'turnstile'));
         $this->load->model(array('M_Sekolah', 'M_Ppdb', 'M_Acara', 'M_TahunAjaran', 'M_Eskul', 'M_Kelas', 'M_Mapel'));
     }
 
