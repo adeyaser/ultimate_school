@@ -12,6 +12,8 @@
     <link rel="stylesheet" href="<?= base_url('dist/css/adminlte.min.css') ?>" />
     <!-- Custom Modern Compro Aesthetics -->
     <link rel="stylesheet" href="<?= base_url('assets/css/compro-custom.css') ?>" />
+    <!-- Cloudflare Turnstile CAPTCHA API -->
+    <script src="https://challenges.cloudflare.com/turnstile/v0/api.js" async defer></script>
   </head>
   <body class="bg-body-tertiary">
 
@@ -547,6 +549,9 @@
                       <textarea name="alamat" class="form-control form-control-lg" rows="3" placeholder="Jl. Pendidikan No. 123, RT 01/RW 02..." required></textarea>
                     </div>
                   </div>
+
+                  <!-- Cloudflare Turnstile CAPTCHA Widget -->
+                  <?= render_turnstile() ?>
 
                   <button type="submit" class="btn btn-primary btn-lg w-100 fw-bold py-3 shadow-lg rounded-pill">
                     <i class="bi bi-send-fill me-2"></i> Kirim Formulir Pendaftaran PPDB Online

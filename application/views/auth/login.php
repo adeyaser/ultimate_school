@@ -10,6 +10,8 @@
     <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.13.1/font/bootstrap-icons.min.css" />
     <!-- AdminLTE v4 CSS -->
     <link rel="stylesheet" href="<?= base_url('dist/css/adminlte.min.css') ?>" />
+    <!-- Cloudflare Turnstile CAPTCHA API -->
+    <script src="https://challenges.cloudflare.com/turnstile/v0/api.js" async defer></script>
   </head>
   <body class="login-page bg-body-secondary d-flex align-items-center justify-content-center min-vh-100">
     <div class="login-box" style="width: 400px;">
@@ -50,6 +52,9 @@
               <input type="password" name="password" class="form-control form-control-lg" placeholder="Password" required />
               <div class="input-group-text"><span class="bi bi-lock-fill"></span></div>
             </div>
+
+            <!-- Cloudflare Turnstile CAPTCHA Widget -->
+            <?= render_turnstile() ?>
 
             <div class="row mb-3">
               <div class="col-12">

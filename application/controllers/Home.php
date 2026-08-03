@@ -42,9 +42,18 @@ class Home extends CI_Controller {
         $this->form_validation->set_rules('alamat', 'Alamat', 'required');
         $this->form_validation->set_rules('telepon', 'Telepon', 'required');
 
+        $turnstile_token = $this->input->post('cf-turnstile-response');
+
         if ($this->form_validation->run() === FALSE) {
             $this->session->set_flashdata('error', 'Silakan lengkapi formulir pendaftaran dengan benar.');
             redirect('home#ppdb');
+            return;
+        }
+
+        if (!verify_turnstile($turnstile_token)) {
+            $this->session->set_flashdata('error', 'Verifikasi Keamanan CAPTCHA (Cloudflare Turnstile) gagal atau tidak valid. Silakan centang/verifikasi ulang.');
+            redirect('home#ppdb');
+            return;
         } else {
             $active_ta = $this->M_TahunAjaran->get_active();
             $no_reg = 'PPDB-' . date('Ymd') . '-' . rand(1000, 9999);

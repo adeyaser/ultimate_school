@@ -21,10 +21,19 @@ class Auth extends MY_Controller {
     {
         $username = $this->input->post('username', true);
         $password = $this->input->post('password', true);
+        $turnstile_token = $this->input->post('cf-turnstile-response');
 
         if (empty($username) || empty($password)) {
             $this->session->set_flashdata('error', 'Username dan password wajib diisi.');
             redirect('auth');
+            return;
+        }
+
+        // Validate Cloudflare Turnstile CAPTCHA
+        if (!verify_turnstile($turnstile_token)) {
+            $this->session->set_flashdata('error', 'Verifikasi Keamanan CAPTCHA (Cloudflare Turnstile) tidak valid. Silakan centang ulang.');
+            redirect('auth');
+            return;
         }
 
         $user = $this->M_Auth->verify_login($username, $password);
