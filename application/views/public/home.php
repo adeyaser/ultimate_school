@@ -15,91 +15,97 @@
   </head>
   <body class="bg-body-tertiary">
 
-    <!-- Top Announcement Bar -->
-    <div class="bg-dark text-white py-2 px-3 small border-bottom border-secondary">
-      <div class="container d-flex justify-content-between align-items-center">
-        <div class="d-flex align-items-center overflow-hidden">
-          <span class="badge text-bg-danger me-2 px-2 py-1"><i class="bi bi-megaphone-fill me-1"></i> PENGUMUMAN</span>
-          <marquee class="opacity-90 me-3" scrollamount="5">
-            <?= isset($sekolah['running_text']) ? $sekolah['running_text'] : '🔥 Penerimaan Peserta Didik Baru (PPDB) T.A. 2026/2027 Resmi Dibuka! Segera Daftarkan Putra/Putri Anda.' ?>
-          </marquee>
-        </div>
-        <div class="d-none d-md-flex align-items-center gap-3">
-          <a href="tel:<?= isset($sekolah['telepon']) ? $sekolah['telepon'] : '02112345678' ?>" class="text-white text-decoration-none"><i class="bi bi-telephone-fill me-1 text-warning"></i> <?= isset($sekolah['telepon']) ? $sekolah['telepon'] : '021-12345678' ?></a>
-          <a href="mailto:<?= isset($sekolah['email']) ? $sekolah['email'] : 'info@ultimateschool.com' ?>" class="text-white text-decoration-none"><i class="bi bi-envelope-fill me-1 text-warning"></i> <?= isset($sekolah['email']) ? $sekolah['email'] : 'info@ultimateschool.com' ?></a>
-        </div>
-      </div>
-    </div>
-
-    <!-- Glassmorphism Single-Row Navbar -->
-    <nav class="navbar navbar-expand-xl navbar-compro sticky-top">
-      <div class="container-fluid container-xl">
-        <a class="navbar-brand fw-bold text-primary d-flex align-items-center me-3" href="<?= base_url() ?>">
-          <img src="<?= (isset($sekolah['logo']) && strpos($sekolah['logo'], 'http') === 0) ? $sekolah['logo'] : base_url(isset($sekolah['logo']) && $sekolah['logo'] ? $sekolah['logo'] : 'dist/assets/img/AdminLTELogo.png') ?>" alt="Logo" width="38" height="38" class="me-2 rounded-circle shadow-sm" />
-          <span class="d-flex flex-column lh-1">
-            <span class="fs-5 fw-bold"><?= isset($sekolah['nama_sekolah']) ? strtoupper($sekolah['nama_sekolah']) : 'ULTIMATE SCHOOL' ?></span>
-            <small class="text-primary fw-bold" style="font-size: 0.65rem !important; letter-spacing: 0.5px;">
-              JENJANG TERAKREDITASI <?= isset($sekolah['jenjang']) ? $sekolah['jenjang'] : 'SMA' ?>
-            </small>
-          </span>
-        </a>
-        <button class="navbar-toggler border-0 shadow-none p-2" type="button" data-bs-toggle="collapse" data-bs-target="#navPublic">
-          <span class="navbar-toggler-icon"></span>
-        </button>
-        <div class="collapse navbar-collapse" id="navPublic">
-          <ul class="navbar-nav ms-auto mb-2 mb-xl-0 fw-semibold align-items-xl-center gap-1">
-            <li class="nav-item">
-              <a class="nav-link active" href="#hero">
-                <i class="bi bi-house-door-fill text-primary"></i> Beranda
-              </a>
-            </li>
-
-            <li class="nav-item dropdown">
-              <a class="nav-link dropdown-toggle" href="#" id="dropProfil" role="button" data-bs-toggle="dropdown" aria-expanded="false">
-                <i class="bi bi-info-circle-fill text-info"></i> Profil Sekolah
-              </a>
-              <ul class="dropdown-menu dropdown-menu-end" aria-labelledby="dropProfil">
-                <li><a class="dropdown-item" href="#sambutan"><i class="bi bi-chat-quote-fill text-primary"></i> Sambutan Kepsek</a></li>
-                <li><a class="dropdown-item" href="#profil"><i class="bi bi-compass-fill text-success"></i> Visi & Misi</a></li>
-                <li><a class="dropdown-item" href="#fasilitas"><i class="bi bi-building-fill text-warning"></i> Fasilitas Modern</a></li>
-                <li><a class="dropdown-item" href="#eskul"><i class="bi bi-trophy-fill text-danger"></i> Ekstrakurikuler</a></li>
-              </ul>
-            </li>
-
-            <li class="nav-item dropdown">
-              <a class="nav-link dropdown-toggle" href="#" id="dropAkademik" role="button" data-bs-toggle="dropdown" aria-expanded="false">
-                <i class="bi bi-journal-bookmark-fill text-warning"></i> Akademik
-              </a>
-              <ul class="dropdown-menu dropdown-menu-end" aria-labelledby="dropAkademik">
-                <li><a class="dropdown-item" href="#jurusan"><i class="bi bi-journal-code text-primary"></i> Jurusan Peminatan</a></li>
-                <li><a class="dropdown-item" href="<?= base_url('auth') ?>"><i class="bi bi-laptop-fill text-success"></i> Portal CBT & Ujian</a></li>
-              </ul>
-            </li>
-
-            <li class="nav-item">
-              <a class="nav-link" href="#ppdb">
-                <i class="bi bi-pencil-square text-success"></i> PPDB Online
-              </a>
-            </li>
-
-            <li class="nav-item">
-              <a class="nav-link" href="#faq">
-                <i class="bi bi-question-circle-fill text-purple"></i> FAQ
-              </a>
-            </li>
-
-            <li class="nav-item ms-xl-3 d-flex gap-2 align-items-center mt-3 mt-xl-0">
-              <a class="btn btn-outline-primary btn-nav-action rounded-pill shadow-sm" href="#cek-status">
-                <i class="bi bi-search me-1"></i> Cek Status
-              </a>
-              <a class="btn btn-primary btn-nav-action rounded-pill shadow-sm text-white" href="<?= base_url('auth') ?>">
-                <i class="bi bi-lock-fill me-1"></i> Portal Login
-              </a>
-            </li>
-          </ul>
+    <!-- Fixed Top Header -->
+    <header class="fixed-top shadow-sm z-3 bg-white">
+      <!-- Top Announcement Bar -->
+      <div class="bg-dark text-white py-2 px-3 small border-bottom border-secondary">
+        <div class="container d-flex justify-content-between align-items-center">
+          <div class="d-flex align-items-center overflow-hidden">
+            <span class="badge text-bg-danger me-2 px-2 py-1"><i class="bi bi-megaphone-fill me-1"></i> PENGUMUMAN</span>
+            <marquee class="opacity-90 me-3" scrollamount="5">
+              <?= isset($sekolah['running_text']) ? $sekolah['running_text'] : '🔥 Penerimaan Peserta Didik Baru (PPDB) T.A. 2026/2027 Resmi Dibuka! Segera Daftarkan Putra/Putri Anda.' ?>
+            </marquee>
+          </div>
+          <div class="d-none d-md-flex align-items-center gap-3">
+            <a href="tel:<?= isset($sekolah['telepon']) ? $sekolah['telepon'] : '02112345678' ?>" class="text-white text-decoration-none"><i class="bi bi-telephone-fill me-1 text-warning"></i> <?= isset($sekolah['telepon']) ? $sekolah['telepon'] : '021-12345678' ?></a>
+            <a href="mailto:<?= isset($sekolah['email']) ? $sekolah['email'] : 'info@ultimateschool.com' ?>" class="text-white text-decoration-none"><i class="bi bi-envelope-fill me-1 text-warning"></i> <?= isset($sekolah['email']) ? $sekolah['email'] : 'info@ultimateschool.com' ?></a>
+          </div>
         </div>
       </div>
-    </nav>
+
+      <!-- Glassmorphism Single-Row Navbar -->
+      <nav class="navbar navbar-expand-xl navbar-compro">
+        <div class="container-fluid container-xl">
+          <a class="navbar-brand fw-bold text-primary d-flex align-items-center me-3" href="<?= base_url() ?>">
+            <img src="<?= (isset($sekolah['logo']) && strpos($sekolah['logo'], 'http') === 0) ? $sekolah['logo'] : base_url(isset($sekolah['logo']) && $sekolah['logo'] ? $sekolah['logo'] : 'dist/assets/img/AdminLTELogo.png') ?>" alt="Logo" width="38" height="38" class="me-2 rounded-circle shadow-sm" />
+            <span class="d-flex flex-column lh-1">
+              <span class="fs-5 fw-bold"><?= isset($sekolah['nama_sekolah']) ? strtoupper($sekolah['nama_sekolah']) : 'ULTIMATE SCHOOL' ?></span>
+              <small class="text-primary fw-bold" style="font-size: 0.65rem !important; letter-spacing: 0.5px;">
+                JENJANG TERAKREDITASI <?= isset($sekolah['jenjang']) ? $sekolah['jenjang'] : 'SMA' ?>
+              </small>
+            </span>
+          </a>
+          <button class="navbar-toggler border-0 shadow-none p-2" type="button" data-bs-toggle="collapse" data-bs-target="#navPublic">
+            <span class="navbar-toggler-icon"></span>
+          </button>
+          <div class="collapse navbar-collapse" id="navPublic">
+            <ul class="navbar-nav ms-auto mb-2 mb-xl-0 fw-semibold align-items-xl-center gap-1">
+              <li class="nav-item">
+                <a class="nav-link active" href="#hero">
+                  <i class="bi bi-house-door-fill text-primary"></i> Beranda
+                </a>
+              </li>
+
+              <li class="nav-item dropdown">
+                <a class="nav-link dropdown-toggle" href="#" id="dropProfil" role="button" data-bs-toggle="dropdown" aria-expanded="false">
+                  <i class="bi bi-info-circle-fill text-info"></i> Profil Sekolah
+                </a>
+                <ul class="dropdown-menu dropdown-menu-end" aria-labelledby="dropProfil">
+                  <li><a class="dropdown-item" href="#sambutan"><i class="bi bi-chat-quote-fill text-primary"></i> Sambutan Kepsek</a></li>
+                  <li><a class="dropdown-item" href="#profil"><i class="bi bi-compass-fill text-success"></i> Visi & Misi</a></li>
+                  <li><a class="dropdown-item" href="#fasilitas"><i class="bi bi-building-fill text-warning"></i> Fasilitas Modern</a></li>
+                  <li><a class="dropdown-item" href="#eskul"><i class="bi bi-trophy-fill text-danger"></i> Ekstrakurikuler</a></li>
+                </ul>
+              </li>
+
+              <li class="nav-item dropdown">
+                <a class="nav-link dropdown-toggle" href="#" id="dropAkademik" role="button" data-bs-toggle="dropdown" aria-expanded="false">
+                  <i class="bi bi-journal-bookmark-fill text-warning"></i> Akademik
+                </a>
+                <ul class="dropdown-menu dropdown-menu-end" aria-labelledby="dropAkademik">
+                  <li><a class="dropdown-item" href="#jurusan"><i class="bi bi-journal-code text-primary"></i> Jurusan Peminatan</a></li>
+                  <li><a class="dropdown-item" href="<?= base_url('auth') ?>"><i class="bi bi-laptop-fill text-success"></i> Portal CBT & Ujian</a></li>
+                </ul>
+              </li>
+
+              <li class="nav-item">
+                <a class="nav-link" href="#ppdb">
+                  <i class="bi bi-pencil-square text-success"></i> PPDB Online
+                </a>
+              </li>
+
+              <li class="nav-item">
+                <a class="nav-link" href="#faq">
+                  <i class="bi bi-question-circle-fill text-purple"></i> FAQ
+                </a>
+              </li>
+
+              <li class="nav-item ms-xl-3 d-flex gap-2 align-items-center mt-3 mt-xl-0">
+                <a class="btn btn-outline-primary btn-nav-action rounded-pill shadow-sm" href="#cek-status">
+                  <i class="bi bi-search me-1"></i> Cek Status
+                </a>
+                <a class="btn btn-primary btn-nav-action rounded-pill shadow-sm text-white" href="<?= base_url('auth') ?>">
+                  <i class="bi bi-lock-fill me-1"></i> Portal Login
+                </a>
+              </li>
+            </ul>
+          </div>
+        </div>
+      </nav>
+    </header>
+
+    <!-- Fixed Header Spacer -->
+    <div class="fixed-header-spacer"></div>
 
     <!-- Hero Banner Section -->
     <section id="hero" class="hero-section text-white">

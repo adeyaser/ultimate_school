@@ -55,6 +55,28 @@ h1, h2, h3, h4, h5, h6, .navbar-brand {
   padding: 0.5rem 0;
 }
 
+/* Fixed Header Spacer Responsive Height */
+.fixed-header-spacer {
+  height: 105px;
+}
+@media (max-width: 767.98px) {
+  .fixed-header-spacer {
+    height: 95px;
+  }
+}
+
+@media (max-width: 1199.98px) {
+  .navbar-compro .navbar-collapse {
+    max-height: 75vh;
+    overflow-y: auto;
+    background: #ffffff;
+    padding: 15px;
+    border-radius: 16px;
+    box-shadow: 0 10px 30px rgba(0, 0, 0, 0.1);
+    margin-top: 10px;
+  }
+}
+
 .navbar-compro .navbar-brand {
   font-size: 1.25rem;
 }
