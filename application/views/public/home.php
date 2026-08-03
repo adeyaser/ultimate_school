@@ -404,22 +404,63 @@
           <p class="text-muted fs-5">Wadah pembentukan minat, bakat, kepemimpinan, dan prestasi siswa</p>
         </div>
 
-        <div class="row g-3">
+        <div class="row g-4 justify-content-center">
           <?php if (!empty($eskul)): ?>
             <?php foreach ($eskul as $e): ?>
-              <div class="col-md-4 col-6">
-                <div class="p-4 bg-light rounded-4 border text-center h-100">
-                  <div class="text-primary fs-1 mb-2"><i class="bi bi-award-fill"></i></div>
-                  <h5 class="fw-bold mb-1"><?= $e['nama_eskul'] ?></h5>
-                  <p class="small text-muted mb-2"><?= $e['hari'] ?> (<?= date('H:i', strtotime($e['jam_mulai'])) ?> WIB)</p>
-                  <span class="badge text-bg-success">Pembina: <?= $e['nama_pembina'] ?></span>
+              <div class="col-lg-3 col-md-4 col-sm-6 col-12">
+                <div class="feature-card p-4 text-center h-100 border rounded-4 bg-white shadow-sm d-flex flex-column align-items-center justify-content-between">
+                  <div class="w-100">
+                    <div class="feature-icon-wrapper icon-green mx-auto mb-3" style="width: 58px; height: 58px; border-radius: 14px;">
+                      <i class="bi bi-trophy-fill fs-3"></i>
+                    </div>
+                    <h5 class="fw-bold mb-2 text-dark fs-6 text-wrap"><?= $e['nama_eskul'] ?></h5>
+                    <p class="small text-muted mb-3"><i class="bi bi-clock-fill me-1 text-warning"></i> <?= $e['hari'] ?> (<?= date('H:i', strtotime($e['jam_mulai'])) ?> WIB)</p>
+                  </div>
+                  <div class="w-100 pt-2 border-top">
+                    <span class="badge text-bg-success-subtle text-success border border-success-subtle px-3 py-2 rounded-pill small text-wrap text-break fw-semibold mw-100">
+                      <i class="bi bi-person-badge-fill me-1"></i> Pembina: <?= $e['nama_pembina'] ?>
+                    </span>
+                  </div>
                 </div>
               </div>
             <?php endforeach; ?>
           <?php else: ?>
-            <div class="col-md-4"><div class="p-4 bg-light rounded-4 text-center"><h5>Pramuka Wajib</h5></div></div>
-            <div class="col-md-4"><div class="p-4 bg-light rounded-4 text-center"><h5>Paskibra</h5></div></div>
-            <div class="col-md-4"><div class="p-4 bg-light rounded-4 text-center"><h5>PMR & KSR</h5></div></div>
+            <div class="col-lg-4 col-md-6 col-12">
+              <div class="feature-card p-4 text-center rounded-4 border bg-white shadow-sm h-100 d-flex flex-column justify-content-between">
+                <div>
+                  <div class="feature-icon-wrapper icon-blue mx-auto mb-3"><i class="bi bi-flag-fill fs-2"></i></div>
+                  <h5 class="fw-bold mb-2">Pramuka Wajib</h5>
+                  <p class="small text-muted mb-3"><i class="bi bi-clock-fill me-1 text-warning"></i> Jumat (15:00 WIB)</p>
+                </div>
+                <div class="pt-2 border-top">
+                  <span class="badge text-bg-primary-subtle text-primary border border-primary-subtle px-3 py-2 rounded-pill small text-wrap text-break fw-semibold mw-100">Pembina: Budi Santoso, S.Pd</span>
+                </div>
+              </div>
+            </div>
+            <div class="col-lg-4 col-md-6 col-12">
+              <div class="feature-card p-4 text-center rounded-4 border bg-white shadow-sm h-100 d-flex flex-column justify-content-between">
+                <div>
+                  <div class="feature-icon-wrapper icon-amber mx-auto mb-3"><i class="bi bi-award-fill fs-2"></i></div>
+                  <h5 class="fw-bold mb-2">Pasukan Pengibar Bendera</h5>
+                  <p class="small text-muted mb-3"><i class="bi bi-clock-fill me-1 text-warning"></i> Sabtu (08:00 WIB)</p>
+                </div>
+                <div class="pt-2 border-top">
+                  <span class="badge text-bg-warning-subtle text-warning border border-warning-subtle px-3 py-2 rounded-pill small text-wrap text-break fw-semibold mw-100">Pembina: Siti Aminah, M.Pd</span>
+                </div>
+              </div>
+            </div>
+            <div class="col-lg-4 col-md-6 col-12">
+              <div class="feature-card p-4 text-center rounded-4 border bg-white shadow-sm h-100 d-flex flex-column justify-content-between">
+                <div>
+                  <div class="feature-icon-wrapper icon-green mx-auto mb-3"><i class="bi bi-heart-pulse-fill fs-2"></i></div>
+                  <h5 class="fw-bold mb-2">PMR & KSR Red Cross</h5>
+                  <p class="small text-muted mb-3"><i class="bi bi-clock-fill me-1 text-warning"></i> Sabtu (10:00 WIB)</p>
+                </div>
+                <div class="pt-2 border-top">
+                  <span class="badge text-bg-success-subtle text-success border border-success-subtle px-3 py-2 rounded-pill small text-wrap text-break fw-semibold mw-100">Pembina: Dr. Hendra</span>
+                </div>
+              </div>
+            </div>
           <?php endif; ?>
         </div>
       </div>
