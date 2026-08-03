@@ -33,7 +33,9 @@ class M_Akademik extends CI_Model {
         $this->db->select('murid.id as murid_id, murid.nisn, murid.nis, users.full_name, nilai.id as nilai_id, nilai.nilai_harian, nilai.nilai_tugas, nilai.nilai_pts, nilai.nilai_pas, nilai.nilai_akhir, nilai.predikat, nilai.is_tuntas');
         $this->db->from('murid');
         $this->db->join('users', 'users.id = murid.user_id');
-        $this->db->join('nilai', 'nilai.murid_id = murid.id AND nilai.mata_pelajaran_id = '.$mapel_id.' AND nilai.tahun_ajaran_id = '.$tahun_ajaran_id, 'left');
+        $safe_mapel_id = !empty($mapel_id) ? (int)$mapel_id : 0;
+        $safe_ta_id    = !empty($tahun_ajaran_id) ? (int)$tahun_ajaran_id : 0;
+        $this->db->join('nilai', 'nilai.murid_id = murid.id AND nilai.mata_pelajaran_id = '.$safe_mapel_id.' AND nilai.tahun_ajaran_id = '.$safe_ta_id, 'left');
         $this->db->where('murid.kelas_id', $kelas_id);
         $this->db->where('murid.status_murid', 'Aktif');
         $this->db->order_by('users.full_name', 'ASC');

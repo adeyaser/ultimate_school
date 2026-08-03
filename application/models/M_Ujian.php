@@ -65,12 +65,13 @@ class M_Ujian extends CI_Model {
     // Ujian Peserta
     public function get_ujian_siswa_list($kelas_id, $murid_id, $jenjang = null)
     {
+        $safe_murid_id = !empty($murid_id) ? (int)$murid_id : 0;
         $this->db->select('ujian.*, mata_pelajaran.nama_mapel, users.full_name as nama_guru, ujian_peserta.status as status_peserta, ujian_peserta.nilai_total, ujian_peserta.is_lulus, ujian_peserta.id as peserta_id');
         $this->db->from('ujian');
         $this->db->join('mata_pelajaran', 'mata_pelajaran.id = ujian.mata_pelajaran_id');
         $this->db->join('guru', 'guru.id = ujian.guru_id');
         $this->db->join('users', 'users.id = guru.user_id');
-        $this->db->join('ujian_peserta', 'ujian_peserta.ujian_id = ujian.id AND ujian_peserta.murid_id = '.$murid_id, 'left');
+        $this->db->join('ujian_peserta', 'ujian_peserta.ujian_id = ujian.id AND ujian_peserta.murid_id = '.$safe_murid_id, 'left');
         if ($kelas_id) {
             $this->db->where('ujian.kelas_id', $kelas_id);
         }
