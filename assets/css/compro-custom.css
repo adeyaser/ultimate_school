@@ -11,9 +11,32 @@
   --shadow-hover: 0 20px 40px rgba(13, 110, 253, 0.15);
 }
 
+/* Strict Mobile Horizontal Lock & iOS Safari Touch Fix */
+html, body {
+  width: 100% !important;
+  max-width: 100% !important;
+  overflow-x: hidden !important;
+  position: relative;
+  margin: 0;
+  padding: 0;
+  -webkit-text-size-adjust: 100%;
+  touch-action: pan-y;
+}
+
 body {
   font-family: 'Plus Jakarta Sans', sans-serif;
   color: #334155;
+  overflow-x: hidden !important;
+}
+
+/* Prevent Bootstrap Row & Marquee Overflow on Mobile Devices */
+.row {
+  margin-right: 0 !important;
+  margin-left: 0 !important;
+}
+
+.container, .container-fluid, .container-xl, .container-lg, .container-md, .container-sm {
+  max-width: 100% !important;
   overflow-x: hidden;
 }
 
@@ -97,31 +120,34 @@ h1, h2, h3, h4, h5, h6, .navbar-brand {
   position: relative;
   background: var(--primary-gradient);
   padding: 100px 0 140px;
-  overflow: hidden;
+  overflow: hidden !important;
+  max-width: 100vw;
 }
 
 .hero-section::before {
   content: '';
   position: absolute;
   top: -100px;
-  right: -100px;
-  width: 500px;
-  height: 500px;
+  right: 0;
+  width: 300px;
+  height: 300px;
   background: rgba(255, 255, 255, 0.1);
   border-radius: 50%;
   filter: blur(80px);
+  pointer-events: none;
 }
 
 .hero-section::after {
   content: '';
   position: absolute;
   bottom: -50px;
-  left: -50px;
-  width: 300px;
-  height: 300px;
+  left: 0;
+  width: 250px;
+  height: 250px;
   background: rgba(245, 158, 11, 0.2);
   border-radius: 50%;
   filter: blur(60px);
+  pointer-events: none;
 }
 
 .hero-title {
