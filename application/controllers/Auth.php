@@ -14,7 +14,8 @@ class Auth extends MY_Controller {
         if ($this->session->userdata('is_login')) {
             redirect('dashboard');
         }
-        $this->load->view('auth/login');
+        $data['sekolah'] = $this->school_info;
+        $this->load->view('auth/login', $data);
     }
 
     public function login()

@@ -1,8 +1,12 @@
 <!doctype html>
-<html lang="en">
+<html lang="id">
   <head>
     <meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
-    <title>Login System | Ultimate School</title>
+    <?php 
+      $school_name = isset($sekolah['nama_sekolah']) && !empty($sekolah['nama_sekolah']) ? $sekolah['nama_sekolah'] : (isset($school_info['nama_sekolah']) && !empty($school_info['nama_sekolah']) ? $school_info['nama_sekolah'] : 'Ultimate School');
+      $logo_img = (isset($sekolah['logo']) && !empty($sekolah['logo'])) ? (strpos($sekolah['logo'], 'http') === 0 ? $sekolah['logo'] : base_url($sekolah['logo'])) : ((isset($school_info['logo']) && !empty($school_info['logo'])) ? (strpos($school_info['logo'], 'http') === 0 ? $school_info['logo'] : base_url($school_info['logo'])) : base_url('dist/assets/img/AdminLTELogo.png'));
+    ?>
+    <title>Portal Login | <?= htmlspecialchars($school_name) ?></title>
     <meta name="viewport" content="width=device-width, initial-scale=1.0" />
     
     <!-- Fonts & Icons -->
@@ -16,8 +20,9 @@
   <body class="login-page bg-body-secondary d-flex align-items-center justify-content-center min-vh-100">
     <div class="login-box" style="width: 400px;">
       <div class="login-logo text-center mb-4">
-        <a href="<?= base_url() ?>" class="h2 text-decoration-none fw-bold text-primary">
-          <i class="bi bi-mortarboard-fill me-2"></i><b>ULTIMATE</b> SCHOOL
+        <a href="<?= base_url() ?>" class="d-flex align-items-center justify-content-center text-decoration-none fw-bold text-primary mb-1">
+          <img src="<?= $logo_img ?>" alt="Logo" width="46" height="46" class="me-2 rounded-circle shadow-sm" />
+          <span class="fs-2 text-uppercase text-primary"><?= htmlspecialchars($school_name) ?></span>
         </a>
         <div class="text-muted fs-6">Sistem Informasi Manajemen Sekolah</div>
       </div>
@@ -73,11 +78,8 @@
         </div>
       </div>
       
-      <?php
-        $login_school_name = !empty($school_info['nama_sekolah']) ? $school_info['nama_sekolah'] : 'Ultimate School';
-      ?>
       <div class="text-center text-muted fs-7 mt-4">
-        &copy; <?= date('Y') ?> <?= htmlspecialchars($login_school_name) ?> System. AdminLTE v4.1.0 Integrated.
+        &copy; <?= date('Y') ?> <?= htmlspecialchars($school_name) ?> System. All Rights Reserved.
       </div>
     </div>
 
