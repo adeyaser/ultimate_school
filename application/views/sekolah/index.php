@@ -79,6 +79,46 @@
                   <div class="col-md-4"><label class="form-label fw-semibold">Kode Pos</label><input type="text" name="kode_pos" class="form-control" value="<?= isset($sekolah['kode_pos']) ? htmlspecialchars($sekolah['kode_pos']) : '12345' ?>" /></div>
 
                   <div class="col-md-12"><label class="form-label fw-semibold">Alamat Lengkap</label><textarea name="alamat" class="form-control" rows="2"><?= isset($sekolah['alamat']) ? htmlspecialchars($sekolah['alamat']) : '' ?></textarea></div>
+
+                  <!-- Multi-Jenjang NPSN & Kepala Sekolah Settings Box -->
+                  <div class="col-12 mt-3">
+                    <div class="card border border-primary-subtle shadow-sm rounded-4 overflow-hidden">
+                      <div class="card-header bg-primary-subtle p-3">
+                        <h6 class="fw-bold text-primary mb-0"><i class="bi bi-award-fill me-2"></i> Pengaturan NPSN & Kepala Sekolah Per Jenjang (SD, SMP, SMA)</h6>
+                        <small class="text-muted">NPSN dan Nama Kepala Sekolah akan otomatis disesuaikan sesuai mode jenjang yang aktif.</small>
+                      </div>
+                      <div class="card-body p-3 bg-white">
+                        <div class="row g-3">
+                          <!-- SD -->
+                          <div class="col-md-4 p-3 bg-success-subtle rounded-3 border border-success">
+                            <h6 class="fw-bold text-success"><i class="bi bi-bank me-1"></i> Mode SD (Sekolah Dasar)</h6>
+                            <label class="form-label fw-semibold small mb-1">NPSN SD *</label>
+                            <input type="text" name="npsn_sd" class="form-control form-control-sm mb-2 font-monospace" value="<?= isset($sekolah['npsn_sd']) ? htmlspecialchars($sekolah['npsn_sd']) : '10100001' ?>" placeholder="NPSN SD" />
+                            <label class="form-label fw-semibold small mb-1">Kepala Sekolah SD</label>
+                            <input type="text" name="kepala_sd" class="form-control form-control-sm" value="<?= isset($sekolah['kepala_sd']) ? htmlspecialchars($sekolah['kepala_sd']) : '' ?>" placeholder="Nama Kepala SD" />
+                          </div>
+
+                          <!-- SMP -->
+                          <div class="col-md-4 p-3 bg-info-subtle rounded-3 border border-info">
+                            <h6 class="fw-bold text-info"><i class="bi bi-bank2 me-1"></i> Mode SMP (Menengah Pertama)</h6>
+                            <label class="form-label fw-semibold small mb-1">NPSN SMP *</label>
+                            <input type="text" name="npsn_smp" class="form-control form-control-sm mb-2 font-monospace" value="<?= isset($sekolah['npsn_smp']) ? htmlspecialchars($sekolah['npsn_smp']) : '20200002' ?>" placeholder="NPSN SMP" />
+                            <label class="form-label fw-semibold small mb-1">Kepala Sekolah SMP</label>
+                            <input type="text" name="kepala_smp" class="form-control form-control-sm" value="<?= isset($sekolah['kepala_smp']) ? htmlspecialchars($sekolah['kepala_smp']) : '' ?>" placeholder="Nama Kepala SMP" />
+                          </div>
+
+                          <!-- SMA -->
+                          <div class="col-md-4 p-3 bg-warning-subtle rounded-3 border border-warning">
+                            <h6 class="fw-bold text-dark"><i class="bi bi-building me-1"></i> Mode SMA (Menengah Atas)</h6>
+                            <label class="form-label fw-semibold small mb-1">NPSN SMA *</label>
+                            <input type="text" name="npsn_sma" class="form-control form-control-sm mb-2 font-monospace" value="<?= isset($sekolah['npsn_sma']) ? htmlspecialchars($sekolah['npsn_sma']) : '30300003' ?>" placeholder="NPSN SMA" />
+                            <label class="form-label fw-semibold small mb-1">Kepala Sekolah SMA</label>
+                            <input type="text" name="kepala_sma" class="form-control form-control-sm" value="<?= isset($sekolah['kepala_sma']) ? htmlspecialchars($sekolah['kepala_sma']) : '' ?>" placeholder="Nama Kepala SMA" />
+                          </div>
+                        </div>
+                      </div>
+                    </div>
+                  </div>
                 </div>
               </div>
 

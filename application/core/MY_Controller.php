@@ -70,6 +70,23 @@ class MY_Controller extends CI_Controller {
             $this->session->set_userdata('last_db_jenjang', $db_jenjang);
         }
 
+        // Dynamically resolve NPSN & Kepala Sekolah based on active_jenjang mode
+        if ($active_jenjang === 'SD' && !empty($this->school_info['npsn_sd'])) {
+            $this->school_info['npsn'] = $this->school_info['npsn_sd'];
+        } elseif ($active_jenjang === 'SMP' && !empty($this->school_info['npsn_smp'])) {
+            $this->school_info['npsn'] = $this->school_info['npsn_smp'];
+        } elseif ($active_jenjang === 'SMA' && !empty($this->school_info['npsn_sma'])) {
+            $this->school_info['npsn'] = $this->school_info['npsn_sma'];
+        }
+
+        if ($active_jenjang === 'SD' && !empty($this->school_info['kepala_sd'])) {
+            $this->school_info['kepala_sekolah'] = $this->school_info['kepala_sd'];
+        } elseif ($active_jenjang === 'SMP' && !empty($this->school_info['kepala_smp'])) {
+            $this->school_info['kepala_sekolah'] = $this->school_info['kepala_smp'];
+        } elseif ($active_jenjang === 'SMA' && !empty($this->school_info['kepala_sma'])) {
+            $this->school_info['kepala_sekolah'] = $this->school_info['kepala_sma'];
+        }
+
         $data['user_data']      = $this->user_data;
         $data['school_info']    = $this->school_info;
         $data['active_ta']      = $this->active_ta;
