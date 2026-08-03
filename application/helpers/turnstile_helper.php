@@ -1,14 +1,29 @@
 <?php
 defined('BASEPATH') OR exit('No direct script access allowed');
 
+// Ensure Turnstile Constants are defined with environment auto-detection
+if (!defined('TURNSTILE_SITE_KEY')) {
+    $is_localhost_env = (
+        isset($_SERVER['HTTP_HOST']) && 
+        (strpos($_SERVER['HTTP_HOST'], 'localhost') !== false || strpos($_SERVER['HTTP_HOST'], '127.0.0.1') !== false)
+    );
+
+    if ($is_localhost_env) {
+        define('TURNSTILE_SITE_KEY', '0x4AAAAAACAcYu88og6fN1dH');
+        define('TURNSTILE_SECRET_KEY', '0x4AAAAAACAcYp0o3lrsU4m_WPdtIh-bPMk');
+    } else {
+        define('TURNSTILE_SITE_KEY', '0x4AAAAAAEE-iFEgOIaxfmmK');
+        define('TURNSTILE_SECRET_KEY', '0x4AAAAAAEE-iKnZUbSg4lWJcaT_lVDJM-U');
+    }
+}
+
 if (!function_exists('verify_turnstile')) {
     function verify_turnstile($token) {
         if (empty($token)) {
             return false;
         }
 
-        // Production Cloudflare Turnstile Secret Key
-        $secret_key = '0x4AAAAAAEE-iKnZUbSg4lWJcaT_lVDJM-U';
+        $secret_key = TURNSTILE_SECRET_KEY;
         $ip = isset($_SERVER['REMOTE_ADDR']) ? $_SERVER['REMOTE_ADDR'] : '';
 
         $url = 'https://challenges.cloudflare.com/turnstile/v0/siteverify';
@@ -43,8 +58,7 @@ if (!function_exists('verify_turnstile')) {
 
 if (!function_exists('render_turnstile')) {
     function render_turnstile() {
-        // Production Cloudflare Turnstile Site Key
-        $site_key = '0x4AAAAAAEE-iFEgOIaxfmmK';
+        $site_key = TURNSTILE_SITE_KEY;
         return '<div class="cf-turnstile my-3 d-flex justify-content-center" data-sitekey="' . $site_key . '"></div>';
     }
 }
