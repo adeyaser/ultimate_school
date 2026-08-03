@@ -17,7 +17,40 @@
         user-select: none;
         overflow-x: hidden;
       }
-      .soal-map-btn { width: 42px; height: 42px; line-height: 28px; text-align: center; margin: 3px; font-weight: bold; }
+      .soal-grid-container {
+        display: grid;
+        grid-template-columns: repeat(5, 1fr);
+        gap: 8px;
+        max-height: 380px;
+        overflow-y: auto;
+        padding-right: 4px;
+      }
+      .soal-map-btn {
+        width: 100%;
+        height: 42px;
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        font-weight: 700;
+        font-size: 0.95rem;
+        border-radius: 10px;
+        transition: all 0.2s ease-in-out;
+        text-decoration: none;
+        border: 2px solid #cbd5e1;
+        background-color: #ffffff;
+        color: #334155;
+      }
+      .soal-map-btn:hover {
+        border-color: #0284c7;
+        color: #0284c7;
+        transform: translateY(-2px);
+      }
+      .soal-map-btn.answered {
+        background-color: #10b981 !important;
+        border-color: #059669 !important;
+        color: #ffffff !important;
+        box-shadow: 0 2px 5px rgba(16, 185, 129, 0.3);
+      }
       
       /* Fullscreen Lockdown Overlay */
       #kioskLockOverlay {
@@ -149,29 +182,45 @@
 
         <!-- Right: Question Map & Auto-Save Indicator -->
         <div class="col-lg-4">
-          <div class="card shadow-sm border-0 rounded-4 sticky-top" style="top: 100px;">
-            <div class="card-header bg-white p-3 fw-bold text-primary">
-              <i class="bi bi-grid-3x3-gap-fill me-2"></i> Peta Navigasi Soal
+          <div class="card shadow-sm border-0 rounded-4 sticky-top" style="top: 95px;">
+            <div class="card-header bg-white p-3 border-bottom d-flex justify-content-between align-items-center">
+              <h6 class="fw-bold text-primary mb-0">
+                <i class="bi bi-grid-3x3-gap-fill me-2"></i> Peta Navigasi Soal
+              </h6>
+              <span class="badge text-bg-primary rounded-pill px-3 py-1 fw-bold">
+                <span id="answeredCount"><?= count($jawaban_map) ?></span> / <?= count($soal_list) ?> Terjawab
+              </span>
             </div>
             <div class="card-body p-3">
-              <div class="d-flex flex-wrap justify-content-start mb-3">
+              <!-- Scrollable Clean 5-Column Grid -->
+              <div class="soal-grid-container mb-3">
                 <?php foreach ($soal_list as $index => $s): ?>
                   <?php $is_ans = isset($jawaban_map[$s['id']]) && !empty($jawaban_map[$s['id']]); ?>
                   <a
                     href="#soal-block-<?= $s['id'] ?>"
-                    class="btn btn-outline-primary soal-map-btn <?= $is_ans ? 'btn-success text-white' : '' ?>"
+                    class="soal-map-btn <?= $is_ans ? 'answered' : '' ?>"
                     id="map-btn-<?= $index + 1 ?>"
                   >
                     <?= $index + 1 ?>
                   </a>
                 <?php endforeach; ?>
               </div>
-              <div class="p-2 bg-light rounded text-center small text-muted">
-                <span class="badge text-bg-success me-1">Hijau</span> Sudah dijawab &nbsp;|&nbsp; 
-                <span class="badge text-bg-outline-primary">Putih</span> Belum dijawab
+
+              <!-- Indicator Legend -->
+              <div class="p-3 bg-light rounded-3 border">
+                <div class="d-flex align-items-center justify-content-around small fw-semibold">
+                  <div class="d-flex align-items-center">
+                    <span class="d-inline-block rounded-2 bg-success me-2" style="width: 14px; height: 14px;"></span>
+                    <span class="text-dark">Sudah Dijawab</span>
+                  </div>
+                  <div class="d-flex align-items-center">
+                    <span class="d-inline-block rounded-2 bg-white border border-secondary me-2" style="width: 14px; height: 14px;"></span>
+                    <span class="text-muted">Belum Dijawab</span>
+                  </div>
+                </div>
               </div>
 
-              <div id="saveToast" class="alert alert-info py-2 px-3 mt-3 mb-0 small text-center d-none">
+              <div id="saveToast" class="alert alert-success border-success py-2 px-3 mt-3 mb-0 small text-center d-none rounded-3 fw-bold">
                 <i class="bi bi-cloud-check-fill me-1"></i> Jawaban tersimpan otomatis.
               </div>
             </div>
@@ -341,7 +390,12 @@
           soal_id: sId,
           jawaban: val
         }, function (res) {
-          $('#map-btn-' + idx).removeClass('btn-outline-primary').addClass('btn-success text-white');
+          if (val && val.trim() !== '') {
+            $('#map-btn-' + idx).addClass('answered');
+          } else {
+            $('#map-btn-' + idx).removeClass('answered');
+          }
+          $('#answeredCount').text($('.soal-map-btn.answered').length);
           $('#saveToast').removeClass('d-none');
           setTimeout(() => $('#saveToast').addClass('d-none'), 2000);
         }, 'json');
