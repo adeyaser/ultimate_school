@@ -5,7 +5,22 @@ class M_Sekolah extends CI_Model {
 
     public function get_school_profile()
     {
-        return $this->db->get_where('sekolah', array('id' => 1))->row_array();
+        $sekolah = $this->db->get_where('sekolah', array('id' => 1))->row_array();
+        if ($sekolah) {
+            $CI =& get_instance();
+            $active_jenjang = $CI->session->userdata('active_jenjang');
+            if ($active_jenjang && $active_jenjang !== 'ALL') {
+                $sekolah['jenjang'] = $active_jenjang;
+                $j = strtolower($active_jenjang);
+                if (!empty($sekolah['npsn_' . $j])) {
+                    $sekolah['npsn'] = $sekolah['npsn_' . $j];
+                }
+                if (!empty($sekolah['kepala_' . $j])) {
+                    $sekolah['kepala_sekolah'] = $sekolah['kepala_' . $j];
+                }
+            }
+        }
+        return $sekolah;
     }
 
     public function update_school_profile($id, $data)

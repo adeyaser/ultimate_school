@@ -39,11 +39,11 @@
       <nav class="navbar navbar-expand-xl navbar-compro">
         <div class="container-fluid container-xl">
           <a class="navbar-brand fw-bold text-primary d-flex align-items-center me-3" href="<?= base_url() ?>">
-            <img src="<?= (isset($sekolah['logo']) && strpos($sekolah['logo'], 'http') === 0) ? $sekolah['logo'] : base_url(isset($sekolah['logo']) && $sekolah['logo'] ? $sekolah['logo'] : 'dist/assets/img/AdminLTELogo.png') ?>" alt="Logo" width="38" height="38" class="me-2 rounded-circle shadow-sm" />
+            <img src="<?= (isset($sekolah['logo']) && !empty($sekolah['logo'])) ? (strpos($sekolah['logo'], 'http') === 0 ? $sekolah['logo'] : base_url($sekolah['logo'])) : base_url('dist/assets/img/AdminLTELogo.png') ?>" alt="Logo" width="38" height="38" class="me-2 rounded-circle shadow-sm" />
             <span class="d-flex flex-column lh-1">
-              <span class="fs-5 fw-bold"><?= isset($sekolah['nama_sekolah']) ? strtoupper($sekolah['nama_sekolah']) : 'ULTIMATE SCHOOL' ?></span>
+              <span class="fs-5 fw-bold"><?= (isset($sekolah['nama_sekolah']) && !empty($sekolah['nama_sekolah'])) ? strtoupper($sekolah['nama_sekolah']) : 'ULTIMATE SCHOOL' ?></span>
               <small class="text-primary fw-bold" style="font-size: 0.65rem !important; letter-spacing: 0.5px;">
-                JENJANG TERAKREDITASI <?= isset($sekolah['jenjang']) ? $sekolah['jenjang'] : 'SMA' ?>
+                JENJANG TERAKREDITASI <?= (isset($sekolah['jenjang']) && !empty($sekolah['jenjang'])) ? strtoupper($sekolah['jenjang']) : 'SMP' ?>
               </small>
             </span>
           </a>
@@ -633,7 +633,10 @@
       <div class="container">
         <div class="row g-4 mb-4">
           <div class="col-lg-4">
-            <h3 class="fw-bold text-primary mb-3"><?= isset($sekolah['nama_sekolah']) ? strtoupper($sekolah['nama_sekolah']) : 'ULTIMATE SCHOOL' ?></h3>
+            <div class="d-flex align-items-center mb-3">
+              <img src="<?= (isset($sekolah['logo']) && !empty($sekolah['logo'])) ? (strpos($sekolah['logo'], 'http') === 0 ? $sekolah['logo'] : base_url($sekolah['logo'])) : base_url('dist/assets/img/AdminLTELogo.png') ?>" alt="Logo" width="36" height="36" class="me-2 rounded-circle bg-white p-1 shadow-sm" />
+              <h4 class="fw-bold text-primary mb-0"><?= (isset($sekolah['nama_sekolah']) && !empty($sekolah['nama_sekolah'])) ? strtoupper($sekolah['nama_sekolah']) : 'ULTIMATE SCHOOL' ?></h4>
+            </div>
             <p class="text-secondary small mb-3">Sistem Informasi Manajemen Sekolah Terpadu dengan fasilitas terlengkap, kurikulum unggulan, dan layanan digital modern.</p>
             <div class="d-flex gap-2">
               <a href="<?= isset($sekolah['facebook_url']) && $sekolah['facebook_url'] ? $sekolah['facebook_url'] : '#' ?>" target="_blank" class="btn btn-outline-light btn-sm rounded-circle"><i class="bi bi-facebook"></i></a>
