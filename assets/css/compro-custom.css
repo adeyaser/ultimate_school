@@ -67,6 +67,19 @@ h1, h2, h3, h4, h5, h6, .navbar-brand {
   padding: 0.5rem 0;
 }
 
+/* Fix Navbar Sub-Menu Dropdown Clipping & Visibility */
+header.fixed-top {
+  z-index: 1040 !important;
+  overflow: visible !important;
+}
+
+.navbar-compro,
+.navbar-compro .container,
+.navbar-compro .container-fluid,
+.navbar-compro .container-xl {
+  overflow: visible !important;
+}
+
 /* Responsive Marquee & Top Announcement Bar */
 .announcement-bar {
   font-size: 0.82rem;
@@ -97,13 +110,32 @@ h1, h2, h3, h4, h5, h6, .navbar-brand {
 
 @media (max-width: 1199.98px) {
   .navbar-compro .navbar-collapse {
-    max-height: 75vh;
+    max-height: 80vh;
     overflow-y: auto;
     background: #ffffff;
     padding: 15px;
     border-radius: 16px;
-    box-shadow: 0 10px 30px rgba(0, 0, 0, 0.1);
+    box-shadow: 0 10px 30px rgba(0, 0, 0, 0.12);
     margin-top: 10px;
+  }
+
+  .navbar-compro .dropdown-menu {
+    position: static !important;
+    float: none;
+    width: 100%;
+    margin-top: 8px;
+    margin-bottom: 8px;
+    border: 1px solid #e2e8f0;
+    background-color: #f8fafc;
+    box-shadow: none;
+  }
+}
+
+@media (min-width: 1200px) {
+  .navbar-compro .dropdown:hover > .dropdown-menu {
+    display: block;
+    margin-top: 0;
+    animation: fadeIn 0.2s ease-in-out;
   }
 }
 
