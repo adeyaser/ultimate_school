@@ -676,5 +676,23 @@
 
     <!-- Bootstrap 5 JS -->
     <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/js/bootstrap.bundle.min.js"></script>
+    <script>
+      document.addEventListener('DOMContentLoaded', function() {
+        const navCollapse = document.getElementById('navPublic');
+        if (navCollapse) {
+          const navItems = navCollapse.querySelectorAll('.nav-link:not(.dropdown-toggle), .dropdown-item, .btn-nav-action');
+          navItems.forEach(function(item) {
+            item.addEventListener('click', function() {
+              if (window.innerWidth < 1200) {
+                const bsCollapse = bootstrap.Collapse.getInstance(navCollapse);
+                if (bsCollapse) {
+                  bsCollapse.hide();
+                }
+              }
+            });
+          });
+        }
+      });
+    </script>
   </body>
 </html>

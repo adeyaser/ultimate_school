@@ -12,6 +12,18 @@
 }
 
 /* Strict Mobile Horizontal Lock & iOS Safari Touch Fix */
+html {
+  scroll-behavior: smooth;
+  scroll-padding-top: 115px;
+  width: 100% !important;
+  max-width: 100% !important;
+  overflow-x: hidden !important;
+}
+
+section[id], div[id] {
+  scroll-margin-top: 115px;
+}
+
 html, body {
   width: 100% !important;
   max-width: 100% !important;
