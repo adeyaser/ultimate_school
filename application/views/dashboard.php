@@ -9,7 +9,7 @@
       <div class="row">
         <div class="col-sm-6">
           <h3 class="mb-0 fw-bold">
-            <i class="bi bi-speedometer2 text-primary me-2"></i> Dashboard Utama (Mode <?= $jenjang ?>)
+            <i class="bi bi-speedometer2 text-primary me-2"></i> Dashboard Utama (<?= $jenjang ?>)
           </h3>
         </div>
         <div class="col-sm-6">

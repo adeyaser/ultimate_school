@@ -25,23 +25,35 @@
                 <i class="bi bi-globe text-success me-1"></i> Website Utama
               </a>
             </li>
-            <li class="nav-item dropdown d-none d-lg-block me-2">
-              <?php 
-                $cur_j = isset($active_jenjang) ? $active_jenjang : (isset($school_info['jenjang']) ? $school_info['jenjang'] : 'SMP');
-                $badge_class = ($cur_j === 'SD') ? 'btn-success' : (($cur_j === 'SMP') ? 'btn-info text-white' : (($cur_j === 'SMA') ? 'btn-warning text-dark' : 'btn-primary'));
-              ?>
-              <button class="btn btn-sm <?= $badge_class ?> dropdown-toggle fw-bold shadow-sm px-3 py-1" type="button" data-bs-toggle="dropdown">
-                <i class="bi bi-mortarboard-fill me-1"></i> MODE: <?= $cur_j ?>
-              </button>
-              <ul class="dropdown-menu shadow-lg border-0 rounded-3">
-                <li><h6 class="dropdown-header text-primary fw-bold"><i class="bi bi-arrow-repeat me-1"></i> Kelola Sekolah (Switch Mode):</h6></li>
-                <li><a class="dropdown-item fw-semibold <?= ($cur_j === 'SD') ? 'active' : '' ?>" href="<?= base_url('sekolah/switch_jenjang/SD') ?>"><i class="bi bi-bank me-2 text-success"></i> Mode SD (Sekolah Dasar)</a></li>
-                <li><a class="dropdown-item fw-semibold <?= ($cur_j === 'SMP') ? 'active' : '' ?>" href="<?= base_url('sekolah/switch_jenjang/SMP') ?>"><i class="bi bi-bank2 me-2 text-info"></i> Mode SMP (Menengah Pertama)</a></li>
-                <li><a class="dropdown-item fw-semibold <?= ($cur_j === 'SMA') ? 'active' : '' ?>" href="<?= base_url('sekolah/switch_jenjang/SMA') ?>"><i class="bi bi-building me-2 text-warning"></i> Mode SMA (Menengah Atas)</a></li>
-                <li><hr class="dropdown-divider"></li>
-                <li><a class="dropdown-item fw-semibold <?= ($cur_j === 'ALL') ? 'active' : '' ?>" href="<?= base_url('sekolah/switch_jenjang/ALL') ?>"><i class="bi bi-globe me-2 text-primary"></i> Tampilkan Semua Jenjang</a></li>
-              </ul>
-            </li>
+            <?php 
+              $u_info = !empty($user_data) ? $user_data : array();
+              $u_role = !empty($u_info['role']) ? $u_info['role'] : ($this->session->userdata('role') ? $this->session->userdata('role') : 'super_admin');
+              $is_admin_user = in_array($u_role, array('super_admin', 'admin'));
+
+              $cur_j = isset($active_jenjang) ? $active_jenjang : (isset($school_info['jenjang']) ? $school_info['jenjang'] : 'SMP');
+              $badge_class = ($cur_j === 'SD') ? 'btn-success' : (($cur_j === 'SMP') ? 'btn-info text-white' : (($cur_j === 'SMA') ? 'btn-warning text-dark' : 'btn-primary'));
+            ?>
+            <?php if ($is_admin_user): ?>
+              <li class="nav-item dropdown d-none d-lg-block me-2">
+                <button class="btn btn-sm <?= $badge_class ?> dropdown-toggle fw-bold shadow-sm px-3 py-1" type="button" data-bs-toggle="dropdown">
+                  <i class="bi bi-mortarboard-fill me-1"></i> <?= $cur_j ?>
+                </button>
+                <ul class="dropdown-menu shadow-lg border-0 rounded-3">
+                  <li><h6 class="dropdown-header text-primary fw-bold"><i class="bi bi-arrow-repeat me-1"></i> Kelola Sekolah (Switch Mode):</h6></li>
+                  <li><a class="dropdown-item fw-semibold <?= ($cur_j === 'SD') ? 'active' : '' ?>" href="<?= base_url('sekolah/switch_jenjang/SD') ?>"><i class="bi bi-bank me-2 text-success"></i> SD (Sekolah Dasar)</a></li>
+                  <li><a class="dropdown-item fw-semibold <?= ($cur_j === 'SMP') ? 'active' : '' ?>" href="<?= base_url('sekolah/switch_jenjang/SMP') ?>"><i class="bi bi-bank2 me-2 text-info"></i> SMP (Menengah Pertama)</a></li>
+                  <li><a class="dropdown-item fw-semibold <?= ($cur_j === 'SMA') ? 'active' : '' ?>" href="<?= base_url('sekolah/switch_jenjang/SMA') ?>"><i class="bi bi-building me-2 text-warning"></i> SMA (Menengah Atas)</a></li>
+                  <li><hr class="dropdown-divider"></li>
+                  <li><a class="dropdown-item fw-semibold <?= ($cur_j === 'ALL') ? 'active' : '' ?>" href="<?= base_url('sekolah/switch_jenjang/ALL') ?>"><i class="bi bi-globe me-2 text-primary"></i> Tampilkan Semua Jenjang</a></li>
+                </ul>
+              </li>
+            <?php else: ?>
+              <li class="nav-item d-none d-lg-block me-2">
+                <span class="btn btn-sm <?= $badge_class ?> fw-bold shadow-sm px-3 py-1 text-white opacity-100" style="cursor: default;">
+                  <i class="bi bi-mortarboard-fill me-1"></i> <?= $cur_j ?>
+                </span>
+              </li>
+            <?php endif; ?>
             <li class="nav-item d-none d-lg-block">
               <span class="badge text-bg-success-subtle text-success border border-success-subtle px-3 py-2 rounded-pill fw-bold shadow-sm">
                 <i class="bi bi-calendar-event me-1"></i> T.A. <?= isset($active_ta['nama']) ? $active_ta['nama'] : '2026/2027' ?> (<?= isset($active_ta['semester']) ? $active_ta['semester'] : 'Ganjil' ?>)
