@@ -2,8 +2,8 @@
 <html lang="en">
   <!--begin::Head-->
   <head>
-    <meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
-    <title><?= isset($title) ? $title . ' | Ultimate School' : 'Ultimate School - System Manajemen Sekolah' ?></title>
+    <?php $brand_title = !empty($school_info['nama_sekolah']) ? $school_info['nama_sekolah'] : 'Ultimate School'; ?>
+    <title><?= isset($title) ? htmlspecialchars($title) . ' | ' . htmlspecialchars($brand_title) : htmlspecialchars($brand_title) . ' - System Manajemen Sekolah' ?></title>
 
     <!--begin::Theme Init (prevents flash of incorrect theme on load)-->
     <script>
