@@ -157,7 +157,9 @@ class M_Ujian extends CI_Model {
         $score_row = $this->db->get('ujian_jawaban')->row_array();
 
         $total_score = isset($score_row['total_score']) ? (float)$score_row['total_score'] : 0;
-        $is_lulus = ($total_score >= $ujian['kkm']) ? 1 : 0;
+        
+        // Ambang Batas Kelulusan: Dinyatakan LULUS jika skor >= 6.00 (skala 10) atau >= 60.00 (skala 100) atau >= KKM
+        $is_lulus = ($total_score >= 6.00 || $total_score >= 60.00 || (isset($ujian['kkm']) && $total_score >= (float)$ujian['kkm'])) ? 1 : 0;
 
         $start_time = strtotime($peserta['tanggal_mulai']);
         $end_time = time();
