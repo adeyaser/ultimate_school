@@ -55,6 +55,24 @@ h1, h2, h3, h4, h5, h6, .navbar-brand {
   padding: 0.5rem 0;
 }
 
+/* Responsive Marquee & Top Announcement Bar */
+.announcement-bar {
+  font-size: 0.82rem;
+  line-height: 1.4;
+}
+
+@media (max-width: 575.98px) {
+  .announcement-bar {
+    font-size: 0.75rem;
+    padding-top: 0.35rem !important;
+    padding-bottom: 0.35rem !important;
+  }
+  .announcement-badge {
+    font-size: 0.68rem !important;
+    padding: 0.25rem 0.4rem !important;
+  }
+}
+
 /* Fixed Header Spacer Responsive Height */
 .fixed-header-spacer {
   height: 105px;

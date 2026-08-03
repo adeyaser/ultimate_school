@@ -20,15 +20,15 @@
     <!-- Fixed Top Header -->
     <header class="fixed-top shadow-sm z-3 bg-white">
       <!-- Top Announcement Bar -->
-      <div class="bg-dark text-white py-2 px-3 small border-bottom border-secondary">
-        <div class="container d-flex justify-content-between align-items-center">
-          <div class="d-flex align-items-center overflow-hidden">
-            <span class="badge text-bg-danger me-2 px-2 py-1"><i class="bi bi-megaphone-fill me-1"></i> PENGUMUMAN</span>
-            <marquee class="opacity-90 me-3" scrollamount="5">
+      <div class="bg-dark text-white py-2 px-2 px-sm-3 small border-bottom border-secondary announcement-bar">
+        <div class="container-fluid container-xl d-flex justify-content-between align-items-center">
+          <div class="d-flex align-items-center overflow-hidden w-100">
+            <span class="badge text-bg-danger me-2 flex-shrink-0 announcement-badge"><i class="bi bi-megaphone-fill me-1"></i> PENGUMUMAN</span>
+            <marquee class="opacity-90 me-0 me-md-3 flex-grow-1" scrollamount="5">
               <?= isset($sekolah['running_text']) ? $sekolah['running_text'] : '🔥 Penerimaan Peserta Didik Baru (PPDB) T.A. 2026/2027 Resmi Dibuka! Segera Daftarkan Putra/Putri Anda.' ?>
             </marquee>
           </div>
-          <div class="d-none d-md-flex align-items-center gap-3">
+          <div class="d-none d-md-flex align-items-center gap-3 flex-shrink-0 ms-3">
             <a href="tel:<?= isset($sekolah['telepon']) ? $sekolah['telepon'] : '02112345678' ?>" class="text-white text-decoration-none"><i class="bi bi-telephone-fill me-1 text-warning"></i> <?= isset($sekolah['telepon']) ? $sekolah['telepon'] : '021-12345678' ?></a>
             <a href="mailto:<?= isset($sekolah['email']) ? $sekolah['email'] : 'info@ultimateschool.com' ?>" class="text-white text-decoration-none"><i class="bi bi-envelope-fill me-1 text-warning"></i> <?= isset($sekolah['email']) ? $sekolah['email'] : 'info@ultimateschool.com' ?></a>
           </div>
