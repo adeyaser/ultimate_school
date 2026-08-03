@@ -89,6 +89,7 @@
                   <th style="width: 40px;">No</th>
                   <th>Nama Lengkap & Username</th>
                   <th>Email & Kontak</th>
+                  <th>Password Hint</th>
                   <th class="text-center">Role / Akses</th>
                   <th class="text-center">Jenjang Mode</th>
                   <th class="text-center">Status</th>
@@ -111,6 +112,22 @@
                     <td>
                       <small class="d-block text-dark"><i class="bi bi-envelope me-1"></i> <?= htmlspecialchars($u['email'] ? $u['email'] : '-') ?></small>
                       <small class="text-muted"><i class="bi bi-telephone me-1"></i> <?= htmlspecialchars($u['phone'] ? $u['phone'] : '-') ?></small>
+                    </td>
+                    <td>
+                      <span class="badge text-bg-light border text-dark fw-normal px-2 py-1 shadow-sm">
+                        <i class="bi bi-key-fill text-warning me-1"></i>
+                        <?php if ($u['role'] === 'super_admin'): ?>
+                          <strong class="text-danger">admin123</strong>
+                        <?php elseif ($u['role'] === 'admin'): ?>
+                          <strong class="text-primary">admin123</strong> / <code>password</code>
+                        <?php elseif ($u['role'] === 'guru' || $u['role'] === 'wali_kelas'): ?>
+                          <strong class="text-success">password</strong> / <code>123456</code>
+                        <?php elseif ($u['role'] === 'murid'): ?>
+                          <strong class="text-dark">NISN</strong> / <code>123456</code>
+                        <?php else: ?>
+                          <code>password</code>
+                        <?php endif; ?>
+                      </span>
                     </td>
                     <td class="text-center"><span class="badge <?= $role_badge ?> px-3 py-1 fs-6"><?= strtoupper(str_replace('_', ' ', $u['role'])) ?></span></td>
                     <td class="text-center"><span class="badge <?= $j_badge ?> px-3 py-1 fs-6"><?= $u['jenjang'] ?></span></td>
@@ -318,7 +335,7 @@ document.addEventListener('DOMContentLoaded', function() {
           }
         },
         columnDefs: [
-          { targets: [0, 6], orderable: false }
+          { targets: [0, 3, 7], orderable: false }
         ]
       });
     }
