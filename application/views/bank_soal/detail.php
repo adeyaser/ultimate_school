@@ -153,10 +153,18 @@
             <small class="d-block">Copy & Paste seluruh teks dokumen soal (Microsoft Word / PDF / Teks Biasa) langsung ke dalam kotak teks di bawah. Sistem secara otomatis mendeteksi nomor soal (`1.`, `2.`), opsi jawaban (`a.`, `b.`, `c.`, `d.`), teks bacaan, serta tabel / blok `KUNCI JAWABAN` & Pembahasannya!</small>
           </div>
 
-          <div class="mb-3">
-            <label class="form-label fw-bold text-dark"><i class="bi bi-file-text me-1 text-success"></i> Tempelkan Teks Soal & Kunci Jawaban Di Sini *</label>
-            <textarea name="raw_text" class="form-control font-monospace text-dark bg-light" rows="14" style="font-size: 0.88rem;" placeholder="Copas seluruh teks soal dan kunci jawaban di sini... Contoh:&#10;&#10;Teks Bacaan untuk soal nomor 1 dan 2:&#10;Liburan sekolah kali ini...&#10;&#10;1. Apa yang dilakukan Rina?&#10;a. Berenang&#10;b. Membuat istana pasir&#10;c. Tidur&#10;d. Membaca&#10;&#10;KUNCI JAWABAN&#10;1. B (Membuat istana pasir)&#10;2. A" required></textarea>
+          <div class="d-flex justify-content-between align-items-center mb-2">
+            <label class="form-label fw-bold text-dark mb-0"><i class="bi bi-file-text me-1 text-success"></i> Tempelkan Teks Soal & Kunci Jawaban Di Sini *</label>
+            <div>
+              <button type="button" class="btn btn-sm btn-outline-success fw-bold me-1" id="btnInsertTemplate">
+                <i class="bi bi-box-arrow-in-down me-1"></i> Isi Contoh Template Soal
+              </button>
+              <button type="button" class="btn btn-sm btn-outline-secondary fw-bold" id="btnCopyTemplate">
+                <i class="bi bi-clipboard-check me-1"></i> Salin Format Template
+              </button>
+            </div>
           </div>
+          <textarea id="rawTextSoal" name="raw_text" class="form-control font-monospace text-dark bg-light" rows="14" style="font-size: 0.88rem;" placeholder="Copas seluruh teks soal dan kunci jawaban di sini... Contoh:&#10;&#10;Teks Bacaan untuk soal nomor 1 dan 2:&#10;Liburan sekolah kali ini...&#10;&#10;1. Apa yang dilakukan Rina?&#10;a. Berenang&#10;b. Membuat istana pasir&#10;c. Tidur&#10;d. Membaca&#10;&#10;KUNCI JAWABAN&#10;1. B (Membuat istana pasir)&#10;2. A" required></textarea>
         </div>
         <div class="modal-footer bg-light p-3">
           <button type="button" class="btn btn-secondary px-4 rounded-pill" data-bs-dismiss="modal">Batal</button>
@@ -166,3 +174,68 @@
     </div>
   </div>
 </div>
+
+<script>
+document.addEventListener('DOMContentLoaded', function() {
+  const sampleTemplateText = `Teks Bacaan untuk soal nomor 1 dan 2:
+Liburan sekolah kali ini, Rina dan keluarga pergi ke pantai. Mereka berangkat pagi-pagi sekali menggunakan mobil. Di perjalanan, mereka melihat pemandangan sawah yang hijau. Sesampainya di pantai, Rina sangat senang. Ia bermain pasir dan membuat istana pasir yang besar. Ayahnya berenang di laut, sedangkan ibunya duduk di bawah payung sambil membaca buku.
+
+1. Apa yang dilakukan Rina di pantai?
+a. Berenang di laut
+b. Membaca buku
+c. Membuat istana pasir
+d. Menyiram sawah
+
+2. Kapan Rina dan keluarganya berangkat ke pantai?
+a. Siang hari
+b. Pagi-pagi sekali
+c. Sore hari
+d. Malam hari
+
+3. Perhatikan kalimat berikut!
+"Adik menangis karena jatuh dari sepeda."
+Kata penghubung yang dicetak tebal (karena) menyatakan hubungan....
+a. Waktu
+b. Tujuan
+c. Sebab-akibat
+d. Cara
+
+4. Bacalah puisi pendek di bawah ini!
+Pagi ini mentari tersenyum
+Burung-burung bernyanyi riang
+Udara segar menerpa wajah
+Semangat baru datang menyapa
+
+Puisi di atas menggambarkan suasana....
+a. Menyedihkan
+b. Menakutkan
+c. Meriah
+d. Gembira
+
+KUNCI JAWABAN + PEMBAHASAN
+No	Jawaban	Pembahasan
+1	C	Membuat istana pasir
+2	B	Pagi-pagi sekali
+3	C	Sebab-akibat
+4	D	Suasana gembira`;
+
+  const btnInsert = document.getElementById('btnInsertTemplate');
+  const btnCopy = document.getElementById('btnCopyTemplate');
+  const txtArea = document.getElementById('rawTextSoal');
+
+  if (btnInsert && txtArea) {
+    btnInsert.addEventListener('click', function() {
+      txtArea.value = sampleTemplateText;
+    });
+  }
+
+  if (btnCopy && txtArea) {
+    btnCopy.addEventListener('click', function() {
+      const textToCopy = txtArea.value || sampleTemplateText;
+      navigator.clipboard.writeText(textToCopy).then(function() {
+        alert('Format template berhasil disalin ke clipboard!');
+      });
+    });
+  }
+});
+</script>
