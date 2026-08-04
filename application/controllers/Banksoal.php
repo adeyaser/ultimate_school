@@ -122,4 +122,62 @@ class Banksoal extends MY_Controller {
 
         redirect('banksoal/detail/' . $bank_soal_id);
     }
+
+    public function download_template()
+    {
+        $this->load->helper('download');
+
+        $template_content = "TEMPLAT PENULISAN SOAL MASSAL (ULTIMATE SCHOOL SYSTEM)
+====================================================================
+PETUNJUK STANDAR PENULISAN:
+1. Teks bacaan/wacana/puisi (jika ada) ditulis sebelum nomor soal.
+2. Setiap butir pertanyaan diawali nomor angka & titik (contoh: 1.  2.  3.).
+3. Pilihan opsi jawaban diawali huruf kecil & titik (a.  b.  c.  d.  e.).
+4. Di bagian paling bawah, sertakan tabel/blok 'KUNCI JAWABAN + PEMBAHASAN'.
+====================================================================
+
+Teks Bacaan untuk soal nomor 1 dan 2:
+Liburan sekolah kali ini, Rina dan keluarga pergi ke pantai. Mereka berangkat pagi-pagi sekali menggunakan mobil. Di perjalanan, mereka melihat pemandangan sawah yang hijau. Sesampainya di pantai, Rina sangat senang. Ia bermain pasir dan membuat istana pasir yang besar. Ayahnya berenang di laut, sedangkan ibunya duduk di bawah payung sambil membaca buku.
+
+1. Apa yang dilakukan Rina di pantai?
+a. Berenang di laut
+b. Membaca buku
+c. Membuat istana pasir
+d. Menyiram sawah
+
+2. Kapan Rina dan keluarganya berangkat ke pantai?
+a. Siang hari
+b. Pagi-pagi sekali
+c. Sore hari
+d. Malam hari
+
+3. Perhatikan kalimat berikut!
+\"Adik menangis karena jatuh dari sepeda.\"
+Kata penghubung yang dicetak tebal (karena) menyatakan hubungan....
+a. Waktu
+b. Tujuan
+c. Sebab-akibat
+d. Cara
+
+4. Bacalah puisi pendek di bawah ini!
+Pagi ini mentari tersenyum
+Burung-burung bernyanyi riang
+Udara segar menerpa wajah
+Semangat baru datang menyapa
+
+Puisi di atas menggambarkan suasana....
+a. Menyedihkan
+b. Menakutkan
+c. Meriah
+d. Gembira
+
+KUNCI JAWABAN + PEMBAHASAN
+No\tJawaban\tPembahasan
+1\tC\tMembuat istana pasir
+2\tB\tPagi-pagi sekali
+3\tC\tSebab-akibat
+4\tD\tSuasana gembira";
+
+        force_download('template_impor_soal_massal.txt', $template_content);
+    }
 }

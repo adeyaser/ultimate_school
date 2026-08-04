@@ -1,0 +1,415 @@
+<!DOCTYPE html>
+<html lang="id">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Presentasi Penawaran - Ultimate School System</title>
+  <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/css/bootstrap.min.css">
+  <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.13.1/font/bootstrap-icons.min.css">
+  <link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Outfit:wght@400;600;700;800&family=Plus+Jakarta+Sans:wght@400;500;600;700&display=swap">
+  <style>
+    :root {
+      --primary: #0d6efd;
+      --dark-bg: #0f172a;
+      --card-bg: #1e293b;
+      --accent: #38bdf8;
+    }
+    body {
+      font-family: 'Plus Jakarta Sans', sans-serif;
+      background: var(--dark-bg);
+      color: #f8fafc;
+      margin: 0;
+      padding: 0;
+      overflow-x: hidden;
+    }
+    h1, h2, h3, h4, .slide-title {
+      font-family: 'Outfit', sans-serif;
+    }
+    .slide-container {
+      min-height: 85vh;
+      display: flex;
+      flex-direction: column;
+      justify-content: center;
+      padding: 2.5rem;
+    }
+    .slide {
+      display: none;
+      animation: fadeIn 0.4s ease-in-out;
+    }
+    .slide.active {
+      display: block;
+    }
+    @keyframes fadeIn {
+      from { opacity: 0; transform: translateY(10px); }
+      to { opacity: 1; transform: translateY(0); }
+    }
+    .card-slide {
+      background: rgba(30, 41, 59, 0.85);
+      border: 1px solid rgba(255, 255, 255, 0.1);
+      backdrop-filter: blur(16px);
+      border-radius: 20px;
+      box-shadow: 0 20px 40px rgba(0,0,0,0.4);
+      padding: 2.5rem;
+    }
+    .controls-bar {
+      position: fixed;
+      bottom: 0;
+      left: 0;
+      right: 0;
+      background: rgba(15, 23, 42, 0.95);
+      border-top: 1px solid rgba(255,255,255,0.1);
+      padding: 0.8rem 2rem;
+      z-index: 1000;
+      backdrop-filter: blur(10px);
+    }
+    .img-preview {
+      border-radius: 12px;
+      border: 2px solid rgba(56, 189, 248, 0.3);
+      box-shadow: 0 10px 25px rgba(0,0,0,0.5);
+      max-height: 380px;
+      object-fit: cover;
+      width: 100%;
+    }
+    .badge-slide {
+      background: linear-gradient(135deg, #0d6efd, #0284c7);
+      padding: 0.5rem 1rem;
+      font-weight: 700;
+      border-radius: 50px;
+      letter-spacing: 0.5px;
+    }
+  </style>
+</head>
+<body>
+
+  <div class="container-fluid container-xl slide-container">
+    
+    <!-- SLIDE 1 -->
+    <div class="slide active" id="slide-1">
+      <div class="card-slide text-center py-5">
+        <span class="badge badge-slide mb-3 text-uppercase"><i class="bi bi-rocket-takeoff-fill me-1"></i> SIMS Enterprise Multi-Jenjang</span>
+        <h1 class="display-3 fw-bold text-white mb-3">ULTIMATE SCHOOL SYSTEM</h1>
+        <p class="fs-4 text-info mb-4">Sistem Informasi Manajemen Sekolah Terpadu (SD, SMP, SMA, SMK)</p>
+        <div class="row justify-content-center">
+          <div class="col-lg-8">
+            <p class="text-slate-300 fs-6 leading-relaxed mb-4">
+              Solusi Digitalisasi Ekosistem Pendidikan Generasi Terbaru yang Mengintegrasikan Website Sekolah Publik, PPDB Online, Safe Exam CBT Engine, E-Raport Kurikulum Merdeka, & Keuangan Sekolah dalam 1 Platform Terpadu.
+            </p>
+            <div class="d-flex justify-content-center gap-3">
+              <span class="badge bg-secondary p-2"><i class="bi bi-shield-check me-1"></i> Cloudflare Protection</span>
+              <span class="badge bg-secondary p-2"><i class="bi bi-phone me-1"></i> 100% Mobile Responsive</span>
+              <span class="badge bg-secondary p-2"><i class="bi bi-layers me-1"></i> Multi-Jenjang Support</span>
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <!-- SLIDE 2 -->
+    <div class="slide" id="slide-2">
+      <div class="card-slide">
+        <h2 class="text-warning fw-bold mb-4"><i class="bi bi-exclamation-triangle-fill me-2"></i> Tantangan Digitalisasi Sekolah Saat Ini</h2>
+        <div class="row g-4">
+          <div class="col-md-6">
+            <div class="p-3 rounded-3 bg-dark bg-opacity-50 border border-secondary h-100">
+              <h5 class="text-danger fw-bold"><i class="bi bi-x-circle me-1"></i> Administrasi Terpisah-pisah</h5>
+              <p class="small text-secondary">Data siswa, kepegawaian, dan nilai tersimpan di spreadsheet terpisah yang rawan hilang dan tidak konsisten.</p>
+            </div>
+          </div>
+          <div class="col-md-6">
+            <div class="p-3 rounded-3 bg-dark bg-opacity-50 border border-secondary h-100">
+              <h5 class="text-danger fw-bold"><i class="bi bi-x-circle me-1"></i> Risiko Kecurangan Ujian CBT</h5>
+              <p class="small text-secondary">Ujian online biasa rawan kecurangan karena siswa bebas membuka tab lain, Googling, atau menyalin jawaban.</p>
+            </div>
+          </div>
+          <div class="col-md-6">
+            <div class="p-3 rounded-3 bg-dark bg-opacity-50 border border-secondary h-100">
+              <h5 class="text-danger fw-bold"><i class="bi bi-x-circle me-1"></i> Input Soal CBT Memakan Waktu</h5>
+              <p class="small text-secondary">Guru merasa terbebani jika harus memasukkan soal pilihan ganda satu per satu secara manual ke sistem.</p>
+            </div>
+          </div>
+          <div class="col-md-6">
+            <div class="p-3 rounded-3 bg-dark bg-opacity-50 border border-secondary h-100">
+              <h5 class="text-danger fw-bold"><i class="bi bi-x-circle me-1"></i> Pengolahan Raport yang Rumit</h5>
+              <p class="small text-secondary">Perhitungan capaian kompetensi dan cetak e-raport Kurikulum Merdeka sering menumpuk di akhir semester.</p>
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <!-- SLIDE 3 -->
+    <div class="slide" id="slide-3">
+      <div class="card-slide">
+        <h2 class="text-primary fw-bold mb-3"><i class="bi bi-diagram-3-fill me-2"></i> Arsitektur Single-System Multi-Jenjang</h2>
+        <p class="text-slate-300 mb-4">1 Sistem Utama Mampu Mengelola Multi-Sekolah / Jenjang (SD, SMP, SMA, SMK)</p>
+        <div class="row align-items-center g-4">
+          <div class="col-lg-6">
+            <ul class="list-group list-group-flush bg-transparent">
+              <li class="list-group-item bg-transparent text-white border-secondary"><i class="bi bi-check-circle-fill text-success me-2"></i> <b>Dynamic Switch Mode</b>: Berpindah antara jenjang SD, SMP, SMA, SMK, atau ALL.</li>
+              <li class="list-group-item bg-transparent text-white border-secondary"><i class="bi bi-check-circle-fill text-success me-2"></i> <b>NPSN & Kepala Sekolah Dinamis</b>: NPSN dan TTD Kepsek menyesuaikan otomatis sesuai jenjang aktif.</li>
+              <li class="list-group-item bg-transparent text-white border-secondary"><i class="bi bi-check-circle-fill text-success me-2"></i> <b>ACL 7 Level Roles</b>: Super Admin, Admin, Kepsek, Guru, Wali Kelas, Murid, Orang Tua.</li>
+            </ul>
+          </div>
+          <div class="col-lg-6 text-center">
+            <img src="C:/Users/Admin/.gemini/antigravity-ide/brain/3f1a61b1-1183-4b71-b60f-a75b7ecd121b/.tempmediaStorage/media_3f1a61b1-1183-4b71-b60f-a75b7ecd121b_1785691999312.png" class="img-preview" alt="Multi-Jenjang Header">
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <!-- SLIDE 4 -->
+    <div class="slide" id="slide-4">
+      <div class="card-slide">
+        <h2 class="text-info fw-bold mb-3"><i class="bi bi-globe me-2"></i> Website Public & PPDB Online Real-Time</h2>
+        <div class="row align-items-center g-4">
+          <div class="col-lg-6">
+            <ul class="list-unstyled d-flex flex-column gap-3">
+              <li class="d-flex align-items-start gap-2">
+                <i class="bi bi-star-fill text-warning fs-5"></i>
+                <div>
+                  <h6 class="fw-bold mb-1">Company Profile Modern</h6>
+                  <p class="small text-secondary mb-0">Tampilan Glassmorphism dilengkapi Visi-Misi, Sambutan Kepsek, Fasilitas, & Ekstrakurikuler.</p>
+                </div>
+              </li>
+              <li class="d-flex align-items-start gap-2">
+                <i class="bi bi-pencil-square text-success fs-5"></i>
+                <div>
+                  <h6 class="fw-bold mb-1">Formulir PPDB Online Integratif</h6>
+                  <p class="small text-secondary mb-0">Orang tua calon murid mendaftar online dari rumah tanpa perlu datang mengantre.</p>
+                </div>
+              </li>
+              <li class="d-flex align-items-start gap-2">
+                <i class="bi bi-search text-primary fs-5"></i>
+                <div>
+                  <h6 class="fw-bold mb-1">Tracking Status Kelulusan</h6>
+                  <p class="small text-secondary mb-0">Pencarian status seleksi PPDB secara real-time menggunakan Nomor Pendaftaran.</p>
+                </div>
+              </li>
+            </ul>
+          </div>
+          <div class="col-lg-6">
+            <div class="p-4 bg-dark rounded-4 border border-info border-opacity-25 text-center">
+              <i class="bi bi-shield-lock-fill text-info display-4 mb-2"></i>
+              <h5 class="fw-bold text-white">Cloudflare Turnstile Protected</h5>
+              <p class="small text-secondary">Dilengkapi proteksi CAPTCHA anti-bot modern pada Formulir PPDB Online & Login Portal.</p>
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <!-- SLIDE 5 -->
+    <div class="slide" id="slide-5">
+      <div class="card-slide">
+        <h2 class="text-danger fw-bold mb-3"><i class="bi bi-shield-shaded me-2"></i> Safe Exam Engine CBT Anti-Kecurangan</h2>
+        <div class="row align-items-center g-4">
+          <div class="col-lg-6">
+            <img src="C:/Users/Admin/.gemini/antigravity-ide/brain/3f1a61b1-1183-4b71-b60f-a75b7ecd121b/media__1785718227509.png" class="img-preview" alt="CBT Safe Exam Engine">
+          </div>
+          <div class="col-lg-6">
+            <ul class="list-group list-group-flush bg-transparent">
+              <li class="list-group-item bg-transparent text-white border-secondary"><i class="bi bi-fullscreen text-danger me-2"></i> <b>Kiosk Fullscreen Lockdown</b>: Wajib mode layar penuh sebelum ujian dimulai.</li>
+              <li class="list-group-item bg-transparent text-white border-secondary"><i class="bi bi-bell-fill text-warning me-2"></i> <b>3-Strike Violation Siren</b>: Merekam & memperingatkan siswa jika buka tab lain / Alt+Tab.</li>
+              <li class="list-group-item bg-transparent text-white border-secondary"><i class="bi bi-grid-3x3-gap-fill text-info me-2"></i> <b>Peta Navigasi 5-Kolom</b>: Indikator warna status soal (Hijau/Putih) real-time.</li>
+              <li class="list-group-item bg-transparent text-white border-secondary"><i class="bi bi-hdd-network-fill text-success me-2"></i> <b>Auto-Save Engine</b>: Jawaban tersimpan otomatis ke database tanpa takut mati listrik.</li>
+            </ul>
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <!-- SLIDE 6 -->
+    <div class="slide" id="slide-6">
+      <div class="card-slide">
+        <h2 class="text-success fw-bold mb-3"><i class="bi bi-magic me-2"></i> Fast Copy-Paste Question Parser Massal</h2>
+        <div class="row align-items-center g-4">
+          <div class="col-lg-6">
+            <ul class="list-group list-group-flush bg-transparent">
+              <li class="list-group-item bg-transparent text-white border-secondary"><i class="bi bi-file-earmark-word-fill text-primary me-2"></i> <b>Import dari MS Word / PDF</b>: Guru cukup copy-paste naskah soal ke kotak teks.</li>
+              <li class="list-group-item bg-transparent text-white border-secondary"><i class="bi bi-cpu-fill text-info me-2"></i> <b>Auto Parser Cerdas</b>: Otomatis memisah wacana, nomor soal, opsi A/B/C/D/E, & kunci jawaban.</li>
+              <li class="list-group-item bg-transparent text-white border-secondary"><i class="bi bi-clipboard-check-fill text-success me-2"></i> <b>Template Ready 1-Click</b>: Tombol salin template teks untuk kemudahan seluruh guru.</li>
+            </ul>
+          </div>
+          <div class="col-lg-6">
+            <img src="C:/Users/Admin/.gemini/antigravity-ide/brain/3f1a61b1-1183-4b71-b60f-a75b7ecd121b/media__1785735110608.png" class="img-preview" alt="Fast Copy-Paste Parser">
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <!-- SLIDE 7 -->
+    <div class="slide" id="slide-7">
+      <div class="card-slide">
+        <h2 class="text-warning fw-bold mb-3"><i class="bi bi-journal-check me-2"></i> Evaluasi Skor & Status Kelulusan Otomatis</h2>
+        <div class="row align-items-center g-4">
+          <div class="col-lg-6">
+            <img src="C:/Users/Admin/.gemini/antigravity-ide/brain/3f1a61b1-1183-4b71-b60f-a75b7ecd121b/media__1785718781041.png" class="img-preview" alt="Evaluasi Skor CBT">
+          </div>
+          <div class="col-lg-6">
+            <div class="p-4 bg-dark bg-opacity-75 rounded-4 border border-warning">
+              <h5 class="text-warning fw-bold"><i class="bi bi-award-fill me-2"></i> Auto Grading Standar KKM</h5>
+              <p class="small text-secondary mb-3">Nilai otomatis dikalkulasi dari skala 100 begitu siswa selesai mengerjakan ujian.</p>
+              <div class="d-flex align-items-center gap-3">
+                <span class="badge bg-success fs-6 p-2"><i class="bi bi-check-circle me-1"></i> Skor ≥ 60 = LULUS</span>
+                <span class="badge bg-danger fs-6 p-2"><i class="bi bi-x-circle me-1"></i> Skor < 60 = BELUM LULUS</span>
+              </div>
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <!-- SLIDE 8 -->
+    <div class="slide" id="slide-8">
+      <div class="card-slide">
+        <h2 class="text-info fw-bold mb-3"><i class="bi bi-wallet2 me-2"></i> Keuangan SPP & Tabungan Digital Siswa</h2>
+        <div class="row g-4">
+          <div class="col-md-4">
+            <div class="p-4 bg-dark rounded-4 border border-secondary text-center h-100">
+              <i class="bi bi-receipt-cutoff text-primary display-4 mb-2"></i>
+              <h5 class="fw-bold">Pembukuan SPP</h5>
+              <p class="small text-secondary mb-0">Pencatatan tunggakan & pembayaran SPP siswa terintegrasi.</p>
+            </div>
+          </div>
+          <div class="col-md-4">
+            <div class="p-4 bg-dark rounded-4 border border-secondary text-center h-100">
+              <i class="bi bi-printer-fill text-success display-4 mb-2"></i>
+              <h5 class="fw-bold">Kwitansi Resmi</h5>
+              <p class="small text-secondary mb-0">Cetak bukti pembayaran kwitansi sah dengan nomor registrasi.</p>
+            </div>
+          </div>
+          <div class="col-md-4">
+            <div class="p-4 bg-dark rounded-4 border border-secondary text-center h-100">
+              <i class="bi bi-piggy-bank-fill text-warning display-4 mb-2"></i>
+              <h5 class="fw-bold">Tabungan Digital</h5>
+              <p class="small text-secondary mb-0">Buku tabungan murid (Setor, Tarik, & Rekap Saldo Real-Time).</p>
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <!-- SLIDE 9 -->
+    <div class="slide" id="slide-9">
+      <div class="card-slide">
+        <h2 class="text-primary fw-bold mb-4 text-center"><i class="bi bi-tags-fill me-2"></i> Skema Investasi & Paket Layanan</h2>
+        <div class="row g-4 justify-content-center">
+          <div class="col-md-5">
+            <div class="p-4 rounded-4 border border-primary bg-dark bg-opacity-75 h-100 text-center">
+              <span class="badge bg-primary mb-2">TERPOPULER</span>
+              <h4 class="fw-bold text-white">PAKET PLATINUM</h4>
+              <p class="small text-info">Multi-Jenjang All-In (SD + SMP + SMA/SMK)</p>
+              <h2 class="display-6 fw-bold text-primary my-3">Rp 15.000.000</h2>
+              <ul class="list-unstyled small text-start text-secondary d-flex flex-column gap-2 mb-4">
+                <li><i class="bi bi-check text-success me-1"></i> Full System Multi-Jenjang Unlimited User</li>
+                <li><i class="bi bi-check text-success me-1"></i> Cloud VPS Performance + Domain (1 Thn)</li>
+                <li><i class="bi bi-check text-success me-1"></i> Setup Data Awal & Training Guru Tatap Muka</li>
+                <li><i class="bi bi-check text-success me-1"></i> Support & Garansi Maintenance 1 Tahun</li>
+              </ul>
+            </div>
+          </div>
+          <div class="col-md-5">
+            <div class="p-4 rounded-4 border border-secondary bg-dark bg-opacity-50 h-100 text-center">
+              <span class="badge bg-secondary mb-2">SINGLE JENJANG</span>
+              <h4 class="fw-bold text-white">PAKET STANDARD</h4>
+              <p class="small text-slate-400">Khusus 1 Jenjang (SMP / SMA / SMK)</p>
+              <h2 class="display-6 fw-bold text-white my-3">Rp 9.500.000</h2>
+              <ul class="list-unstyled small text-start text-secondary d-flex flex-column gap-2 mb-4">
+                <li><i class="bi bi-check text-success me-1"></i> Full System Single-Jenjang</li>
+                <li><i class="bi bi-check text-success me-1"></i> Cloud Hosting + Domain Sekolah (1 Thn)</li>
+                <li><i class="bi bi-check text-success me-1"></i> Setup Data Awal & Training Sistem</li>
+                <li><i class="bi bi-check text-success me-1"></i> Support Maintenance 6 Bulan</li>
+              </ul>
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <!-- SLIDE 10 -->
+    <div class="slide" id="slide-10">
+      <div class="card-slide text-center py-5">
+        <h2 class="display-5 fw-bold text-success mb-3"><i class="bi bi-check2-circle me-2"></i> Langkah Selanjutnya</h2>
+        <p class="fs-5 text-slate-300 mb-4">Siap Mendorong Digitalisasi Sekolah Anda dalam 14 Hari Kerja?</p>
+        <div class="p-4 bg-dark rounded-4 border border-success border-opacity-50 d-inline-block text-start mb-4">
+          <ul class="list-unstyled mb-0 d-flex flex-column gap-2">
+            <li><i class="bi bi-calendar-event text-warning me-2"></i> <b>Hari 1-3</b>: Setup Cloud VPS Server & Domain Sekolah.</li>
+            <li><i class="bi bi-box-arrow-in-down text-info me-2"></i> <b>Hari 4-7</b>: Migrasi Data Siswa, Guru, & Matapelajaran.</li>
+            <li><i class="bi bi-people text-primary me-2"></i> <b>Hari 8-11</b>: Training Penggunaan Sistem untuk Guru & Admin.</li>
+            <li><i class="bi bi-rocket text-success me-2"></i> <b>Hari 12-14</b>: Simulasi Ujian CBT & Peluncuran Official (Go-Live).</li>
+          </ul>
+        </div>
+        <div>
+          <a href="mailto:info@ultimateschool.com" class="btn btn-primary btn-lg rounded-pill px-5 font-bold shadow-lg">
+            <i class="bi bi-envelope-fill me-2"></i> Hubungi Tim Konsultan Kami
+          </a>
+        </div>
+      </div>
+    </div>
+
+  </div>
+
+  <!-- Controls Bar -->
+  <div class="controls-bar d-flex justify-content-between align-items-center">
+    <div>
+      <span class="fw-bold text-primary me-2">ULTIMATE SCHOOL SYSTEM</span>
+      <span class="small text-secondary" id="slide-indicator">Slide 1 dari 10</span>
+    </div>
+    <div class="d-flex gap-2">
+      <button class="btn btn-outline-light btn-sm px-3 rounded-pill" onclick="prevSlide()"><i class="bi bi-chevron-left me-1"></i> Prev</button>
+      <button class="btn btn-primary btn-sm px-3 rounded-pill" onclick="nextSlide()">Next <i class="bi bi-chevron-right ms-1"></i></button>
+      <button class="btn btn-outline-info btn-sm px-3 rounded-pill" onclick="toggleFullscreen()"><i class="bi bi-fullscreen"></i></button>
+    </div>
+  </div>
+
+  <script>
+    let currentSlide = 1;
+    const totalSlides = 10;
+
+    function showSlide(n) {
+      document.querySelectorAll('.slide').forEach(s => s.classList.remove('active'));
+      const target = document.getElementById('slide-' + n);
+      if (target) {
+        target.classList.add('active');
+        document.getElementById('slide-indicator').innerText = `Slide ${n} dari ${totalSlides}`;
+      }
+    }
+
+    function nextSlide() {
+      if (currentSlide < totalSlides) {
+        currentSlide++;
+      } else {
+        currentSlide = 1;
+      }
+      showSlide(currentSlide);
+    }
+
+    function prevSlide() {
+      if (currentSlide > 1) {
+        currentSlide--;
+      } else {
+        currentSlide = totalSlides;
+      }
+      showSlide(currentSlide);
+    }
+
+    function toggleFullscreen() {
+      if (!document.fullscreenElement) {
+        document.documentElement.requestFullscreen();
+      } else {
+        if (document.exitFullscreen) {
+          document.exitFullscreen();
+        }
+      }
+    }
+
+    document.addEventListener('keydown', function(e) {
+      if (e.key === 'ArrowRight' || e.key === 'Space') {
+        nextSlide();
+      } else if (e.key === 'ArrowLeft') {
+        prevSlide();
+      }
+    });
+  </script>
+</body>
+</html>

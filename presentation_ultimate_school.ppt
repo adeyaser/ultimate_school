@@ -1,0 +1,173 @@
+<html xmlns:v="urn:schemas-microsoft-com:vml"
+xmlns:o="urn:schemas-microsoft-com:office:office"
+xmlns:p="urn:schemas-microsoft-com:office:powerpoint"
+xmlns="http://www.w3.org/TR/REC-html40">
+
+<head>
+<meta http-equiv=Content-Type content="text/html; charset=utf-8">
+<meta name=ProgId content=PowerPoint.Slide>
+<meta name=Generator content="Microsoft PowerPoint 15">
+<title>Presentasi Penawaran Ultimate School System</title>
+<!--[if gte mso 9]><xml>
+ <o:DocumentProperties>
+  <o:Author>Ultimate School System Team</o:Author>
+  <o:Title>Presentasi Penawaran Ultimate School System</o:Title>
+ </o:DocumentProperties>
+</xml><![endif]-->
+<style>
+  body {
+    font-family: "Calibri", "Arial", sans-serif;
+    margin: 0;
+    padding: 0;
+    background-color: #0f172a;
+    color: #ffffff;
+  }
+  .slide {
+    page-break-after: always;
+    width: 10in;
+    height: 7.2in;
+    padding: 0.5in;
+    box-sizing: border-box;
+    background-color: #0f172a;
+    color: #ffffff;
+  }
+  h1 { color: #38bdf8; font-size: 28pt; font-weight: bold; margin-top: 0; margin-bottom: 10pt; }
+  h2 { color: #0d6efd; font-size: 22pt; font-weight: bold; margin-top: 0; margin-bottom: 15pt; border-bottom: 2px solid #0d6efd; padding-bottom: 5px; }
+  h3 { color: #f59e0b; font-size: 18pt; margin-top: 10pt; }
+  p, li { font-size: 15pt; color: #f8fafc; line-height: 1.5; margin-bottom: 8pt; }
+  .highlight { color: #38bdf8; font-weight: bold; }
+  .box { background-color: #1e293b; border: 2px solid #0d6efd; padding: 15pt; border-radius: 8pt; margin-top: 15pt; }
+  .price-card { background-color: #1e293b; border: 1px solid #334155; padding: 12pt; border-radius: 8pt; text-align: center; }
+</style>
+</head>
+
+<body>
+
+<!-- SLIDE 1 -->
+<div class="slide" style="text-align: center;">
+  <div style="margin-top: 1.2in;">
+    <p style="font-size: 14pt; color: #0d6efd; font-weight: bold; letter-spacing: 1px;">SIMS ENTERPRISE MULTI-JENJANG</p>
+    <h1 style="font-size: 34pt; color: #38bdf8;">ULTIMATE SCHOOL SYSTEM</h1>
+    <h3 style="color: #ffffff; font-weight: normal;">Sistem Informasi Manajemen Sekolah Terpadu (SD, SMP, SMA, SMK)</h3>
+    <br>
+    <p style="font-size: 13pt; color: #94a3b8; max-width: 8in; margin: 0 auto;">
+      Solusi Digitalisasi Ekosistem Pendidikan Generasi Terbaru yang Mengintegrasikan Website Sekolah Publik, PPDB Online, Safe Exam CBT Engine, E-Raport Kurikulum Merdeka, & Keuangan Sekolah dalam 1 Platform.
+    </p>
+  </div>
+</div>
+
+<!-- SLIDE 2 -->
+<div class="slide">
+  <h2>Tantangan Digitalisasi Sekolah Saat Ini</h2>
+  <ul>
+    <li><b class="highlight">Administrasi Terpisah-pisah:</b> Data siswa, kepegawaian, dan nilai tersimpan di spreadsheet terpisah yang rawan hilang dan tidak konsisten.</li>
+    <li><b class="highlight">Risiko Kecurangan Ujian CBT:</b> Ujian online biasa rawan kecurangan karena siswa bebas membuka tab lain, Googling, atau menyalin jawaban.</li>
+    <li><b class="highlight">Input Soal CBT Memakan Waktu:</b> Guru merasa terbebani jika harus memasukkan soal pilihan ganda satu per satu secara manual.</li>
+    <li><b class="highlight">Pengolahan Raport Rumit:</b> Perhitungan capaian kompetensi dan cetak e-raport Kurikulum Merdeka sering menumpuk di akhir semester.</li>
+  </ul>
+</div>
+
+<!-- SLIDE 3 -->
+<div class="slide">
+  <h2>Arsitektur Single-System Multi-Jenjang</h2>
+  <p>1 Sistem Utama Mampu Mengelola Multi-Sekolah / Jenjang (SD, SMP, SMA, SMK)</p>
+  <div class="box">
+    <ul>
+      <li><b class="highlight">Dynamic Switch Mode:</b> Berpindah antara jenjang SD, SMP, SMA, SMK, atau ALL secara langsung.</li>
+      <li><b class="highlight">NPSN & Kepala Sekolah Otomatis:</b> NPSN dan TTD Kepsek menyesuaikan otomatis sesuai jenjang aktif.</li>
+      <li><b class="highlight">ACL 7 Level Roles:</b> Super Admin, Admin, Kepsek, Guru, Wali Kelas, Murid, Orang Tua.</li>
+      <li><b class="highlight">Aestetika Responsive:</b> Tampilan bersih, responsif di HP, Tablet, dan Komputer.</li>
+    </ul>
+  </div>
+</div>
+
+<!-- SLIDE 4 -->
+<div class="slide">
+  <h2>Website Public & PPDB Online Real-Time</h2>
+  <ul>
+    <li><b class="highlight">Company Profile Modern:</b> Tampilan Glassmorphism dilengkapi Visi-Misi, Sambutan Kepsek, Fasilitas, & Ekstrakurikuler.</li>
+    <li><b class="highlight">Formulir PPDB Online Integratif:</b> Orang tua calon murid mendaftar online dari rumah tanpa perlu datang mengantre.</li>
+    <li><b class="highlight">Tracking Cek Status PPDB:</b> Pencarian status seleksi PPDB secara real-time menggunakan Nomor Pendaftaran.</li>
+    <li><b class="highlight">Cloudflare Turnstile Protected:</b> Dilengkapi proteksi CAPTCHA anti-bot modern pada Formulir PPDB Online & Login Portal.</li>
+  </ul>
+</div>
+
+<!-- SLIDE 5 -->
+<div class="slide">
+  <h2>Safe Exam Engine CBT Anti-Kecurangan</h2>
+  <ul>
+    <li><b class="highlight">Kiosk Fullscreen Lockdown:</b> Siswa diwajibkan masuk mode layar penuh sebelum ujian dimulai.</li>
+    <li><b class="highlight">3-Strike Violation Siren:</b> Merekam & memperingatkan siswa jika mencoba membuka tab lain / Alt+Tab / Ctrl+C / Ctrl+V.</li>
+    <li><b class="highlight">Peta Navigasi Soal 5-Kolom:</b> Indikator warna status soal (Hijau = Terjawab, Putih = Belum) real-time.</li>
+    <li><b class="highlight">Auto-Save Background Engine:</b> Jawaban siswa tersimpan otomatis tanpa takut mati listrik.</li>
+    <li><b class="highlight">Auto Grading Standar KKM:</b> Penilaian otomatis (Skor ≥ 60 = LULUS) dengan persentase hasil instan.</li>
+  </ul>
+</div>
+
+<!-- SLIDE 6 -->
+<div class="slide">
+  <h2>Fast Copy-Paste Question Parser Massal</h2>
+  <ul>
+    <li><b class="highlight">Import Massal dari MS Word / PDF:</b> Guru cukup copy-paste naskah soal langsung ke dalam kotak teks.</li>
+    <li><b class="highlight">Auto Parser Cerdas:</b> Otomatis mendeteksi wacana bacaan, nomor soal, opsi A/B/C/D/E, & kunci jawaban.</li>
+    <li><b class="highlight">Template Copy-Paste Ready 1-Click:</b> Menyediakan template salinan teks untuk kemudahan seluruh guru mata pelajaran.</li>
+  </ul>
+</div>
+
+<!-- SLIDE 7 -->
+<div class="slide">
+  <h2>Manajemen Akademik & E-Raport Merdeka</h2>
+  <ul>
+    <li><b class="highlight">Pengolahan Nilai Lengkap:</b> Nilai Harian, Tugas, UTS, UAS, & Bobot Akademik.</li>
+    <li><b class="highlight">Generasi E-Raport PDF Resmi:</b> Format Raport Kurikulum Merdeka siap cetak resmi.</li>
+    <li><b class="highlight">Sistem Pengumpulan Tugas:</b> Buat penugasan online dengan deadline & unggah berkas.</li>
+    <li><b class="highlight">Absensi Digital Murid & Guru:</b> Rekapitulasi kehadiran harian yang presisi.</li>
+  </ul>
+</div>
+
+<!-- SLIDE 8 -->
+<div class="slide">
+  <h2>Keuangan SPP & Tabungan Digital Siswa</h2>
+  <ul>
+    <li><b class="highlight">Pembukuan SPP & Biaya Pendidikan:</b> Monitoring tunggakan & pembayaran lulus.</li>
+    <li><b class="highlight">Cetak Kwitansi Pembayaran Resmi:</b> Bukti pembayaran sah dengan nomor registrasi.</li>
+    <li><b class="highlight">Buku Tabungan Digital Murid:</b> Modul Setor, Tarik, & Rekap Saldo Tabungan Siswa.</li>
+  </ul>
+</div>
+
+<!-- SLIDE 9 -->
+<div class="slide">
+  <h2>Skema Investasi & Paket Layanan</h2>
+  <div style="display: flex; gap: 20px; margin-top: 15px;">
+    <div class="price-card" style="width: 48%;">
+      <h3 style="color: #0d6efd; margin-top:0;">PAKET PLATINUM</h3>
+      <p style="font-size:12pt; color:#94a3b8;">Multi-Jenjang All-In (SD + SMP + SMA/SMK)</p>
+      <h2 style="color: #38bdf8; font-size:24pt;">Rp 15.000.000</h2>
+      <p style="font-size:11pt; text-align:left;">Full System Multi-Jenjang, VPS Server (1 Thn), Domain, Training, Support 1 Thn.</p>
+    </div>
+    <div class="price-card" style="width: 48%;">
+      <h3 style="color: #ffffff; margin-top:0;">PAKET STANDARD</h3>
+      <p style="font-size:12pt; color:#94a3b8;">Single-Jenjang (SMP / SMA / SMK)</p>
+      <h2 style="color: #ffffff; font-size:24pt;">Rp 9.500.000</h2>
+      <p style="font-size:11pt; text-align:left;">Full System Single-Jenjang, Hosting (1 Thn), Domain, Training, Support 6 Bln.</p>
+    </div>
+  </div>
+</div>
+
+<!-- SLIDE 10 -->
+<div class="slide" style="text-align: center;">
+  <div style="margin-top: 1in;">
+    <h2>Langkah Selanjutnya</h2>
+    <p style="font-size: 16pt; color: #38bdf8;">Siap Mendorong Digitalisasi Sekolah Anda dalam 14 Hari Kerja?</p>
+    <br>
+    <div class="box" style="text-align: left; display: inline-block;">
+      <p style="margin:5px 0;">• <b>Hari 1-3:</b> Setup Cloud VPS Server & Domain Sekolah.</p>
+      <p style="margin:5px 0;">• <b>Hari 4-7:</b> Migrasi Data Siswa, Guru, & Matapelajaran.</p>
+      <p style="margin:5px 0;">• <b>Hari 8-11:</b> Training Penggunaan Sistem untuk Guru & Admin.</p>
+      <p style="margin:5px 0;">• <b>Hari 12-14:</b> Simulasi Ujian CBT, PPDB, & Go-Live Official.</p>
+    </div>
+  </div>
+</div>
+
+</body>
+</html>

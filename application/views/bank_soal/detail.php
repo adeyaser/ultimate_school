@@ -148,9 +148,58 @@
           <button type="button" class="btn-close btn-close-white" data-bs-dismiss="modal"></button>
         </div>
         <div class="modal-body p-4">
-          <div class="alert alert-info border-0 shadow-sm rounded-3 mb-3">
-            <h6 class="fw-bold mb-1"><i class="bi bi-info-circle-fill me-1"></i> Cara Penggunaan Parser Massal:</h6>
-            <small class="d-block">Copy & Paste seluruh teks dokumen soal (Microsoft Word / PDF / Teks Biasa) langsung ke dalam kotak teks di bawah. Sistem secara otomatis mendeteksi nomor soal (`1.`, `2.`), opsi jawaban (`a.`, `b.`, `c.`, `d.`), teks bacaan, serta tabel / blok `KUNCI JAWABAN` & Pembahasannya!</small>
+          
+          <!-- Download & Guide Header Bar -->
+          <div class="d-flex flex-wrap justify-content-between align-items-center bg-light p-3 rounded-3 border mb-3 gap-2">
+            <div>
+              <h6 class="fw-bold text-dark mb-1"><i class="bi bi-journal-bookmark-fill text-success me-1"></i> Standar Penulisan & Format Dokumen Soal</h6>
+              <small class="text-secondary">Unduh berkas templat bawaan atau pelajari aturan penulisan di bawah untuk kemudahan impor 1-click.</small>
+            </div>
+            <div>
+              <a href="<?= base_url('banksoal/download_template') ?>" class="btn btn-warning btn-sm fw-bold shadow-sm me-2 text-dark">
+                <i class="bi bi-download me-1"></i> Download File Template (.TXT)
+              </a>
+              <button type="button" class="btn btn-outline-primary btn-sm fw-bold shadow-sm" data-bs-toggle="collapse" data-bs-target="#collapseStandarPenulisan">
+                <i class="bi bi-question-circle-fill me-1"></i> Lihat Aturan Penulisan
+              </button>
+            </div>
+          </div>
+
+          <!-- Collapsible Writing Standard Guide -->
+          <div class="collapse mb-3" id="collapseStandarPenulisan">
+            <div class="card card-body bg-body-tertiary border border-primary border-opacity-25 rounded-3">
+              <h6 class="fw-bold text-primary mb-3"><i class="bi bi-check-square-fill me-2"></i> 4 Aturan Utama Standar Penulisan Soal Massal:</h6>
+              <div class="row g-3">
+                <div class="col-md-6">
+                  <div class="p-3 bg-white rounded border h-100">
+                    <span class="badge text-bg-primary mb-2">1. Format Nomor Soal</span>
+                    <p class="small mb-1 text-dark">Setiap butir pertanyaan wajib diawali nomor angka dan titik (contoh: <code>1. </code> atau <code>2. </code>).</p>
+                    <code class="d-block bg-light p-2 rounded small text-dark">1. Apa yang dilakukan Rina di pantai?</code>
+                  </div>
+                </div>
+                <div class="col-md-6">
+                  <div class="p-3 bg-white rounded border h-100">
+                    <span class="badge text-bg-success mb-2">2. Format Opsi Jawaban</span>
+                    <p class="small mb-1 text-dark">Pilihan opsi jawaban diawali huruf kecil dan titik (contoh: <code>a. </code> <code>b. </code> <code>c. </code> <code>d. </code> <code>e. </code>).</p>
+                    <code class="d-block bg-light p-2 rounded small text-dark">a. Berenang<br>b. Membuat istana pasir</code>
+                  </div>
+                </div>
+                <div class="col-md-6">
+                  <div class="p-3 bg-white rounded border h-100">
+                    <span class="badge text-bg-info mb-2">3. Teks Bacaan / Wacana</span>
+                    <p class="small mb-1 text-dark">Teks bacaan/puisi/wacana pendukung dituliskan sebelum nomor soal terkait.</p>
+                    <code class="d-block bg-light p-2 rounded small text-dark">Teks Bacaan untuk soal nomor 1 dan 2:<br>Liburan sekolah kali ini...</code>
+                  </div>
+                </div>
+                <div class="col-md-6">
+                  <div class="p-3 bg-white rounded border h-100">
+                    <span class="badge text-bg-warning text-dark mb-2">4. Kunci Jawaban & Pembahasan</span>
+                    <p class="small mb-1 text-dark">Dituliskan di bagian paling bawah dengan baris judul <code>KUNCI JAWABAN</code> atau <code>KUNCI JAWABAN + PEMBAHASAN</code>.</p>
+                    <code class="d-block bg-light p-2 rounded small text-dark">KUNCI JAWABAN + PEMBAHASAN<br>1  C  Membuat istana pasir<br>2  B  Pagi-pagi sekali</code>
+                  </div>
+                </div>
+              </div>
+            </div>
           </div>
 
           <div class="d-flex justify-content-between align-items-center mb-2">
