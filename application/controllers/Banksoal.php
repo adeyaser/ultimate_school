@@ -68,29 +68,71 @@ class Banksoal extends MY_Controller {
     public function simpan_soal_item()
     {
         $bank_soal_id = $this->input->post('bank_soal_id', true);
-        
-        // Auto-increment question number
-        $existing = $this->M_BankSoal->get_soal_by_bank($bank_soal_id);
-        $nomor = count($existing) + 1;
+        $pertanyaan_post = $this->input->post('pertanyaan');
 
-        $data = array(
-            'bank_soal_id' => $bank_soal_id,
-            'nomor_soal'   => $nomor,
-            'pertanyaan'   => $this->input->post('pertanyaan', true),
-            'jenis'        => $this->input->post('jenis', true),
-            'pilihan_a'    => $this->input->post('pilihan_a', true),
-            'pilihan_b'    => $this->input->post('pilihan_b', true),
-            'pilihan_c'    => $this->input->post('pilihan_c', true),
-            'pilihan_d'    => $this->input->post('pilihan_d', true),
-            'pilihan_e'    => $this->input->post('pilihan_e', true),
-            'kunci_jawaban'=> $this->input->post('kunci_jawaban', true),
-            'pembahasan'   => $this->input->post('pembahasan', true),
-            'bobot'        => $this->input->post('bobot', true) ? $this->input->post('bobot', true) : 10,
-            'tingkat_kesulitan' => $this->input->post('tingkat_kesulitan', true) ? $this->input->post('tingkat_kesulitan', true) : 'Sedang'
-        );
+        if (is_array($pertanyaan_post)) {
+            $jenis_arr      = $this->input->post('jenis');
+            $pilihan_a_arr   = $this->input->post('pilihan_a');
+            $pilihan_b_arr   = $this->input->post('pilihan_b');
+            $pilihan_c_arr   = $this->input->post('pilihan_c');
+            $pilihan_d_arr   = $this->input->post('pilihan_d');
+            $pilihan_e_arr   = $this->input->post('pilihan_e');
+            $kunci_arr      = $this->input->post('kunci_jawaban');
+            $pembahasan_arr = $this->input->post('pembahasan');
+            $bobot_arr      = $this->input->post('bobot');
 
-        $this->M_BankSoal->insert_soal($data);
-        $this->session->set_flashdata('success', 'Soal berhasil ditambahkan ke repositori.');
+            $existing = $this->M_BankSoal->get_soal_by_bank($bank_soal_id);
+            $start_nomor = count($existing) + 1;
+            $count = 0;
+
+            for ($i = 0; $i < count($pertanyaan_post); $i++) {
+                if (empty(trim($pertanyaan_post[$i]))) continue;
+
+                $data = array(
+                    'bank_soal_id' => $bank_soal_id,
+                    'nomor_soal'   => $start_nomor + $count,
+                    'pertanyaan'   => $pertanyaan_post[$i],
+                    'jenis'        => isset($jenis_arr[$i]) ? $jenis_arr[$i] : 'Pilihan Ganda',
+                    'pilihan_a'    => isset($pilihan_a_arr[$i]) ? $pilihan_a_arr[$i] : '',
+                    'pilihan_b'    => isset($pilihan_b_arr[$i]) ? $pilihan_b_arr[$i] : '',
+                    'pilihan_c'    => isset($pilihan_c_arr[$i]) ? $pilihan_c_arr[$i] : '',
+                    'pilihan_d'    => isset($pilihan_d_arr[$i]) ? $pilihan_d_arr[$i] : '',
+                    'pilihan_e'    => isset($pilihan_e_arr[$i]) ? $pilihan_e_arr[$i] : '',
+                    'kunci_jawaban'=> isset($kunci_arr[$i]) ? $kunci_arr[$i] : '',
+                    'pembahasan'   => isset($pembahasan_arr[$i]) ? $pembahasan_arr[$i] : '',
+                    'bobot'        => isset($bobot_arr[$i]) && $bobot_arr[$i] ? $bobot_arr[$i] : 10,
+                    'tingkat_kesulitan' => 'Sedang'
+                );
+
+                $this->M_BankSoal->insert_soal($data);
+                $count++;
+            }
+
+            $this->session->set_flashdata('success', "$count Butir soal berhasil ditambahkan ke repositori.");
+        } else {
+            $existing = $this->M_BankSoal->get_soal_by_bank($bank_soal_id);
+            $nomor = count($existing) + 1;
+
+            $data = array(
+                'bank_soal_id' => $bank_soal_id,
+                'nomor_soal'   => $nomor,
+                'pertanyaan'   => $this->input->post('pertanyaan', true),
+                'jenis'        => $this->input->post('jenis', true),
+                'pilihan_a'    => $this->input->post('pilihan_a', true),
+                'pilihan_b'    => $this->input->post('pilihan_b', true),
+                'pilihan_c'    => $this->input->post('pilihan_c', true),
+                'pilihan_d'    => $this->input->post('pilihan_d', true),
+                'pilihan_e'    => $this->input->post('pilihan_e', true),
+                'kunci_jawaban'=> $this->input->post('kunci_jawaban', true),
+                'pembahasan'   => $this->input->post('pembahasan', true),
+                'bobot'        => $this->input->post('bobot', true) ? $this->input->post('bobot', true) : 10,
+                'tingkat_kesulitan' => 'Sedang'
+            );
+
+            $this->M_BankSoal->insert_soal($data);
+            $this->session->set_flashdata('success', 'Soal berhasil ditambahkan ke repositori.');
+        }
+
         redirect('banksoal/detail/' . $bank_soal_id);
     }
 

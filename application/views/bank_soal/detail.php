@@ -84,53 +84,70 @@
   </div>
 </main>
 
-<!-- Modal Input Detail Soal -->
+<!-- Modal Input Detail Soal (Multi-Item Repeater) -->
 <div class="modal fade" id="modalTambahSoalItem" tabindex="-1">
-  <div class="modal-dialog modal-lg">
-    <div class="modal-content">
+  <div class="modal-dialog modal-xl modal-dialog-centered">
+    <div class="modal-content border-0 shadow-lg rounded-4">
       <form action="<?= base_url('banksoal/simpan_soal_item') ?>" method="post">
         <input type="hidden" name="bank_soal_id" value="<?= $bank_soal['id'] ?>" />
-        <div class="modal-header bg-primary text-white">
-          <h5 class="modal-title fw-bold"><i class="bi bi-pencil-square me-2"></i> Tambah Butir Soal Baru</h5>
+        <div class="modal-header bg-primary text-white p-3">
+          <h5 class="modal-title fw-bold"><i class="bi bi-pencil-square me-2"></i> Tambah Butir Soal Satuan (Bisa Input Banyak Soal)</h5>
           <button type="button" class="btn-close btn-close-white" data-bs-dismiss="modal"></button>
         </div>
-        <div class="modal-body">
-          <div class="row g-3">
-            <div class="col-md-6">
-              <label class="form-label fw-semibold">Tipe / Jenis Soal *</label>
-              <select name="jenis" class="form-select" required>
-                <option value="Pilihan Ganda">Pilihan Ganda</option>
-                <option value="Essay">Essay</option>
-              </select>
-            </div>
-            <div class="col-md-6">
-              <label class="form-label fw-semibold">Bobot Poin *</label>
-              <input type="number" name="bobot" class="form-control" value="10" required />
-            </div>
-            <div class="col-md-12">
-              <label class="form-label fw-semibold">Pertanyaan / Soal *</label>
-              <textarea name="pertanyaan" class="form-control" rows="4" placeholder="Tuliskan pertanyaan soal..." required></textarea>
-            </div>
+        <div class="modal-body p-4" style="max-height: 75vh; overflow-y: auto;">
+          <div id="containerFormSoal">
+            <!-- Item Form Soal #1 -->
+            <div class="card card-item-soal border border-primary border-opacity-25 shadow-sm rounded-3 mb-4">
+              <div class="card-header bg-light d-flex justify-content-between align-items-center py-2">
+                <span class="fw-bold text-primary"><i class="bi bi-journal-plus me-1"></i> Form Soal #<span class="label-soal-num">1</span></span>
+                <button type="button" class="btn btn-sm btn-outline-danger btn-remove-soal" style="display: none;"><i class="bi bi-trash-fill me-1"></i> Hapus Form Soal Ini</button>
+              </div>
+              <div class="card-body">
+                <div class="row g-3">
+                  <div class="col-md-6">
+                    <label class="form-label fw-semibold">Tipe / Jenis Soal *</label>
+                    <select name="jenis[]" class="form-select" required>
+                      <option value="Pilihan Ganda">Pilihan Ganda</option>
+                      <option value="Essay">Essay</option>
+                    </select>
+                  </div>
+                  <div class="col-md-6">
+                    <label class="form-label fw-semibold">Bobot Poin *</label>
+                    <input type="number" name="bobot[]" class="form-control" value="10" required />
+                  </div>
+                  <div class="col-md-12">
+                    <label class="form-label fw-semibold">Pertanyaan / Soal *</label>
+                    <textarea name="pertanyaan[]" class="form-control" rows="3" placeholder="Tuliskan pertanyaan soal..." required></textarea>
+                  </div>
 
-            <div class="col-md-12"><hr><h6 class="fw-bold text-primary">Pilihan Jawaban (Untuk Pilihan Ganda)</h6></div>
-            <div class="col-md-6"><label class="form-label">Pilihan A</label><input type="text" name="pilihan_a" class="form-control" /></div>
-            <div class="col-md-6"><label class="form-label">Pilihan B</label><input type="text" name="pilihan_b" class="form-control" /></div>
-            <div class="col-md-6"><label class="form-label">Pilihan C</label><input type="text" name="pilihan_c" class="form-control" /></div>
-            <div class="col-md-6"><label class="form-label">Pilihan D</label><input type="text" name="pilihan_d" class="form-control" /></div>
-            <div class="col-md-6"><label class="form-label">Pilihan E (Opsional)</label><input type="text" name="pilihan_e" class="form-control" /></div>
-            <div class="col-md-6">
-              <label class="form-label fw-bold text-success">Kunci Jawaban Benar *</label>
-              <input type="text" name="kunci_jawaban" class="form-control fw-bold" placeholder="Contoh: A atau B atau Jawaban Essay" required />
-            </div>
-            <div class="col-md-12">
-              <label class="form-label fw-semibold">Pembahasan / Solusi Soal</label>
-              <textarea name="pembahasan" class="form-control" rows="2" placeholder="Penjelasan solusi soal..."></textarea>
+                  <div class="col-md-12"><h6 class="fw-bold text-primary mb-0"><i class="bi bi-list-check me-1"></i> Pilihan Jawaban (Untuk Pilihan Ganda)</h6></div>
+                  <div class="col-md-6"><label class="form-label small mb-1">Pilihan A</label><input type="text" name="pilihan_a[]" class="form-control" placeholder="Jawaban A" /></div>
+                  <div class="col-md-6"><label class="form-label small mb-1">Pilihan B</label><input type="text" name="pilihan_b[]" class="form-control" placeholder="Jawaban B" /></div>
+                  <div class="col-md-6"><label class="form-label small mb-1">Pilihan C</label><input type="text" name="pilihan_c[]" class="form-control" placeholder="Jawaban C" /></div>
+                  <div class="col-md-6"><label class="form-label small mb-1">Pilihan D</label><input type="text" name="pilihan_d[]" class="form-control" placeholder="Jawaban D" /></div>
+                  <div class="col-md-6"><label class="form-label small mb-1">Pilihan E (Opsional)</label><input type="text" name="pilihan_e[]" class="form-control" placeholder="Jawaban E" /></div>
+                  <div class="col-md-6">
+                    <label class="form-label fw-bold text-success small mb-1">Kunci Jawaban Benar *</label>
+                    <input type="text" name="kunci_jawaban[]" class="form-control fw-bold" placeholder="Contoh: A atau B atau Jawaban Essay" required />
+                  </div>
+                  <div class="col-md-12">
+                    <label class="form-label small mb-1">Pembahasan / Solusi Soal (Opsional)</label>
+                    <textarea name="pembahasan[]" class="form-control" rows="2" placeholder="Penjelasan solusi soal..."></textarea>
+                  </div>
+                </div>
+              </div>
             </div>
           </div>
+
+          <div class="text-center my-3">
+            <button type="button" class="btn btn-outline-primary fw-bold px-4 rounded-pill shadow-sm" id="btnAddFormSoal">
+              <i class="bi bi-plus-circle-fill me-1"></i> + Tambah Form Soal Lagi
+            </button>
+          </div>
         </div>
-        <div class="modal-footer">
-          <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Batal</button>
-          <button type="submit" class="btn btn-primary fw-bold">Simpan Butir Soal</button>
+        <div class="modal-footer bg-light p-3">
+          <button type="button" class="btn btn-secondary px-4 rounded-pill" data-bs-dismiss="modal">Batal</button>
+          <button type="submit" class="btn btn-primary fw-bold px-4 rounded-pill"><i class="bi bi-save-fill me-1"></i> Simpan Semua Soal</button>
         </div>
       </form>
     </div>
@@ -284,6 +301,54 @@ No	Jawaban	Pembahasan
       navigator.clipboard.writeText(textToCopy).then(function() {
         alert('Format template berhasil disalin ke clipboard!');
       });
+    });
+  }
+
+  // Multi-Item Form Repeater JS Logic
+  const btnAddSoal = document.getElementById('btnAddFormSoal');
+  const containerSoal = document.getElementById('containerFormSoal');
+
+  if (btnAddSoal && containerSoal) {
+    btnAddSoal.addEventListener('click', function() {
+      const items = containerSoal.querySelectorAll('.card-item-soal');
+      const nextNum = items.length + 1;
+      const firstItem = items[0];
+
+      const newItem = firstItem.cloneNode(true);
+      newItem.querySelector('.label-soal-num').innerText = nextNum;
+      
+      // Clear values in cloned inputs
+      newItem.querySelectorAll('input[type="text"]').forEach(input => input.value = '');
+      newItem.querySelectorAll('textarea').forEach(textarea => textarea.value = '');
+      newItem.querySelector('input[type="number"]').value = '10';
+
+      const removeBtn = newItem.querySelector('.btn-remove-soal');
+      if (removeBtn) {
+        removeBtn.style.display = 'inline-block';
+        removeBtn.onclick = function() {
+          newItem.remove();
+          reindexFormSoal();
+        };
+      }
+
+      containerSoal.appendChild(newItem);
+      reindexFormSoal();
+    });
+  }
+
+  function reindexFormSoal() {
+    if (!containerSoal) return;
+    const items = containerSoal.querySelectorAll('.card-item-soal');
+    items.forEach((item, index) => {
+      item.querySelector('.label-soal-num').innerText = index + 1;
+      const removeBtn = item.querySelector('.btn-remove-soal');
+      if (removeBtn) {
+        removeBtn.style.display = (items.length > 1) ? 'inline-block' : 'none';
+        removeBtn.onclick = function() {
+          item.remove();
+          reindexFormSoal();
+        };
+      }
     });
   }
 });
