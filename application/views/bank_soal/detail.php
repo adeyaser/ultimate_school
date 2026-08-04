@@ -106,7 +106,7 @@
                 <div class="row g-3">
                   <div class="col-md-6">
                     <label class="form-label fw-semibold">Tipe / Jenis Soal *</label>
-                    <select name="jenis[]" class="form-select" required>
+                    <select name="jenis[]" class="form-select select-jenis-soal" required>
                       <option value="Pilihan Ganda">Pilihan Ganda</option>
                       <option value="Essay">Essay</option>
                     </select>
@@ -120,19 +120,25 @@
                     <textarea name="pertanyaan[]" class="form-control" rows="3" placeholder="Tuliskan pertanyaan soal..." required></textarea>
                   </div>
 
-                  <div class="col-md-12"><h6 class="fw-bold text-primary mb-0"><i class="bi bi-list-check me-1"></i> Pilihan Jawaban (Untuk Pilihan Ganda)</h6></div>
-                  <div class="col-md-6"><label class="form-label small mb-1">Pilihan A</label><input type="text" name="pilihan_a[]" class="form-control" placeholder="Jawaban A" /></div>
-                  <div class="col-md-6"><label class="form-label small mb-1">Pilihan B</label><input type="text" name="pilihan_b[]" class="form-control" placeholder="Jawaban B" /></div>
-                  <div class="col-md-6"><label class="form-label small mb-1">Pilihan C</label><input type="text" name="pilihan_c[]" class="form-control" placeholder="Jawaban C" /></div>
-                  <div class="col-md-6"><label class="form-label small mb-1">Pilihan D</label><input type="text" name="pilihan_d[]" class="form-control" placeholder="Jawaban D" /></div>
-                  <div class="col-md-6"><label class="form-label small mb-1">Pilihan E (Opsional)</label><input type="text" name="pilihan_e[]" class="form-control" placeholder="Jawaban E" /></div>
-                  <div class="col-md-6">
-                    <label class="form-label fw-bold text-success small mb-1">Kunci Jawaban Benar *</label>
-                    <input type="text" name="kunci_jawaban[]" class="form-control fw-bold" placeholder="Contoh: A atau B atau Jawaban Essay" required />
+                  <!-- Container Pilihan Ganda -->
+                  <div class="col-12 block-pilihan-ganda">
+                    <div class="row g-3">
+                      <div class="col-md-12"><h6 class="fw-bold text-primary mb-0"><i class="bi bi-list-check me-1"></i> Pilihan Jawaban (Untuk Pilihan Ganda)</h6></div>
+                      <div class="col-md-6"><label class="form-label small mb-1">Pilihan A</label><input type="text" name="pilihan_a[]" class="form-control" placeholder="Jawaban A" /></div>
+                      <div class="col-md-6"><label class="form-label small mb-1">Pilihan B</label><input type="text" name="pilihan_b[]" class="form-control" placeholder="Jawaban B" /></div>
+                      <div class="col-md-6"><label class="form-label small mb-1">Pilihan C</label><input type="text" name="pilihan_c[]" class="form-control" placeholder="Jawaban C" /></div>
+                      <div class="col-md-6"><label class="form-label small mb-1">Pilihan D</label><input type="text" name="pilihan_d[]" class="form-control" placeholder="Jawaban D" /></div>
+                      <div class="col-md-6"><label class="form-label small mb-1">Pilihan E (Opsional)</label><input type="text" name="pilihan_e[]" class="form-control" placeholder="Jawaban E" /></div>
+                    </div>
                   </div>
-                  <div class="col-md-12">
-                    <label class="form-label small mb-1">Pembahasan / Solusi Soal (Opsional)</label>
-                    <textarea name="pembahasan[]" class="form-control" rows="2" placeholder="Penjelasan solusi soal..."></textarea>
+
+                  <div class="col-md-6">
+                    <label class="form-label fw-bold text-success small mb-1">Kunci Jawaban Benar / Solusi Essay *</label>
+                    <input type="text" name="kunci_jawaban[]" class="form-control fw-bold input-kunci-jawaban" placeholder="Contoh: A atau B atau Kunci Jawaban Essay" required />
+                  </div>
+                  <div class="col-md-6">
+                    <label class="form-label small mb-1">Pembahasan / Catatan Solusi Soal (Opsional)</label>
+                    <textarea name="pembahasan[]" class="form-control" rows="1" placeholder="Penjelasan solusi soal..."></textarea>
                   </div>
                 </div>
               </div>
@@ -336,6 +342,29 @@ No	Jawaban	Pembahasan
     });
   }
 
+  // Dynamic Toggle Pilihan Ganda vs Essay
+  function handleJenisSoalToggle(selectElem) {
+    const card = selectElem.closest('.card-item-soal');
+    if (!card) return;
+    const blockPG = card.querySelector('.block-pilihan-ganda');
+    const inputKunci = card.querySelector('.input-kunci-jawaban');
+
+    if (selectElem.value === 'Essay') {
+      if (blockPG) blockPG.style.display = 'none';
+      if (inputKunci) inputKunci.placeholder = 'Tuliskan Kunci / Kata Kunci Jawaban Essay';
+    } else {
+      if (blockPG) blockPG.style.display = 'block';
+      if (inputKunci) inputKunci.placeholder = 'Contoh: A atau B atau C';
+    }
+  }
+
+  // Event Delegation for Jenis Soal Change
+  document.addEventListener('change', function(e) {
+    if (e.target && e.target.classList.contains('select-jenis-soal')) {
+      handleJenisSoalToggle(e.target);
+    }
+  });
+
   function reindexFormSoal() {
     if (!containerSoal) return;
     const items = containerSoal.querySelectorAll('.card-item-soal');
@@ -348,6 +377,11 @@ No	Jawaban	Pembahasan
           item.remove();
           reindexFormSoal();
         };
+      }
+
+      const selectJenis = item.querySelector('.select-jenis-soal');
+      if (selectJenis) {
+        handleJenisSoalToggle(selectJenis);
       }
     });
   }
