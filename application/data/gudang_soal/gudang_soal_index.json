@@ -1,7 +1,7 @@
 {
     "title": "Gudang Soal Repositori IndoMMLU & Kontributor AI\/Manual",
-    "total_soal": 15058,
-    "generated_at": "2026-08-10 19:12:56",
+    "total_soal": 15133,
+    "generated_at": "2026-08-10 19:21:36",
     "categories": [
         {
             "jenjang": "SMA",
@@ -1147,7 +1147,7 @@
             "jenjang": "SMP",
             "mapel": "Bahasa Inggris",
             "kelas": 7,
-            "jumlah": 56
+            "jumlah": 59
         },
         {
             "jenjang": "SMP",
@@ -1177,7 +1177,7 @@
             "jenjang": "SMA",
             "mapel": "Bahasa Inggris",
             "kelas": 12,
-            "jumlah": 87
+            "jumlah": 151
         },
         {
             "jenjang": "SD",
@@ -1207,13 +1207,13 @@
             "jenjang": "SD",
             "mapel": "Bahasa Inggris",
             "kelas": 5,
-            "jumlah": 25
+            "jumlah": 27
         },
         {
             "jenjang": "SD",
             "mapel": "Bahasa Inggris",
             "kelas": 6,
-            "jumlah": 94
+            "jumlah": 100
         }
     ]
 }
