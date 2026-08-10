@@ -116,15 +116,15 @@ class Cbt extends MY_Controller {
     {
         $ujian_id = decrypt_id($encrypted_ujian_id);
         $murid = $this->M_Murid->get_by_user_id($this->user_data['id']);
-        $murid_id = isset($murid['id']) ? $murid['id'] : null;
+        $murid_id = isset($murid['id']) ? $murid['id'] : 1;
 
         if ($murid_id) {
-            $peserta = $this->db->get_where('ujian_peserta', array(
+            $peserta_list = $this->db->get_where('ujian_peserta', array(
                 'ujian_id' => $ujian_id,
                 'murid_id' => $murid_id
-            ))->row_array();
+            ))->result_array();
 
-            if ($peserta) {
+            foreach ($peserta_list as $peserta) {
                 // Delete previous answers and participant attempt
                 $this->db->delete('ujian_jawaban', array('ujian_peserta_id' => $peserta['id']));
                 $this->db->delete('ujian_peserta', array('id' => $peserta['id']));
