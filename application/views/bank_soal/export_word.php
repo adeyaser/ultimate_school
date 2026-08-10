@@ -1,3 +1,67 @@
+<?php
+if (!function_exists('clean_word_math')) {
+    function clean_word_math($text) {
+        if (empty($text)) return '';
+
+        // Replace fractions \frac{a}{b} -> (a / b)
+        $text = preg_replace('/\\\\frac\{([^{}]+)\}\{([^{}]+)\}/u', '($1 / $2)', $text);
+
+        // Common TeX symbols
+        $replacements = array(
+            '\\times'  => '×',
+            '\\div'    => '÷',
+            '\\cdot'   => '·',
+            '\\pm'     => '±',
+            '\\leq'    => '≤',
+            '\\le'     => '≤',
+            '\\geq'    => '≥',
+            '\\ge'     => '≥',
+            '\\neq'    => '≠',
+            '\\approx' => '≈',
+            '\\sqrt'   => '√',
+            '\\pi'     => 'π',
+            '\\alpha'  => 'α',
+            '\\beta'   => 'β',
+            '\\theta'  => 'θ',
+            '\\degree' => '°',
+            '^\\circ'  => '°',
+            '\\circ'   => '°',
+            '\\sin'    => 'sin',
+            '\\cos'    => 'cos',
+            '\\tan'    => 'tan',
+            '\\log'    => 'log',
+            '\\ln'     => 'ln',
+            '\\lim'    => 'lim',
+            '{,}'      => ','
+        );
+
+        $text = strtr($text, $replacements);
+
+        // Convert exponents like ^8, ^{8}, ^{-3}
+        $superscripts = array(
+            '0' => '⁰', '1' => '¹', '2' => '²', '3' => '³', '4' => '⁴',
+            '5' => '⁵', '6' => '⁶', '7' => '⁷', '8' => '⁸', '9' => '⁹',
+            '+' => '⁺', '-' => '⁻', '=' => '⁼', '(' => '⁽', ')' => '⁾',
+            'n' => 'ⁿ', 'x' => 'ˣ'
+        );
+
+        $text = preg_replace_callback('/\^\{?([0-9\+\-\=\(\)nx]+)\}?/u', function($m) use ($superscripts) {
+            $str = $m[1];
+            $res = '';
+            for ($i = 0; $i < mb_strlen($str); $i++) {
+                $char = mb_substr($str, $i, 1);
+                $res .= isset($superscripts[$char]) ? $superscripts[$char] : '^'.$char;
+            }
+            return $res;
+        }, $text);
+
+        // Remove $ delimiters
+        $text = str_replace(array('$$', '$'), '', $text);
+
+        return trim($text);
+    }
+}
+?>
 <!DOCTYPE html>
 <html xmlns:o="urn:schemas-microsoft-com:office:office" xmlns:w="urn:schemas-microsoft-com:office:word" xmlns="http://www.w3.org/TR/REC-html40">
 <head>
@@ -13,11 +77,14 @@
   .header-table {
     width: 100%;
     border-collapse: collapse;
+    border: none;
     margin-bottom: 20px;
   }
   .header-table td {
     padding: 4px;
     font-size: 11pt;
+    border: none;
+    background: transparent;
   }
   .kop-sekolah {
     text-align: center;
@@ -53,10 +120,14 @@
     width: 100%;
     margin-left: 20px;
     margin-bottom: 10px;
+    border-collapse: collapse;
+    border: none;
   }
   .pilihan-table td {
     vertical-align: top;
     padding: 2px 5px;
+    border: none;
+    background: transparent;
   }
   .page-break {
     page-break-before: always;
@@ -85,7 +156,7 @@
     <p style="margin: 0; font-size: 10pt;"><?= isset($school_info['alamat']) ? $school_info['alamat'] : '' ?></p>
   </div>
 
-  <table class="header-table">
+  <table border="0" cellpadding="0" cellspacing="0" class="header-table">
     <tr>
       <td width="18%"><strong>Mata Pelajaran</strong></td>
       <td width="2%">:</td>
@@ -127,25 +198,25 @@
     <?php foreach ($soal_list as $index => $s): ?>
       <div class="soal-item">
         <div class="pertanyaan">
-          <strong><?= $index + 1 ?>.</strong> <?= nl2br($s['pertanyaan']) ?>
+          <strong><?= $index + 1 ?>.</strong> <?= nl2br(clean_word_math($s['pertanyaan'])) ?>
         </div>
 
         <?php if ($s['jenis'] === 'Pilihan Ganda'): ?>
-          <table class="pilihan-table">
+          <table border="0" cellpadding="0" cellspacing="0" class="pilihan-table" style="border:none; border-collapse:collapse; background:transparent;">
             <?php if (!empty($s['pilihan_a'])): ?>
-              <tr><td width="3%">A.</td><td><?= $s['pilihan_a'] ?></td></tr>
+              <tr><td width="3%" style="border:none; background:transparent; padding:2px 4px; vertical-align:top;">A.</td><td style="border:none; background:transparent; padding:2px 4px; vertical-align:top;"><?= clean_word_math($s['pilihan_a']) ?></td></tr>
             <?php endif; ?>
             <?php if (!empty($s['pilihan_b'])): ?>
-              <tr><td>B.</td><td><?= $s['pilihan_b'] ?></td></tr>
+              <tr><td style="border:none; background:transparent; padding:2px 4px; vertical-align:top;">B.</td><td style="border:none; background:transparent; padding:2px 4px; vertical-align:top;"><?= clean_word_math($s['pilihan_b']) ?></td></tr>
             <?php endif; ?>
             <?php if (!empty($s['pilihan_c'])): ?>
-              <tr><td>C.</td><td><?= $s['pilihan_c'] ?></td></tr>
+              <tr><td style="border:none; background:transparent; padding:2px 4px; vertical-align:top;">C.</td><td style="border:none; background:transparent; padding:2px 4px; vertical-align:top;"><?= clean_word_math($s['pilihan_c']) ?></td></tr>
             <?php endif; ?>
             <?php if (!empty($s['pilihan_d'])): ?>
-              <tr><td>D.</td><td><?= $s['pilihan_d'] ?></td></tr>
+              <tr><td style="border:none; background:transparent; padding:2px 4px; vertical-align:top;">D.</td><td style="border:none; background:transparent; padding:2px 4px; vertical-align:top;"><?= clean_word_math($s['pilihan_d']) ?></td></tr>
             <?php endif; ?>
             <?php if (!empty($s['pilihan_e'])): ?>
-              <tr><td>E.</td><td><?= $s['pilihan_e'] ?></td></tr>
+              <tr><td style="border:none; background:transparent; padding:2px 4px; vertical-align:top;">E.</td><td style="border:none; background:transparent; padding:2px 4px; vertical-align:top;"><?= clean_word_math($s['pilihan_e']) ?></td></tr>
             <?php endif; ?>
           </table>
         <?php endif; ?>
@@ -176,9 +247,9 @@
         <tr>
           <td style="text-align: center;"><?= $index + 1 ?></td>
           <td><?= $s['jenis'] ?></td>
-          <td style="font-weight: bold; text-align: center;"><?= strtoupper($s['kunci_jawaban']) ?></td>
+          <td style="font-weight: bold; text-align: center;"><?= clean_word_math(strtoupper($s['kunci_jawaban'])) ?></td>
           <td style="text-align: center;"><?= $s['bobot'] ?></td>
-          <td><?= nl2br($s['pembahasan']) ?></td>
+          <td><?= nl2br(clean_word_math($s['pembahasan'])) ?></td>
         </tr>
       <?php endforeach; ?>
     </tbody>
