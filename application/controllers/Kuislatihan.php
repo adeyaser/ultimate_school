@@ -49,7 +49,7 @@ class Kuislatihan extends MY_Controller {
             redirect('kuislatihan');
         }
 
-        $soal_list = $this->M_KuisLatihan->get_soal_kuis($kuis['soal_ids']);
+        $soal_list = $this->M_KuisLatihan->get_soal_kuis($kuis['soal_ids'], $kuis_id);
 
         $data['title']     = 'Kuis Latihan - ' . $kuis['nama_mapel'];
         $data['kuis']      = $kuis;
