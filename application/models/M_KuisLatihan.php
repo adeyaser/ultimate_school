@@ -352,7 +352,7 @@ class M_KuisLatihan extends CI_Model {
                 'bobot' => 10,
                 'tingkat_kesulitan' => $tingkat_kesulitan
             );
-            $this->db->insert('soal', $soal_data);
+            $this->M_BankSoal->insert_soal($soal_data);
             $soal_ids[] = $this->db->insert_id();
         }
 
