@@ -300,9 +300,9 @@ No\tJawaban\tPembahasan
         $candidate_providers = array();
 
         if (empty($provider) || $provider === 'auto') {
-            $candidate_providers = array('gemini', 'groq', 'openrouter_gpt4o_mini', 'openrouter_gpt4o', 'openrouter_gemini');
+            $candidate_providers = array('gemini', 'groq', 'github_models', 'openrouter_gpt4o_mini', 'openrouter_gpt4o', 'openrouter_gemini');
         } else {
-            $candidate_providers = array($provider, 'gemini', 'groq', 'openrouter_gpt4o_mini', 'openrouter_gpt4o');
+            $candidate_providers = array($provider, 'gemini', 'groq', 'github_models', 'openrouter_gpt4o_mini', 'openrouter_gpt4o');
             $candidate_providers = array_values(array_unique($candidate_providers));
         }
 
@@ -341,6 +341,44 @@ No\tJawaban\tPembahasan
                         break;
                     } elseif (isset($res_json['error']['message'])) {
                         $last_error = 'Groq Error: ' . $res_json['error']['message'];
+                    }
+                }
+            } elseif ($p === 'github_models') {
+                $gh_key = defined('GITHUB_MODELS_API_KEY') ? GITHUB_MODELS_API_KEY : '';
+                if (empty($gh_key)) continue;
+
+                $endpoint = defined('GITHUB_MODELS_API_ENDPOINT') ? GITHUB_MODELS_API_ENDPOINT : 'https://models.github.ai/inference/chat/completions';
+                $post_data = array(
+                    'model' => 'gpt-4o-mini',
+                    'messages' => array(
+                        array('role' => 'user', 'content' => $prompt)
+                    )
+                );
+
+                $ch = curl_init($endpoint);
+                curl_setopt($ch, CURLOPT_RETURNTRANSFER, true);
+                curl_setopt($ch, CURLOPT_POST, true);
+                curl_setopt($ch, CURLOPT_POSTFIELDS, json_encode($post_data));
+                curl_setopt($ch, CURLOPT_HTTPHEADER, array(
+                    'Content-Type: application/json',
+                    'Authorization: Bearer ' . $gh_key,
+                    'X-GitHub-Api-Version: 2022-11-28',
+                    'User-Agent: Ultimate-School-App'
+                ));
+                curl_setopt($ch, CURLOPT_SSL_VERIFYPEER, false);
+                curl_setopt($ch, CURLOPT_TIMEOUT, 180);
+
+                $response   = curl_exec($ch);
+                $curl_err   = curl_error($ch);
+                curl_close($ch);
+
+                if (!$curl_err && !empty($response)) {
+                    $res_json = json_decode($response, true);
+                    if (isset($res_json['choices'][0]['message']['content']) && !empty($res_json['choices'][0]['message']['content'])) {
+                        $raw_text = $res_json['choices'][0]['message']['content'];
+                        break;
+                    } elseif (isset($res_json['error']['message'])) {
+                        $last_error = 'GitHub Models Error: ' . $res_json['error']['message'];
                     }
                 }
             } elseif (strpos($p, 'openrouter') === 0) {
