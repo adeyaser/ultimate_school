@@ -671,6 +671,9 @@ No	Jawaban	Pembahasan
         aiAlert.innerHTML = '<div class="alert alert-danger alert-dismissible fade show"><i class="bi bi-exclamation-triangle-fill me-2"></i>Terjadi kesalahan jaringan atau server.<button type="button" class="btn-close" data-bs-dismiss="alert"></button></div>';
         console.error(err);
       });
+    });
+  }
+
   // Bulk Delete Checkbox Toggle & Counter
   const checkAll = document.getElementById('checkAllSoal');
   const itemChecks = document.querySelectorAll('.soal-item-check');
@@ -695,7 +698,10 @@ No	Jawaban	Pembahasan
 
   if (checkAll) {
     checkAll.addEventListener('change', function() {
-      itemChecks.forEach(chk => chk.checked = this.checked);
+      const isChecked = this.checked;
+      itemChecks.forEach(chk => {
+        chk.checked = isChecked;
+      });
       updateBulkDeleteUI();
     });
   }
