@@ -74,7 +74,7 @@ MathJax = {
                   <i class="bi bi-check-circle-fill me-3 fs-3"></i>
                   <div>
                     <h6 class="fw-bold mb-1">Repositori Gudang Soal IndoMMLU Aktif (14.977 Soal Terindeks)</h6>
-                    <p class="mb-0 small">Sistem akan secara otomatis menyaring butir soal yang sesuai dengan Mata Pelajaran <strong><?= $bank_soal['nama_mapel'] ?></strong> (Kelas <strong><?= $bank_soal['nama_kelas'] ?></strong> / <strong><?= $bank_soal['jenjang'] ?></strong>).</p>
+                    <p class="mb-0 small">Sistem akan secara otomatis menyaring butir soal yang sesuai dengan Mata Pelajaran <strong><?= isset($bank_soal['nama_mapel']) ? $bank_soal['nama_mapel'] : '' ?></strong> (Kelas <strong><?= isset($bank_soal['nama_kelas']) ? $bank_soal['nama_kelas'] : '' ?></strong><?php if (!empty($bank_soal['jenjang'])): ?> / <strong><?= $bank_soal['jenjang'] ?></strong><?php endif; ?>).</p>
                   </div>
                 </div>
 

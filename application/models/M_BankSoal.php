@@ -26,7 +26,7 @@ class M_BankSoal extends CI_Model {
 
     public function get_by_id($id)
     {
-        $this->db->select('bank_soal.*, mata_pelajaran.nama_mapel, kelas.nama_kelas, users.full_name as nama_pembuat');
+        $this->db->select('bank_soal.*, mata_pelajaran.nama_mapel, kelas.nama_kelas, kelas.jenjang, users.full_name as nama_pembuat');
         $this->db->from('bank_soal');
         $this->db->join('mata_pelajaran', 'mata_pelajaran.id = bank_soal.mata_pelajaran_id');
         $this->db->join('kelas', 'kelas.id = bank_soal.kelas_id');
