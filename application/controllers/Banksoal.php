@@ -300,14 +300,50 @@ No\tJawaban\tPembahasan
         $candidate_providers = array();
 
         if (empty($provider) || $provider === 'auto') {
-            $candidate_providers = array('gemini', 'openrouter_gpt4o_mini', 'openrouter_gpt4o', 'openrouter_gemini');
+            $candidate_providers = array('gemini', 'groq', 'openrouter_gpt4o_mini', 'openrouter_gpt4o', 'openrouter_gemini');
         } else {
-            $candidate_providers = array($provider, 'gemini', 'openrouter_gpt4o_mini', 'openrouter_gpt4o');
+            $candidate_providers = array($provider, 'gemini', 'groq', 'openrouter_gpt4o_mini', 'openrouter_gpt4o');
             $candidate_providers = array_values(array_unique($candidate_providers));
         }
 
         foreach ($candidate_providers as $p) {
-            if (strpos($p, 'openrouter') === 0) {
+            if ($p === 'groq') {
+                $groq_key = defined('GROQ_API_KEY') ? GROQ_API_KEY : '';
+                if (empty($groq_key)) continue;
+
+                $endpoint = 'https://api.groq.com/openai/v1/chat/completions';
+                $post_data = array(
+                    'model' => 'llama-3.3-70b-versatile',
+                    'messages' => array(
+                        array('role' => 'user', 'content' => $prompt)
+                    )
+                );
+
+                $ch = curl_init($endpoint);
+                curl_setopt($ch, CURLOPT_RETURNTRANSFER, true);
+                curl_setopt($ch, CURLOPT_POST, true);
+                curl_setopt($ch, CURLOPT_POSTFIELDS, json_encode($post_data));
+                curl_setopt($ch, CURLOPT_HTTPHEADER, array(
+                    'Content-Type: application/json',
+                    'Authorization: Bearer ' . $groq_key
+                ));
+                curl_setopt($ch, CURLOPT_SSL_VERIFYPEER, false);
+                curl_setopt($ch, CURLOPT_TIMEOUT, 180);
+
+                $response   = curl_exec($ch);
+                $curl_err   = curl_error($ch);
+                curl_close($ch);
+
+                if (!$curl_err && !empty($response)) {
+                    $res_json = json_decode($response, true);
+                    if (isset($res_json['choices'][0]['message']['content']) && !empty($res_json['choices'][0]['message']['content'])) {
+                        $raw_text = $res_json['choices'][0]['message']['content'];
+                        break;
+                    } elseif (isset($res_json['error']['message'])) {
+                        $last_error = 'Groq Error: ' . $res_json['error']['message'];
+                    }
+                }
+            } elseif (strpos($p, 'openrouter') === 0) {
                 $or_key = defined('OPENROUTER_API_KEY') ? OPENROUTER_API_KEY : '';
                 if (empty($or_key)) continue;
 
