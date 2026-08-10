@@ -106,4 +106,27 @@ class Cbt extends MY_Controller {
         
         $this->render_page('cbt/selesai', $data);
     }
+
+    public function ulangi_ujian($ujian_id)
+    {
+        $murid = $this->M_Murid->get_by_user_id($this->user_data['id']);
+        $murid_id = isset($murid['id']) ? $murid['id'] : null;
+
+        if ($murid_id) {
+            $peserta = $this->db->get_where('ujian_peserta', array(
+                'ujian_id' => $ujian_id,
+                'murid_id' => $murid_id
+            ))->row_array();
+
+            if ($peserta) {
+                // Delete previous answers and participant attempt
+                $this->db->delete('ujian_jawaban', array('ujian_peserta_id' => $peserta['id']));
+                $this->db->delete('ujian_peserta', array('id' => $peserta['id']));
+            }
+        }
+
+        $this->session->set_flashdata('success', 'Sesi pengerjaan Anda telah di-reset. Silakan masukkan token ujian kembali untuk mengulangi ujian.');
+        redirect('cbt/konfirmasi/' . $ujian_id);
+    }
 }
+

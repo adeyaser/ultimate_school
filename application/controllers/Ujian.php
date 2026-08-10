@@ -81,4 +81,17 @@ class Ujian extends MY_Controller {
         $this->session->set_flashdata('success', 'Status ujian berhasil diperbarui.');
         redirect('ujian');
     }
+
+    public function reset_peserta($ujian_id)
+    {
+        $peserta_list = $this->db->get_where('ujian_peserta', array('ujian_id' => $ujian_id))->result_array();
+        foreach ($peserta_list as $p) {
+            $this->db->delete('ujian_jawaban', array('ujian_peserta_id' => $p['id']));
+        }
+        $this->db->delete('ujian_peserta', array('ujian_id' => $ujian_id));
+
+        $this->session->set_flashdata('success', 'Seluruh data pengerjaan ujian untuk sesi ini berhasil di-reset.');
+        redirect('ujian');
+    }
 }
+

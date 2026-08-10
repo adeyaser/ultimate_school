@@ -1,3 +1,19 @@
+<!-- MathJax for rendering Mathematical LaTeX equations -->
+<script>
+MathJax = {
+  tex: {
+    inlineMath: [['$', '$'], ['\\(', '\\)']],
+    displayMath: [['$$', '$$'], ['\\[', '\\]']]
+  },
+  svg: {
+    fontCache: 'global'
+  }
+};
+</script>
+<script type="text/javascript" id="MathJax-script" async
+  src="https://cdn.jsdelivr.net/npm/mathjax@3/es5/tex-mml-chtml.js">
+</script>
+
 <main class="app-main">
   <div class="app-content-header">
     <div class="container-fluid">
@@ -23,6 +39,9 @@
               <p class="mb-0 opacity-90">Mata Pelajaran: <?= $bank_soal['nama_mapel'] ?> | Kelas: <?= $bank_soal['nama_kelas'] ?> | Total: <?= $bank_soal['jumlah_soal'] ?> Soal</p>
             </div>
             <div>
+              <button class="btn btn-gradient text-white btn-lg fw-bold shadow-sm me-2" style="background: linear-gradient(135deg, #6366f1 0%, #a855f7 100%); border: none;" data-bs-toggle="modal" data-bs-target="#modalGenerateAiSoal">
+                <i class="bi bi-stars me-2"></i> Generate Soal AI Gemini
+              </button>
               <button class="btn btn-light btn-lg fw-bold shadow-sm me-2 text-primary" data-bs-toggle="modal" data-bs-target="#modalImportMassalSoal">
                 <i class="bi bi-file-earmark-arrow-up-fill me-2"></i> Import Massal / Copas Soal & Kunci
               </button>
@@ -247,6 +266,81 @@
   </div>
 </div>
 
+<!-- Modal Generate Soal AI Gemini -->
+<div class="modal fade" id="modalGenerateAiSoal" tabindex="-1">
+  <div class="modal-dialog modal-lg modal-dialog-centered">
+    <div class="modal-content border-0 shadow-lg rounded-4">
+      <form id="formGenerateAiSoal">
+        <input type="hidden" name="bank_soal_id" value="<?= $bank_soal['id'] ?>" />
+        <div class="modal-header text-white p-3" style="background: linear-gradient(135deg, #6366f1 0%, #a855f7 100%);">
+          <h5 class="modal-title fw-bold"><i class="bi bi-robot me-2"></i> Generate Soal Otomatis dengan AI Gemini</h5>
+          <button type="button" class="btn-close btn-close-white" data-bs-dismiss="modal"></button>
+        </div>
+        <div class="modal-body p-4">
+          <div id="aiAlertContainer"></div>
+
+          <div class="alert alert-primary d-flex align-items-center mb-3">
+            <i class="bi bi-info-circle-fill me-2 fs-4"></i>
+            <div>
+              Pembuatan soal dilakukan menggunakan AI Google Gemini berdasarkan Mata Pelajaran <strong><?= $bank_soal['nama_mapel'] ?></strong> (Kelas <strong><?= $bank_soal['nama_kelas'] ?></strong>).
+            </div>
+          </div>
+
+          <input type="hidden" name="provider" value="auto" />
+          <div class="row g-3">
+            <div class="col-md-12">
+              <label class="form-label fw-bold">Topik / Materi Spesifik *</label>
+              <input type="text" name="topik" class="form-control" placeholder="Contoh: Photosynthesis, Persamaan Kuadrat, Perang Diponegoro..." required />
+            </div>
+
+            <div class="col-md-4">
+              <label class="form-label fw-bold">Jumlah Soal *</label>
+              <select name="jumlah" class="form-select" required>
+                <option value="5">5 Soal</option>
+                <option value="10" selected>10 Soal</option>
+                <option value="15">15 Soal</option>
+                <option value="20">20 Soal</option>
+                <option value="30">30 Soal</option>
+                <option value="40">40 Soal</option>
+                <option value="50">50 Soal</option>
+              </select>
+            </div>
+
+            <div class="col-md-4">
+              <label class="form-label fw-bold">Jenis Soal *</label>
+              <select name="jenis" class="form-select" required>
+                <option value="Pilihan Ganda" selected>Pilihan Ganda</option>
+                <option value="Essay">Essay</option>
+                <option value="Campuran">Campuran (PG & Essay)</option>
+              </select>
+            </div>
+
+            <div class="col-md-4">
+              <label class="form-label fw-bold">Tingkat Kesulitan *</label>
+              <select name="tingkat_kesulitan" class="form-select" required>
+                <option value="Mudah">Mudah</option>
+                <option value="Sedang" selected>Sedang</option>
+                <option value="Sulit">Sulit (HOTS)</option>
+              </select>
+            </div>
+
+            <div class="col-md-12">
+              <label class="form-label fw-bold">Instruksi / Catatan Tambahan (Opsional)</label>
+              <textarea name="instruksi_tambahan" class="form-control" rows="2" placeholder="Contoh: Fokus pada soal analisis, sertakan contoh kehidupan sehari-hari..."></textarea>
+            </div>
+          </div>
+        </div>
+        <div class="modal-footer bg-light p-3 d-flex justify-content-between">
+          <button type="button" class="btn btn-secondary px-4 rounded-pill" data-bs-dismiss="modal">Batal</button>
+          <button type="submit" id="btnSubmitAiGenerate" class="btn btn-primary fw-bold px-4 rounded-pill" style="background: linear-gradient(135deg, #6366f1 0%, #a855f7 100%); border: none;">
+            <i class="bi bi-stars me-1"></i> Buat Soal Sekarang
+          </button>
+        </div>
+      </form>
+    </div>
+  </div>
+</div>
+
 <script>
 document.addEventListener('DOMContentLoaded', function() {
   const sampleTemplateText = `Teks Bacaan untuk soal nomor 1 dan 2:
@@ -385,5 +479,103 @@ No	Jawaban	Pembahasan
       }
     });
   }
+
+  // Handle AI Generate Form Submit
+  const formAi = document.getElementById('formGenerateAiSoal');
+  const btnSubmitAi = document.getElementById('btnSubmitAiGenerate');
+  const aiAlert = document.getElementById('aiAlertContainer');
+
+  if (formAi) {
+    formAi.addEventListener('submit', function(e) {
+      e.preventDefault();
+      
+      const originalBtnHtml = btnSubmitAi.innerHTML;
+      btnSubmitAi.disabled = true;
+      btnSubmitAi.innerHTML = '<span class="spinner-border spinner-border-sm me-2" role="status"></span> Sedang Menyusun Soal...';
+
+      const steps = [
+        "Menghubungkan ke server AI Google Gemini...",
+        "Menganalisis topik, kurikulum, dan tingkat kesulitan...",
+        "Menyusun butir-butir pertanyaan & opsi jawaban...",
+        "Memvalidasi kunci jawaban dan menuliskan pembahasan...",
+        "Menyimpan soal-soal baru secara otomatis ke Bank Soal..."
+      ];
+      let currentStep = 0;
+      let progressVal = 12;
+
+      aiAlert.innerHTML = `
+        <div class="card border-0 shadow-sm mb-3 text-white overflow-hidden" style="background: linear-gradient(135deg, #4f46e5 0%, #7c3aed 50%, #9333ea 100%); border-radius: 1rem;">
+          <div class="card-body p-4 text-center">
+            <div class="mb-3">
+              <div class="d-inline-flex p-3 rounded-circle bg-white bg-opacity-25 shadow-lg position-relative" style="animation: pulseAiGlow 1.8s infinite;">
+                <i class="bi bi-robot fs-1 text-white"></i>
+              </div>
+            </div>
+            <h5 class="fw-bold mb-2 text-white"><i class="bi bi-stars me-2 text-warning"></i> AI Gemini Sedang Memproses & Menyusun Soal...</h5>
+            <p id="aiStepText" class="small text-white-50 fw-semibold mb-3">${steps[0]}</p>
+            
+            <div class="progress mb-2 rounded-pill shadow-sm" style="height: 14px; background: rgba(255,255,255,0.2);">
+              <div id="aiProgressBar" class="progress-bar progress-bar-striped progress-bar-animated bg-warning rounded-pill" role="progressbar" style="width: 12%;"></div>
+            </div>
+            <small class="text-white opacity-75 d-block mt-2"><i class="bi bi-hourglass-split me-1"></i> Mohon tunggu, pembuatan hingga 50 soal memerlukan waktu beberapa detik.</small>
+          </div>
+        </div>
+        <style>
+          @keyframes pulseAiGlow {
+            0% { transform: scale(1); box-shadow: 0 0 0 0 rgba(255, 255, 255, 0.4); }
+            70% { transform: scale(1.08); box-shadow: 0 0 0 16px rgba(255, 255, 255, 0); }
+            100% { transform: scale(1); box-shadow: 0 0 0 0 rgba(255, 255, 255, 0); }
+          }
+        </style>
+      `;
+
+      const progressInterval = setInterval(() => {
+        progressVal = Math.min(progressVal + Math.floor(Math.random() * 8) + 4, 94);
+        const pb = document.getElementById('aiProgressBar');
+        if (pb) pb.style.width = progressVal + '%';
+
+        if (progressVal > 25 && currentStep === 0) currentStep = 1;
+        if (progressVal > 50 && currentStep === 1) currentStep = 2;
+        if (progressVal > 72 && currentStep === 2) currentStep = 3;
+        if (progressVal > 86 && currentStep === 3) currentStep = 4;
+
+        const txt = document.getElementById('aiStepText');
+        if (txt) txt.innerText = steps[currentStep];
+      }, 1500);
+
+      const formData = new FormData(formAi);
+
+      fetch('<?= base_url("banksoal/generate_ai_soal") ?>', {
+        method: 'POST',
+        body: formData
+      })
+      .then(response => response.json())
+      .then(data => {
+        clearInterval(progressInterval);
+        btnSubmitAi.disabled = false;
+        btnSubmitAi.innerHTML = originalBtnHtml;
+
+        if (data.status === 'success') {
+          const pb = document.getElementById('aiProgressBar');
+          if (pb) pb.style.width = '100%';
+
+          aiAlert.innerHTML = '<div class="alert alert-success"><i class="bi bi-check-circle-fill me-2"></i>' + data.message + ' Memuat ulang halaman...</div>';
+          setTimeout(() => {
+            window.location.reload();
+          }, 1200);
+        } else {
+          aiAlert.innerHTML = '<div class="alert alert-danger alert-dismissible fade show"><i class="bi bi-exclamation-triangle-fill me-2"></i>' + data.message + '<button type="button" class="btn-close" data-bs-dismiss="alert"></button></div>';
+        }
+      })
+      .catch(err => {
+        clearInterval(progressInterval);
+        btnSubmitAi.disabled = false;
+        btnSubmitAi.innerHTML = originalBtnHtml;
+        aiAlert.innerHTML = '<div class="alert alert-danger alert-dismissible fade show"><i class="bi bi-exclamation-triangle-fill me-2"></i>Terjadi kesalahan jaringan atau server.<button type="button" class="btn-close" data-bs-dismiss="alert"></button></div>';
+        console.error(err);
+      });
+    });
+  }
 });
 </script>
+

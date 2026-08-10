@@ -74,7 +74,7 @@
                       <?php foreach ($history as $h): ?>
                         <tr>
                           <td><small><?= date('d M Y H:i', strtotime($h['tanggal_mulai'])) ?></small></td>
-                          <td class="fw-bold"><?= $h['mata_pelajaran_id'] ?></td>
+                          <td class="fw-bold"><?= isset($h['nama_mapel']) && $h['nama_mapel'] ? $h['nama_mapel'] : 'Mapel #' . $h['mata_pelajaran_id'] ?></td>
                           <td><span class="text-success fw-bold"><?= $h['jawaban_benar'] ?></span> / <span class="text-danger fw-bold"><?= $h['jawaban_salah'] ?></span></td>
                           <td><span class="badge text-bg-primary fs-6"><?= $h['nilai'] ?></span></td>
                           <td class="text-end">

@@ -222,4 +222,241 @@ No\tJawaban\tPembahasan
 
         force_download('template_impor_soal_massal.txt', $template_content);
     }
+
+    public function generate_ai_soal()
+    {
+        header('Content-Type: application/json');
+
+        if ($this->input->method() !== 'post') {
+            echo json_encode(array('status' => 'error', 'message' => 'Metode request tidak valid.'));
+            return;
+        }
+
+        $provider = $this->input->post('provider', true);
+        if (empty($provider)) {
+            $provider = 'auto';
+        }
+        $bank_soal_id       = $this->input->post('bank_soal_id', true);
+        $topik              = $this->input->post('topik', true);
+        $jumlah             = (int)$this->input->post('jumlah', true);
+        $jenis              = $this->input->post('jenis', true);
+        $tingkat_kesulitan  = $this->input->post('tingkat_kesulitan', true);
+        $instruksi_tambahan = $this->input->post('instruksi_tambahan', true);
+
+        if (empty($bank_soal_id) || empty($topik)) {
+            echo json_encode(array('status' => 'error', 'message' => 'Topik materi dan ID Bank Soal wajib diisi.'));
+            return;
+        }
+
+        $bank_soal = $this->M_BankSoal->get_by_id($bank_soal_id);
+        if (!$bank_soal) {
+            echo json_encode(array('status' => 'error', 'message' => 'Data Bank Soal tidak ditemukan.'));
+            return;
+        }
+
+        if ($jumlah <= 0 || $jumlah > 100) {
+            $jumlah = 5;
+        }
+
+        $mapel      = isset($bank_soal['nama_mapel']) ? $bank_soal['nama_mapel'] : '';
+        $kelas      = isset($bank_soal['nama_kelas']) ? $bank_soal['nama_kelas'] : '';
+        $judul_bank = isset($bank_soal['judul']) ? $bank_soal['judul'] : '';
+
+        $prompt  = "Kamu adalah pakar pembuat soal ujian sekolah Indonesia yang profesional.\n";
+        $prompt .= "Buatkan {$jumlah} butir soal ujian untuk:\n";
+        $prompt .= "- Mata Pelajaran: {$mapel}\n";
+        $prompt .= "- Kelas/Tingkat: {$kelas}\n";
+        $prompt .= "- Judul Ujian/Materi: {$judul_bank}\n";
+        $prompt .= "- Topik Spesifik: {$topik}\n";
+        $prompt .= "- Jenis Soal: {$jenis}\n";
+        $prompt .= "- Tingkat Kesulitan: {$tingkat_kesulitan}\n";
+        if (!empty($instruksi_tambahan)) {
+            $prompt .= "- Instruksi Tambahan: {$instruksi_tambahan}\n";
+        }
+
+        $prompt .= "\nATURAN FORMAT MATEMATIKA: Jangan membungkus angka polos dengan tanda dollar (JANGAN tulis $1$, tulis angka polos 1). Untuk pecahan/persamaan matematika, gunakan format LaTeX yang bersih diapit $ (contoh: $\\frac{1}{4} + \\frac{1}{2}$).";
+        $prompt .= "\nWAJIB: Format output HANYA array JSON murni tanpa pembungkus markdown/backticks. Array berisi JSON object untuk setiap butir soal dengan struktur:\n";
+        $prompt .= "[\n";
+        $prompt .= "  {\n";
+        $prompt .= "    \"pertanyaan\": \"isi kalimat pertanyaan\",\n";
+        $prompt .= "    \"jenis\": \"Pilihan Ganda atau Essay\",\n";
+        $prompt .= "    \"pilihan_a\": \"pilihan A\",\n";
+        $prompt .= "    \"pilihan_b\": \"pilihan B\",\n";
+        $prompt .= "    \"pilihan_c\": \"pilihan C\",\n";
+        $prompt .= "    \"pilihan_d\": \"pilihan D\",\n";
+        $prompt .= "    \"pilihan_e\": \"pilihan E\",\n";
+        $prompt .= "    \"kunci_jawaban\": \"A/B/C/D/E untuk Pilihan Ganda, atau kata kunci jawaban jika Essay\",\n";
+        $prompt .= "    \"pembahasan\": \"penjelasan ringkas pembahasan jawaban\",\n";
+        $prompt .= "    \"bobot\": 10,\n";
+        $prompt .= "    \"tingkat_kesulitan\": \"{$tingkat_kesulitan}\"\n";
+        $prompt .= "  }\n";
+        $prompt .= "]\n";
+
+        $raw_text = '';
+        $last_error = 'Tidak ada provider AI yang berhasil memproses pembuatan soal.';
+        $or_max_tokens = min(2500, max(800, $jumlah * 120));
+
+        // Define provider execution order with auto-fallback cascade
+        $candidate_providers = array();
+
+        if (empty($provider) || $provider === 'auto') {
+            $candidate_providers = array('gemini', 'openrouter_gpt4o_mini', 'openrouter_gpt4o', 'openrouter_gemini');
+        } else {
+            $candidate_providers = array($provider, 'gemini', 'openrouter_gpt4o_mini', 'openrouter_gpt4o');
+            $candidate_providers = array_values(array_unique($candidate_providers));
+        }
+
+        foreach ($candidate_providers as $p) {
+            if (strpos($p, 'openrouter') === 0) {
+                $or_key = defined('OPENROUTER_API_KEY') ? OPENROUTER_API_KEY : '';
+                if (empty($or_key)) continue;
+
+                $or_model = 'openai/gpt-4o';
+                if ($p === 'openrouter_gpt4o_mini') $or_model = 'openai/gpt-4o-mini';
+                elseif ($p === 'openrouter_gemini') $or_model = 'google/gemini-2.5-flash';
+                elseif ($p === 'openrouter_deepseek') $or_model = 'deepseek/deepseek-chat';
+
+                $endpoint = 'https://openrouter.ai/api/v1/chat/completions';
+                $post_data = array(
+                    'model' => $or_model,
+                    'max_tokens' => $or_max_tokens,
+                    'messages' => array(
+                        array('role' => 'user', 'content' => $prompt)
+                    )
+                );
+
+                $ch = curl_init($endpoint);
+                curl_setopt($ch, CURLOPT_RETURNTRANSFER, true);
+                curl_setopt($ch, CURLOPT_POST, true);
+                curl_setopt($ch, CURLOPT_POSTFIELDS, json_encode($post_data));
+                curl_setopt($ch, CURLOPT_HTTPHEADER, array(
+                    'Content-Type: application/json',
+                    'Authorization: Bearer ' . $or_key,
+                    'HTTP-Referer: http://localhost/ultimate_school',
+                    'X-Title: Ultimate School'
+                ));
+                curl_setopt($ch, CURLOPT_SSL_VERIFYPEER, false);
+                curl_setopt($ch, CURLOPT_TIMEOUT, 180);
+
+                $response   = curl_exec($ch);
+                $curl_err   = curl_error($ch);
+                curl_close($ch);
+
+                if (!$curl_err && !empty($response)) {
+                    $res_json = json_decode($response, true);
+                    if (isset($res_json['choices'][0]['message']['content']) && !empty($res_json['choices'][0]['message']['content'])) {
+                        $raw_text = $res_json['choices'][0]['message']['content'];
+                        break;
+                    } elseif (isset($res_json['error']['message'])) {
+                        $last_error = 'OpenRouter Error (' . $or_model . '): ' . $res_json['error']['message'];
+                    }
+                }
+            } else {
+                // Direct Gemini API Call with multi-key pool
+                $raw_api_keys = defined('GEMINI_API_KEY') ? GEMINI_API_KEY : '';
+                if (empty($raw_api_keys) || $raw_api_keys === 'YOUR_GEMINI_API_KEY_HERE') continue;
+
+                $api_key_list = array_filter(array_map('trim', explode(',', $raw_api_keys)));
+                if (empty($api_key_list)) continue;
+
+                shuffle($api_key_list);
+
+                foreach ($api_key_list as $active_key) {
+                    $endpoint = "https://generativelanguage.googleapis.com/v1beta/models/gemini-flash-latest:generateContent?key=" . $active_key;
+
+                    $post_data = array(
+                        'contents' => array(
+                            array('parts' => array(array('text' => $prompt)))
+                        ),
+                        'generationConfig' => array(
+                            'temperature' => 0.7,
+                            'responseMimeType' => 'application/json'
+                        )
+                    );
+
+                    $ch = curl_init($endpoint);
+                    curl_setopt($ch, CURLOPT_RETURNTRANSFER, true);
+                    curl_setopt($ch, CURLOPT_POST, true);
+                    curl_setopt($ch, CURLOPT_POSTFIELDS, json_encode($post_data));
+                    curl_setopt($ch, CURLOPT_HTTPHEADER, array('Content-Type: application/json'));
+                    curl_setopt($ch, CURLOPT_SSL_VERIFYPEER, false);
+                    curl_setopt($ch, CURLOPT_TIMEOUT, 180);
+
+                    $response   = curl_exec($ch);
+                    $curl_err   = curl_error($ch);
+                    curl_close($ch);
+
+                    if (!$curl_err && !empty($response)) {
+                        $res_json = json_decode($response, true);
+                        if (isset($res_json['candidates'][0]['content']['parts'][0]['text'])) {
+                            $raw_text = $res_json['candidates'][0]['content']['parts'][0]['text'];
+                            break 2;
+                        } elseif (isset($res_json['error']['message'])) {
+                            $last_error = 'Gemini Error: ' . $res_json['error']['message'];
+                        }
+                    }
+                }
+            }
+        }
+
+        if (empty($raw_text)) {
+            echo json_encode(array('status' => 'error', 'message' => $last_error));
+            return;
+        }
+
+        $soal_array = json_decode($raw_text, true);
+
+        if (!is_array($soal_array)) {
+            $cleaned = preg_replace('/^```(?:json)?\s*/i', '', trim($raw_text));
+            $cleaned = preg_replace('/\s*```$/i', '', $cleaned);
+            $soal_array = json_decode($cleaned, true);
+        }
+
+        if (!is_array($soal_array)) {
+            echo json_encode(array('status' => 'error', 'message' => 'Format balasan dari AI Gemini bukan format JSON yang valid.'));
+            return;
+        }
+
+        $existing = $this->M_BankSoal->get_soal_by_bank($bank_soal_id);
+        $start_nomor = count($existing) + 1;
+        $inserted_count = 0;
+
+        foreach ($soal_array as $item) {
+            if (empty($item['pertanyaan'])) continue;
+
+            $jenis_item = isset($item['jenis']) && in_array($item['jenis'], array('Essay', 'Pilihan Ganda')) ? $item['jenis'] : 'Pilihan Ganda';
+            $diff_item  = isset($item['tingkat_kesulitan']) && in_array($item['tingkat_kesulitan'], array('Mudah', 'Sedang', 'Sulit')) ? $item['tingkat_kesulitan'] : $tingkat_kesulitan;
+
+            $data_soal = array(
+                'bank_soal_id'      => $bank_soal_id,
+                'nomor_soal'        => $start_nomor + $inserted_count,
+                'pertanyaan'        => $item['pertanyaan'],
+                'jenis'             => $jenis_item,
+                'pilihan_a'         => isset($item['pilihan_a']) ? $item['pilihan_a'] : '',
+                'pilihan_b'         => isset($item['pilihan_b']) ? $item['pilihan_b'] : '',
+                'pilihan_c'         => isset($item['pilihan_c']) ? $item['pilihan_c'] : '',
+                'pilihan_d'         => isset($item['pilihan_d']) ? $item['pilihan_d'] : '',
+                'pilihan_e'         => isset($item['pilihan_e']) ? $item['pilihan_e'] : '',
+                'kunci_jawaban'     => isset($item['kunci_jawaban']) ? $item['kunci_jawaban'] : '',
+                'pembahasan'        => isset($item['pembahasan']) ? $item['pembahasan'] : '',
+                'bobot'             => isset($item['bobot']) && is_numeric($item['bobot']) ? (int)$item['bobot'] : 10,
+                'tingkat_kesulitan' => $diff_item
+            );
+
+            $this->M_BankSoal->insert_soal($data_soal);
+            $inserted_count++;
+        }
+
+        if ($inserted_count > 0) {
+            $this->session->set_flashdata('success', "Berhasil membuat $inserted_count butir soal secara otomatis menggunakan AI Gemini!");
+            echo json_encode(array(
+                'status' => 'success',
+                'message' => "$inserted_count soal berhasil digenerate dan disimpan.",
+                'total_generated' => $inserted_count
+            ));
+        } else {
+            echo json_encode(array('status' => 'error', 'message' => 'Tidak ada soal yang berhasil diproses dan disimpan.'));
+        }
+    }
 }
+

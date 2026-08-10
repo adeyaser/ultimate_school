@@ -18,8 +18,8 @@ class Kuislatihan extends MY_Controller {
         $murid = $this->M_Murid->get_by_user_id($this->user_data['id']);
         $murid_id = isset($murid['id']) ? $murid['id'] : 1;
 
-        // History of practice quizzes
-        $data['history'] = $this->db->get_where('kuis_latihan', array('murid_id' => $murid_id))->result_array();
+        // History of practice quizzes with Joined Mapel Name
+        $data['history'] = $this->M_KuisLatihan->get_history($murid_id);
 
         $this->render_page('kuis/index', $data);
     }

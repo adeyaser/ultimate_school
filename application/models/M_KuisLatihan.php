@@ -5,15 +5,23 @@ class M_KuisLatihan extends CI_Model {
 
     public function generate_kuis($murid_id, $mata_pelajaran_id, $jumlah_soal = 10)
     {
-        // Select random questions from repository for the subject
+        // 1. Try questions matching the selected subject
         $this->db->select('soal.id');
         $this->db->from('soal');
         $this->db->join('bank_soal', 'bank_soal.id = soal.bank_soal_id');
         $this->db->where('bank_soal.mata_pelajaran_id', $mata_pelajaran_id);
-        $this->db->where('bank_soal.status', 'Published');
         $this->db->order_by('RAND()');
         $this->db->limit($jumlah_soal);
         $res = $this->db->get()->result_array();
+
+        // 2. Fallback: if no questions for that subject, pick any available questions in repository
+        if (empty($res)) {
+            $this->db->select('soal.id');
+            $this->db->from('soal');
+            $this->db->order_by('RAND()');
+            $this->db->limit($jumlah_soal);
+            $res = $this->db->get()->result_array();
+        }
 
         if (empty($res)) {
             return false;
@@ -32,6 +40,16 @@ class M_KuisLatihan extends CI_Model {
 
         $this->db->insert('kuis_latihan', $data);
         return $this->db->insert_id();
+    }
+
+    public function get_history($murid_id)
+    {
+        $this->db->select('kuis_latihan.*, mata_pelajaran.nama_mapel, mata_pelajaran.kode_mapel');
+        $this->db->from('kuis_latihan');
+        $this->db->join('mata_pelajaran', 'mata_pelajaran.id = kuis_latihan.mata_pelajaran_id', 'left');
+        $this->db->where('kuis_latihan.murid_id', $murid_id);
+        $this->db->order_by('kuis_latihan.id', 'DESC');
+        return $this->db->get()->result_array();
     }
 
     public function get_kuis($kuis_id)

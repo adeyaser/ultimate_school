@@ -166,6 +166,7 @@ class M_Ujian extends CI_Model {
         $durasi_sec = $end_time - $start_time;
 
         $update_data = array(
+            'ujian_id' => $peserta['ujian_id'],
             'tanggal_selesai' => date('Y-m-d H:i:s'),
             'durasi_pengerjaan' => $durasi_sec,
             'status' => 'Selesai',

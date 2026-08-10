@@ -45,9 +45,12 @@
                   </ul>
 
                   <?php if ($u['status_peserta'] === 'Selesai'): ?>
-                    <div class="alert alert-success text-center mb-0 fw-bold">
-                      <i class="bi bi-check-circle-fill me-1"></i> Selesai | Nilai: <?= $u['nilai_total'] ?>
+                    <div class="alert alert-success text-center mb-2 fw-bold py-2">
+                      <i class="bi bi-check-circle-fill me-1"></i> Selesai | Nilai: <?= round($u['nilai_total']) ?>
                     </div>
+                    <a href="<?= base_url('cbt/ulangi_ujian/' . $u['id']) ?>" onclick="return confirm('Ulangi pengerjaan ujian ini? Jawaban pengerjaan sebelumnya akan di-reset.')" class="btn btn-outline-warning btn-sm w-100 fw-bold">
+                      <i class="bi bi-arrow-repeat me-1"></i> Ulangi Pengerjaan Ujian (Remidi)
+                    </a>
                   <?php else: ?>
                     <a href="<?= base_url('cbt/konfirmasi/' . $u['id']) ?>" class="btn btn-primary w-100 fw-bold py-2 shadow-sm">
                       <i class="bi bi-box-arrow-in-right me-2"></i> Ikuti Ujian Ini
