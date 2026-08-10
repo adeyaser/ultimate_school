@@ -7,11 +7,12 @@ class M_KuisLatihan extends CI_Model {
     {
         $this->load->model(array('M_GudangSoal', 'M_Mapel', 'M_Murid'));
 
-        // 1. First attempt: get existing questions in DB 'soal' for this subject
+        // 1. First attempt: get existing questions in DB 'soal' for this subject (only teacher-published bank_soal)
         $this->db->select('soal.id');
         $this->db->from('soal');
         $this->db->join('bank_soal', 'bank_soal.id = soal.bank_soal_id');
         $this->db->where('bank_soal.mata_pelajaran_id', $mata_pelajaran_id);
+        $this->db->where('bank_soal.jenis_soal !=', 'Kuis Latihan Gudang Soal');
         $this->db->order_by('RAND()');
         $this->db->limit($jumlah_soal);
         $res = $this->db->get()->result_array();
@@ -85,6 +86,8 @@ class M_KuisLatihan extends CI_Model {
                     $system_bank_id = $this->db->insert_id();
                 } else {
                     $system_bank_id = $system_bank['id'];
+                    $this->db->where('bank_soal_id', $system_bank_id);
+                    $this->db->delete('soal');
                 }
 
                 // Import Gudang Soal items into 'soal' DB table
@@ -139,13 +142,50 @@ class M_KuisLatihan extends CI_Model {
         return $this->db->get()->row_array();
     }
 
-    public function get_soal_kuis($soal_ids_json)
+    public function get_soal_kuis($soal_ids_json, $kuis_id = null)
     {
         $soal_ids = json_decode($soal_ids_json, true);
         if (empty($soal_ids)) return array();
 
         $this->db->where_in('id', $soal_ids);
-        return $this->db->get('soal')->result_array();
+        $soal_list = $this->db->get('soal')->result_array();
+
+        if ($kuis_id && !empty($soal_list)) {
+            $kuis = $this->get_kuis($kuis_id);
+            if ($kuis && isset($kuis['nama_mapel'])) {
+                $is_inggris = (stripos($kuis['nama_mapel'], 'Inggris') !== false);
+                $has_bad_question = false;
+
+                if ($is_inggris) {
+                    foreach ($soal_list as $s) {
+                        if (preg_match('/\b(kancil|petani|paragraf|adalah|merupakan|tersusun|diketahui|berikut|sejarah|geografi)\b/i', $s['pertanyaan'])) {
+                            $has_bad_question = true;
+                            break;
+                        }
+                    }
+                }
+
+                if ($has_bad_question) {
+                    $new_kuis_id = $this->generate_kuis($kuis['murid_id'], $kuis['mata_pelajaran_id'], $kuis['jumlah_soal']);
+                    if ($new_kuis_id) {
+                        $new_kuis = $this->get_kuis($new_kuis_id);
+                        if (!empty($new_kuis['soal_ids'])) {
+                            $this->db->where('id', $kuis_id);
+                            $this->db->update('kuis_latihan', array('soal_ids' => $new_kuis['soal_ids']));
+
+                            $this->db->where('id', $new_kuis_id);
+                            $this->db->delete('kuis_latihan');
+
+                            $soal_ids = json_decode($new_kuis['soal_ids'], true);
+                            $this->db->where_in('id', $soal_ids);
+                            $soal_list = $this->db->get('soal')->result_array();
+                        }
+                    }
+                }
+            }
+        }
+
+        return $soal_list;
     }
 
     public function submit_kuis($kuis_id, $jawaban_map)
