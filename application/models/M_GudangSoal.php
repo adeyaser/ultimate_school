@@ -37,12 +37,12 @@ class M_GudangSoal extends CI_Model {
         $all = $this->get_master_data();
         if (empty($all)) return array();
 
-        $filtered = array();
-
         $mapel_clean   = !empty($mapel) ? strtolower(trim($mapel)) : '';
-        $kelas_val     = !empty($kelas) ? (int)$kelas : 0;
+        $kelas_val     = is_numeric($kelas) ? (int)$kelas : (function_exists('parse_kelas_number') ? parse_kelas_number($kelas) : 0);
         $jenjang_clean = !empty($jenjang) ? strtoupper(trim($jenjang)) : '';
 
+        // Priority 1: Strict Match (Mapel + Exact Kelas + Jenjang)
+        $strict = array();
         foreach ($all as $item) {
             $match_mapel   = true;
             $match_jenjang = true;
@@ -62,38 +62,48 @@ class M_GudangSoal extends CI_Model {
             }
 
             if ($kelas_val > 0) {
-                if ((int)$item['kelas'] !== $kelas_val && (int)$item['kelas'] !== 0) {
+                if ((int)$item['kelas'] !== $kelas_val) {
                     $match_kelas = false;
                 }
             }
 
             if ($match_mapel && $match_jenjang && $match_kelas) {
-                $filtered[] = $item;
+                $strict[] = $item;
             }
         }
 
-        // Fallback 1: match mapel & jenjang ignoring exact kelas
-        if (empty($filtered) && (!empty($mapel_clean) || !empty($jenjang_clean))) {
-            foreach ($all as $item) {
-                $match_mapel   = empty($mapel_clean) || strpos(strtolower($item['mapel']), $mapel_clean) !== false || strpos($mapel_clean, strtolower($item['mapel'])) !== false;
-                $match_jenjang = empty($jenjang_clean) || strtoupper($item['jenjang']) === $jenjang_clean;
+        if (!empty($strict)) {
+            $filtered = $strict;
+        } else {
+            // Priority 2: Match Mapel + Exact Kelas (ignore jenjang if discrepancy)
+            $kelas_match = array();
+            if ($kelas_val > 0) {
+                foreach ($all as $item) {
+                    $item_mapel = strtolower($item['mapel']);
+                    $match_mapel = empty($mapel_clean) || strpos($item_mapel, $mapel_clean) !== false || strpos($mapel_clean, $item_mapel) !== false;
+                    if ($match_mapel && (int)$item['kelas'] === $kelas_val) {
+                        $kelas_match[] = $item;
+                    }
+                }
+            }
 
-                if ($match_mapel && $match_jenjang) {
-                    $filtered[] = $item;
+            if (!empty($kelas_match)) {
+                $filtered = $kelas_match;
+            } else {
+                // Priority 3: Fallback Match Mapel + Jenjang (only if exact class has 0 questions in repository)
+                $filtered = array();
+                foreach ($all as $item) {
+                    $item_mapel = strtolower($item['mapel']);
+                    $match_mapel = empty($mapel_clean) || strpos($item_mapel, $mapel_clean) !== false || strpos($mapel_clean, $item_mapel) !== false;
+                    $match_jenjang = empty($jenjang_clean) || strtoupper($item['jenjang']) === $jenjang_clean;
+
+                    if ($match_mapel && $match_jenjang) {
+                        $filtered[] = $item;
+                    }
                 }
             }
         }
 
-        // Fallback 2: match jenjang only
-        if (empty($filtered) && !empty($jenjang_clean)) {
-            foreach ($all as $item) {
-                if (strtoupper($item['jenjang']) === $jenjang_clean) {
-                    $filtered[] = $item;
-                }
-            }
-        }
-
-        // Fallback 3: take any questions if repository matches nothing
         if (empty($filtered)) {
             $filtered = $all;
         }

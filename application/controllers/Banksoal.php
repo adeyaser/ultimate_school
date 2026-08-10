@@ -94,8 +94,7 @@ class Banksoal extends MY_Controller {
         $kelas   = isset($bank_soal['nama_kelas']) ? $bank_soal['nama_kelas'] : '';
         $jenjang = isset($bank_soal['jenjang']) ? $bank_soal['jenjang'] : '';
 
-        preg_match('/\d+/', $kelas, $m);
-        $kelas_no = isset($m[0]) ? (int)$m[0] : null;
+        $kelas_no = parse_kelas_number($kelas);
 
         $items = $this->M_GudangSoal->get_soal_by_filter($mapel, $kelas_no, $jenjang, $jumlah, $is_random);
         $inserted = $this->M_GudangSoal->import_to_bank_soal($bank_soal_id, $items);
