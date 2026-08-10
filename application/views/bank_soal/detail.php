@@ -42,6 +42,9 @@ MathJax = {
               <a href="<?= base_url('banksoal/export_word/' . $bank_soal['id']) ?>" class="btn btn-info text-white btn-lg fw-bold shadow-sm me-2">
                 <i class="bi bi-file-earmark-word-fill me-1"></i> Export to Word
               </a>
+              <button class="btn btn-success btn-lg fw-bold shadow-sm me-2" data-bs-toggle="modal" data-bs-target="#modalGudangSoal">
+                <i class="bi bi-box-seam-fill me-2"></i> Gudang Soal (IndoMMLU)
+              </button>
               <button class="btn btn-gradient text-white btn-lg fw-bold shadow-sm me-2" style="background: linear-gradient(135deg, #6366f1 0%, #a855f7 100%); border: none;" data-bs-toggle="modal" data-bs-target="#modalGenerateAiSoal">
                 <i class="bi bi-stars me-2"></i> Generate Soal AI
               </button>
@@ -52,6 +55,58 @@ MathJax = {
                 <i class="bi bi-plus-circle-fill me-2"></i> Tambah Soal Satuan
               </button>
             </div>
+          </div>
+        </div>
+      </div>
+
+      <!-- Modal Gudang Soal IndoMMLU -->
+      <div class="modal fade" id="modalGudangSoal" tabindex="-1">
+        <div class="modal-dialog modal-lg modal-dialog-centered">
+          <div class="modal-content border-0 shadow-lg rounded-4">
+            <form action="<?= base_url('banksoal/import_gudang_soal') ?>" method="POST">
+              <input type="hidden" name="bank_soal_id" value="<?= $bank_soal['id'] ?>" />
+              <div class="modal-header text-white p-3 bg-success">
+                <h5 class="modal-title fw-bold"><i class="bi bi-box-seam-fill me-2"></i> Ambil Soal dari Repositori Gudang Soal IndoMMLU</h5>
+                <button type="button" class="btn-close btn-close-white" data-bs-dismiss="modal"></button>
+              </div>
+              <div class="modal-body p-4">
+                <div class="alert alert-success d-flex align-items-center mb-3">
+                  <i class="bi bi-check-circle-fill me-3 fs-3"></i>
+                  <div>
+                    <h6 class="fw-bold mb-1">Repositori Gudang Soal IndoMMLU Aktif (14.977 Soal Terindeks)</h6>
+                    <p class="mb-0 small">Sistem akan secara otomatis menyaring butir soal yang sesuai dengan Mata Pelajaran <strong><?= $bank_soal['nama_mapel'] ?></strong> (Kelas <strong><?= $bank_soal['nama_kelas'] ?></strong> / <strong><?= $bank_soal['jenjang'] ?></strong>).</p>
+                  </div>
+                </div>
+
+                <div class="row g-3">
+                  <div class="col-md-6">
+                    <label class="form-label fw-bold">Jumlah Soal yang Ingin Diambil *</label>
+                    <select name="jumlah" class="form-select" required>
+                      <option value="5">5 Soal</option>
+                      <option value="10" selected>10 Soal</option>
+                      <option value="15">15 Soal</option>
+                      <option value="20">20 Soal</option>
+                      <option value="30">30 Soal</option>
+                      <option value="50">50 Soal</option>
+                    </select>
+                  </div>
+
+                  <div class="col-md-6">
+                    <label class="form-label fw-bold">Mode Pengambilan Soal *</label>
+                    <select name="mode" class="form-select" required>
+                      <option value="random" selected>Acak (Randomized Selection)</option>
+                      <option value="seq">Berurutan (Sequential Selection)</option>
+                    </select>
+                  </div>
+                </div>
+              </div>
+              <div class="modal-footer bg-light p-3 d-flex justify-content-between">
+                <button type="button" class="btn btn-secondary px-4 rounded-pill" data-bs-dismiss="modal">Batal</button>
+                <button type="submit" class="btn btn-success fw-bold px-4 rounded-pill">
+                  <i class="bi bi-cloud-arrow-down-fill me-1"></i> Impor dari Gudang Soal
+                </button>
+              </div>
+            </form>
           </div>
         </div>
       </div>

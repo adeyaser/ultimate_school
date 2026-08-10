@@ -1,0 +1,1159 @@
+{
+    "title": "Gudang Soal Repositori IndoMMLU",
+    "total_soal": 14977,
+    "generated_at": "2026-08-10 16:25:22",
+    "categories": [
+        {
+            "jenjang": "SMA",
+            "mapel": "Sejarah",
+            "kelas": 10,
+            "jumlah": 110
+        },
+        {
+            "jenjang": "SMA",
+            "mapel": "Sejarah",
+            "kelas": 11,
+            "jumlah": 85
+        },
+        {
+            "jenjang": "SMA",
+            "mapel": "Sejarah",
+            "kelas": 12,
+            "jumlah": 105
+        },
+        {
+            "jenjang": "SMA",
+            "mapel": "Sejarah",
+            "kelas": 0,
+            "jumlah": 198
+        },
+        {
+            "jenjang": "SMA",
+            "mapel": "Geografi",
+            "kelas": 10,
+            "jumlah": 51
+        },
+        {
+            "jenjang": "SMA",
+            "mapel": "Geografi",
+            "kelas": 11,
+            "jumlah": 105
+        },
+        {
+            "jenjang": "SMA",
+            "mapel": "Geografi",
+            "kelas": 12,
+            "jumlah": 40
+        },
+        {
+            "jenjang": "SMA",
+            "mapel": "Geografi",
+            "kelas": 0,
+            "jumlah": 294
+        },
+        {
+            "jenjang": "SD",
+            "mapel": "Bahasa Lampung",
+            "kelas": 1,
+            "jumlah": 23
+        },
+        {
+            "jenjang": "SD",
+            "mapel": "Bahasa Lampung",
+            "kelas": 2,
+            "jumlah": 9
+        },
+        {
+            "jenjang": "SD",
+            "mapel": "Bahasa Lampung",
+            "kelas": 3,
+            "jumlah": 15
+        },
+        {
+            "jenjang": "SD",
+            "mapel": "Bahasa Lampung",
+            "kelas": 4,
+            "jumlah": 15
+        },
+        {
+            "jenjang": "SD",
+            "mapel": "Bahasa Lampung",
+            "kelas": 5,
+            "jumlah": 10
+        },
+        {
+            "jenjang": "SD",
+            "mapel": "Bahasa Lampung",
+            "kelas": 6,
+            "jumlah": 21
+        },
+        {
+            "jenjang": "SD",
+            "mapel": "Bahasa Lampung",
+            "kelas": 7,
+            "jumlah": 10
+        },
+        {
+            "jenjang": "SD",
+            "mapel": "Bahasa Lampung",
+            "kelas": 8,
+            "jumlah": 10
+        },
+        {
+            "jenjang": "SD",
+            "mapel": "Bahasa Lampung",
+            "kelas": 9,
+            "jumlah": 10
+        },
+        {
+            "jenjang": "SD",
+            "mapel": "Bahasa Lampung",
+            "kelas": 10,
+            "jumlah": 24
+        },
+        {
+            "jenjang": "SD",
+            "mapel": "IPS",
+            "kelas": 1,
+            "jumlah": 51
+        },
+        {
+            "jenjang": "SD",
+            "mapel": "IPS",
+            "kelas": 2,
+            "jumlah": 60
+        },
+        {
+            "jenjang": "SD",
+            "mapel": "IPS",
+            "kelas": 3,
+            "jumlah": 75
+        },
+        {
+            "jenjang": "SD",
+            "mapel": "IPS",
+            "kelas": 4,
+            "jumlah": 27
+        },
+        {
+            "jenjang": "SD",
+            "mapel": "IPS",
+            "kelas": 5,
+            "jumlah": 35
+        },
+        {
+            "jenjang": "SD",
+            "mapel": "IPS",
+            "kelas": 6,
+            "jumlah": 52
+        },
+        {
+            "jenjang": "SMP",
+            "mapel": "IPS",
+            "kelas": 8,
+            "jumlah": 100
+        },
+        {
+            "jenjang": "SMP",
+            "mapel": "IPS",
+            "kelas": 7,
+            "jumlah": 99
+        },
+        {
+            "jenjang": "SMP",
+            "mapel": "IPS",
+            "kelas": 9,
+            "jumlah": 100
+        },
+        {
+            "jenjang": "SD",
+            "mapel": "Bahasa Bali",
+            "kelas": 2,
+            "jumlah": 24
+        },
+        {
+            "jenjang": "SD",
+            "mapel": "Bahasa Bali",
+            "kelas": 1,
+            "jumlah": 50
+        },
+        {
+            "jenjang": "SD",
+            "mapel": "Bahasa Bali",
+            "kelas": 3,
+            "jumlah": 27
+        },
+        {
+            "jenjang": "SD",
+            "mapel": "Bahasa Bali",
+            "kelas": 4,
+            "jumlah": 19
+        },
+        {
+            "jenjang": "SD",
+            "mapel": "Bahasa Bali",
+            "kelas": 5,
+            "jumlah": 26
+        },
+        {
+            "jenjang": "SD",
+            "mapel": "Bahasa Bali",
+            "kelas": 6,
+            "jumlah": 54
+        },
+        {
+            "jenjang": "SD",
+            "mapel": "Bahasa Bali",
+            "kelas": 7,
+            "jumlah": 27
+        },
+        {
+            "jenjang": "SD",
+            "mapel": "Bahasa Bali",
+            "kelas": 8,
+            "jumlah": 59
+        },
+        {
+            "jenjang": "SD",
+            "mapel": "Bahasa Bali",
+            "kelas": 9,
+            "jumlah": 37
+        },
+        {
+            "jenjang": "SD",
+            "mapel": "Bahasa Bali",
+            "kelas": 12,
+            "jumlah": 83
+        },
+        {
+            "jenjang": "SD",
+            "mapel": "Bahasa Bali",
+            "kelas": 10,
+            "jumlah": 45
+        },
+        {
+            "jenjang": "SD",
+            "mapel": "Bahasa Makassar",
+            "kelas": 4,
+            "jumlah": 14
+        },
+        {
+            "jenjang": "SD",
+            "mapel": "Bahasa Makassar",
+            "kelas": 6,
+            "jumlah": 38
+        },
+        {
+            "jenjang": "SD",
+            "mapel": "Bahasa Makassar",
+            "kelas": 1,
+            "jumlah": 12
+        },
+        {
+            "jenjang": "SD",
+            "mapel": "Bahasa Makassar",
+            "kelas": 2,
+            "jumlah": 4
+        },
+        {
+            "jenjang": "SD",
+            "mapel": "Bahasa Makassar",
+            "kelas": 3,
+            "jumlah": 5
+        },
+        {
+            "jenjang": "SD",
+            "mapel": "Bahasa Makassar",
+            "kelas": 5,
+            "jumlah": 25
+        },
+        {
+            "jenjang": "SD",
+            "mapel": "Bahasa Makassar",
+            "kelas": 7,
+            "jumlah": 7
+        },
+        {
+            "jenjang": "SD",
+            "mapel": "Bahasa Makassar",
+            "kelas": 8,
+            "jumlah": 4
+        },
+        {
+            "jenjang": "SD",
+            "mapel": "Bahasa Makassar",
+            "kelas": 9,
+            "jumlah": 30
+        },
+        {
+            "jenjang": "SD",
+            "mapel": "Bahasa Makassar",
+            "kelas": 11,
+            "jumlah": 8
+        },
+        {
+            "jenjang": "SD",
+            "mapel": "Bahasa Makassar",
+            "kelas": 12,
+            "jumlah": 39
+        },
+        {
+            "jenjang": "SD",
+            "mapel": "Bahasa Banjar",
+            "kelas": 1,
+            "jumlah": 15
+        },
+        {
+            "jenjang": "SD",
+            "mapel": "Bahasa Banjar",
+            "kelas": 2,
+            "jumlah": 15
+        },
+        {
+            "jenjang": "SD",
+            "mapel": "Bahasa Banjar",
+            "kelas": 3,
+            "jumlah": 42
+        },
+        {
+            "jenjang": "SD",
+            "mapel": "Bahasa Banjar",
+            "kelas": 4,
+            "jumlah": 25
+        },
+        {
+            "jenjang": "SD",
+            "mapel": "Bahasa Banjar",
+            "kelas": 5,
+            "jumlah": 3
+        },
+        {
+            "jenjang": "SD",
+            "mapel": "Bahasa Banjar",
+            "kelas": 6,
+            "jumlah": 20
+        },
+        {
+            "jenjang": "SD",
+            "mapel": "Bahasa Banjar",
+            "kelas": 7,
+            "jumlah": 10
+        },
+        {
+            "jenjang": "SD",
+            "mapel": "Bahasa Banjar",
+            "kelas": 11,
+            "jumlah": 10
+        },
+        {
+            "jenjang": "SD",
+            "mapel": "Bahasa Banjar",
+            "kelas": 12,
+            "jumlah": 4
+        },
+        {
+            "jenjang": "SMA",
+            "mapel": "Kimia",
+            "kelas": 12,
+            "jumlah": 463
+        },
+        {
+            "jenjang": "SMA",
+            "mapel": "Kimia",
+            "kelas": 11,
+            "jumlah": 92
+        },
+        {
+            "jenjang": "SMA",
+            "mapel": "Biologi",
+            "kelas": 10,
+            "jumlah": 181
+        },
+        {
+            "jenjang": "SMA",
+            "mapel": "Biologi",
+            "kelas": 11,
+            "jumlah": 141
+        },
+        {
+            "jenjang": "SMA",
+            "mapel": "Biologi",
+            "kelas": 12,
+            "jumlah": 349
+        },
+        {
+            "jenjang": "SMA",
+            "mapel": "Biologi",
+            "kelas": 2023,
+            "jumlah": 174
+        },
+        {
+            "jenjang": "SD",
+            "mapel": "IPA",
+            "kelas": 4,
+            "jumlah": 203
+        },
+        {
+            "jenjang": "SD",
+            "mapel": "IPA",
+            "kelas": 6,
+            "jumlah": 176
+        },
+        {
+            "jenjang": "SD",
+            "mapel": "IPA",
+            "kelas": 1,
+            "jumlah": 6
+        },
+        {
+            "jenjang": "SD",
+            "mapel": "IPA",
+            "kelas": 3,
+            "jumlah": 13
+        },
+        {
+            "jenjang": "SD",
+            "mapel": "IPA",
+            "kelas": 5,
+            "jumlah": 90
+        },
+        {
+            "jenjang": "SMP",
+            "mapel": "IPA",
+            "kelas": 7,
+            "jumlah": 212
+        },
+        {
+            "jenjang": "SMP",
+            "mapel": "IPA",
+            "kelas": 9,
+            "jumlah": 240
+        },
+        {
+            "jenjang": "SMP",
+            "mapel": "IPA",
+            "kelas": 8,
+            "jumlah": 28
+        },
+        {
+            "jenjang": "SD",
+            "mapel": "Agama Kristen",
+            "kelas": 6,
+            "jumlah": 50
+        },
+        {
+            "jenjang": "SMP",
+            "mapel": "Agama Kristen",
+            "kelas": 7,
+            "jumlah": 34
+        },
+        {
+            "jenjang": "SMP",
+            "mapel": "Agama Kristen",
+            "kelas": 8,
+            "jumlah": 15
+        },
+        {
+            "jenjang": "SMA",
+            "mapel": "Agama Kristen",
+            "kelas": 10,
+            "jumlah": 35
+        },
+        {
+            "jenjang": "SMA",
+            "mapel": "Agama Kristen",
+            "kelas": 11,
+            "jumlah": 67
+        },
+        {
+            "jenjang": "SD",
+            "mapel": "Kesenian",
+            "kelas": 2,
+            "jumlah": 36
+        },
+        {
+            "jenjang": "SD",
+            "mapel": "Kesenian",
+            "kelas": 4,
+            "jumlah": 67
+        },
+        {
+            "jenjang": "SD",
+            "mapel": "Kesenian",
+            "kelas": 6,
+            "jumlah": 97
+        },
+        {
+            "jenjang": "SMP",
+            "mapel": "Kesenian",
+            "kelas": 9,
+            "jumlah": 72
+        },
+        {
+            "jenjang": "SMP",
+            "mapel": "Kesenian",
+            "kelas": 7,
+            "jumlah": 72
+        },
+        {
+            "jenjang": "SMP",
+            "mapel": "Kesenian",
+            "kelas": 8,
+            "jumlah": 56
+        },
+        {
+            "jenjang": "SMA",
+            "mapel": "Kesenian",
+            "kelas": 12,
+            "jumlah": 98
+        },
+        {
+            "jenjang": "SMA",
+            "mapel": "Kesenian",
+            "kelas": 11,
+            "jumlah": 103
+        },
+        {
+            "jenjang": "SD",
+            "mapel": "Agama Islam",
+            "kelas": 2,
+            "jumlah": 15
+        },
+        {
+            "jenjang": "SD",
+            "mapel": "Agama Islam",
+            "kelas": 4,
+            "jumlah": 27
+        },
+        {
+            "jenjang": "SD",
+            "mapel": "Agama Islam",
+            "kelas": 6,
+            "jumlah": 40
+        },
+        {
+            "jenjang": "SD",
+            "mapel": "Agama Islam",
+            "kelas": 1,
+            "jumlah": 37
+        },
+        {
+            "jenjang": "SD",
+            "mapel": "Agama Islam",
+            "kelas": 3,
+            "jumlah": 54
+        },
+        {
+            "jenjang": "SD",
+            "mapel": "Agama Islam",
+            "kelas": 5,
+            "jumlah": 28
+        },
+        {
+            "jenjang": "SMP",
+            "mapel": "Agama Islam",
+            "kelas": 7,
+            "jumlah": 109
+        },
+        {
+            "jenjang": "SMP",
+            "mapel": "Agama Islam",
+            "kelas": 8,
+            "jumlah": 63
+        },
+        {
+            "jenjang": "SMP",
+            "mapel": "Agama Islam",
+            "kelas": 9,
+            "jumlah": 30
+        },
+        {
+            "jenjang": "SMA",
+            "mapel": "Agama Islam",
+            "kelas": 11,
+            "jumlah": 142
+        },
+        {
+            "jenjang": "SMA",
+            "mapel": "Agama Islam",
+            "kelas": 10,
+            "jumlah": 55
+        },
+        {
+            "jenjang": "SMA",
+            "mapel": "Agama Islam",
+            "kelas": 9,
+            "jumlah": 45
+        },
+        {
+            "jenjang": "SMA",
+            "mapel": "Agama Islam",
+            "kelas": 12,
+            "jumlah": 58
+        },
+        {
+            "jenjang": "SD",
+            "mapel": "Agama Hindu",
+            "kelas": 3,
+            "jumlah": 20
+        },
+        {
+            "jenjang": "SD",
+            "mapel": "Agama Hindu",
+            "kelas": 5,
+            "jumlah": 10
+        },
+        {
+            "jenjang": "SD",
+            "mapel": "Agama Hindu",
+            "kelas": 6,
+            "jumlah": 19
+        },
+        {
+            "jenjang": "SMP",
+            "mapel": "Agama Hindu",
+            "kelas": 7,
+            "jumlah": 40
+        },
+        {
+            "jenjang": "SMP",
+            "mapel": "Agama Hindu",
+            "kelas": 8,
+            "jumlah": 12
+        },
+        {
+            "jenjang": "SMA",
+            "mapel": "Agama Hindu",
+            "kelas": 12,
+            "jumlah": 41
+        },
+        {
+            "jenjang": "SMA",
+            "mapel": "Agama Hindu",
+            "kelas": 11,
+            "jumlah": 8
+        },
+        {
+            "jenjang": "SD",
+            "mapel": "Bahasa Madura",
+            "kelas": 1,
+            "jumlah": 14
+        },
+        {
+            "jenjang": "SD",
+            "mapel": "Bahasa Madura",
+            "kelas": 2,
+            "jumlah": 10
+        },
+        {
+            "jenjang": "SD",
+            "mapel": "Bahasa Madura",
+            "kelas": 3,
+            "jumlah": 20
+        },
+        {
+            "jenjang": "SD",
+            "mapel": "Bahasa Madura",
+            "kelas": 4,
+            "jumlah": 20
+        },
+        {
+            "jenjang": "SD",
+            "mapel": "Bahasa Madura",
+            "kelas": 5,
+            "jumlah": 15
+        },
+        {
+            "jenjang": "SD",
+            "mapel": "Bahasa Madura",
+            "kelas": 6,
+            "jumlah": 21
+        },
+        {
+            "jenjang": "SMP",
+            "mapel": "Bahasa Madura",
+            "kelas": 8,
+            "jumlah": 37
+        },
+        {
+            "jenjang": "SMP",
+            "mapel": "Bahasa Madura",
+            "kelas": 7,
+            "jumlah": 38
+        },
+        {
+            "jenjang": "SMP",
+            "mapel": "Bahasa Madura",
+            "kelas": 9,
+            "jumlah": 18
+        },
+        {
+            "jenjang": "SMA",
+            "mapel": "Bahasa Madura",
+            "kelas": 10,
+            "jumlah": 20
+        },
+        {
+            "jenjang": "SMA",
+            "mapel": "Bahasa Madura",
+            "kelas": 12,
+            "jumlah": 43
+        },
+        {
+            "jenjang": "SMA",
+            "mapel": "Bahasa Madura",
+            "kelas": 11,
+            "jumlah": 39
+        },
+        {
+            "jenjang": "SD",
+            "mapel": "Penjaskes",
+            "kelas": 4,
+            "jumlah": 15
+        },
+        {
+            "jenjang": "SD",
+            "mapel": "Penjaskes",
+            "kelas": 1,
+            "jumlah": 9
+        },
+        {
+            "jenjang": "SD",
+            "mapel": "Penjaskes",
+            "kelas": 5,
+            "jumlah": 25
+        },
+        {
+            "jenjang": "SMP",
+            "mapel": "Penjaskes",
+            "kelas": 9,
+            "jumlah": 19
+        },
+        {
+            "jenjang": "SMP",
+            "mapel": "Penjaskes",
+            "kelas": 8,
+            "jumlah": 30
+        },
+        {
+            "jenjang": "SMA",
+            "mapel": "Penjaskes",
+            "kelas": 10,
+            "jumlah": 35
+        },
+        {
+            "jenjang": "SMA",
+            "mapel": "Penjaskes",
+            "kelas": 12,
+            "jumlah": 15
+        },
+        {
+            "jenjang": "SD",
+            "mapel": "Bahasa Indonesia",
+            "kelas": 1,
+            "jumlah": 200
+        },
+        {
+            "jenjang": "SMP",
+            "mapel": "Fisika",
+            "kelas": 8,
+            "jumlah": 60
+        },
+        {
+            "jenjang": "SMP",
+            "mapel": "Fisika",
+            "kelas": 7,
+            "jumlah": 57
+        },
+        {
+            "jenjang": "SMP",
+            "mapel": "Fisika",
+            "kelas": 9,
+            "jumlah": 81
+        },
+        {
+            "jenjang": "SMA",
+            "mapel": "Fisika",
+            "kelas": 10,
+            "jumlah": 114
+        },
+        {
+            "jenjang": "SMA",
+            "mapel": "Fisika",
+            "kelas": 12,
+            "jumlah": 95
+        },
+        {
+            "jenjang": "SMA",
+            "mapel": "Fisika",
+            "kelas": 11,
+            "jumlah": 88
+        },
+        {
+            "jenjang": "SMA",
+            "mapel": "Kimia",
+            "kelas": 10,
+            "jumlah": 130
+        },
+        {
+            "jenjang": "SD",
+            "mapel": "Budaya Alam Minangkabau",
+            "kelas": 7,
+            "jumlah": 46
+        },
+        {
+            "jenjang": "SD",
+            "mapel": "Budaya Alam Minangkabau",
+            "kelas": 5,
+            "jumlah": 48
+        },
+        {
+            "jenjang": "SD",
+            "mapel": "Budaya Alam Minangkabau",
+            "kelas": 6,
+            "jumlah": 102
+        },
+        {
+            "jenjang": "SD",
+            "mapel": "Budaya Alam Minangkabau",
+            "kelas": 3,
+            "jumlah": 3
+        },
+        {
+            "jenjang": "SD",
+            "mapel": "Bahasa Bali",
+            "kelas": 11,
+            "jumlah": 20
+        },
+        {
+            "jenjang": "SMA",
+            "mapel": "Bahasa Indonesia",
+            "kelas": 10,
+            "jumlah": 295
+        },
+        {
+            "jenjang": "SMA",
+            "mapel": "Bahasa Indonesia",
+            "kelas": 11,
+            "jumlah": 288
+        },
+        {
+            "jenjang": "SMA",
+            "mapel": "Bahasa Indonesia",
+            "kelas": 12,
+            "jumlah": 655
+        },
+        {
+            "jenjang": "SD",
+            "mapel": "Bahasa Dayak Ngaju",
+            "kelas": 2,
+            "jumlah": 11
+        },
+        {
+            "jenjang": "SD",
+            "mapel": "Bahasa Dayak Ngaju",
+            "kelas": 3,
+            "jumlah": 13
+        },
+        {
+            "jenjang": "SD",
+            "mapel": "Bahasa Dayak Ngaju",
+            "kelas": 6,
+            "jumlah": 30
+        },
+        {
+            "jenjang": "SD",
+            "mapel": "Bahasa Dayak Ngaju",
+            "kelas": 5,
+            "jumlah": 55
+        },
+        {
+            "jenjang": "SMA",
+            "mapel": "Sosiologi",
+            "kelas": 10,
+            "jumlah": 111
+        },
+        {
+            "jenjang": "SMA",
+            "mapel": "Sosiologi",
+            "kelas": 11,
+            "jumlah": 53
+        },
+        {
+            "jenjang": "SMA",
+            "mapel": "Sosiologi",
+            "kelas": 12,
+            "jumlah": 332
+        },
+        {
+            "jenjang": "SMA",
+            "mapel": "Ekonomi",
+            "kelas": 10,
+            "jumlah": 84
+        },
+        {
+            "jenjang": "SMA",
+            "mapel": "Ekonomi",
+            "kelas": 11,
+            "jumlah": 94
+        },
+        {
+            "jenjang": "SMA",
+            "mapel": "Ekonomi",
+            "kelas": 12,
+            "jumlah": 310
+        },
+        {
+            "jenjang": "SD",
+            "mapel": "Bahasa Indonesia",
+            "kelas": 5,
+            "jumlah": 196
+        },
+        {
+            "jenjang": "SD",
+            "mapel": "Bahasa Indonesia",
+            "kelas": 6,
+            "jumlah": 195
+        },
+        {
+            "jenjang": "SMP",
+            "mapel": "Bahasa Indonesia",
+            "kelas": 7,
+            "jumlah": 282
+        },
+        {
+            "jenjang": "SMP",
+            "mapel": "Bahasa Indonesia",
+            "kelas": 8,
+            "jumlah": 291
+        },
+        {
+            "jenjang": "SMP",
+            "mapel": "Bahasa Indonesia",
+            "kelas": 9,
+            "jumlah": 277
+        },
+        {
+            "jenjang": "SD",
+            "mapel": "Bahasa Sunda",
+            "kelas": 1,
+            "jumlah": 77
+        },
+        {
+            "jenjang": "SD",
+            "mapel": "Bahasa Sunda",
+            "kelas": 2,
+            "jumlah": 177
+        },
+        {
+            "jenjang": "SD",
+            "mapel": "Bahasa Sunda",
+            "kelas": 3,
+            "jumlah": 155
+        },
+        {
+            "jenjang": "SD",
+            "mapel": "Bahasa Sunda",
+            "kelas": 4,
+            "jumlah": 71
+        },
+        {
+            "jenjang": "SD",
+            "mapel": "Bahasa Sunda",
+            "kelas": 5,
+            "jumlah": 117
+        },
+        {
+            "jenjang": "SD",
+            "mapel": "Bahasa Sunda",
+            "kelas": 6,
+            "jumlah": 121
+        },
+        {
+            "jenjang": "SD",
+            "mapel": "Bahasa Indonesia",
+            "kelas": 3,
+            "jumlah": 195
+        },
+        {
+            "jenjang": "SD",
+            "mapel": "Bahasa Indonesia",
+            "kelas": 4,
+            "jumlah": 187
+        },
+        {
+            "jenjang": "SD",
+            "mapel": "Bahasa Jawa",
+            "kelas": 1,
+            "jumlah": 48
+        },
+        {
+            "jenjang": "SD",
+            "mapel": "Bahasa Jawa",
+            "kelas": 2,
+            "jumlah": 57
+        },
+        {
+            "jenjang": "SD",
+            "mapel": "Bahasa Jawa",
+            "kelas": 3,
+            "jumlah": 123
+        },
+        {
+            "jenjang": "SD",
+            "mapel": "Bahasa Jawa",
+            "kelas": 4,
+            "jumlah": 57
+        },
+        {
+            "jenjang": "SD",
+            "mapel": "Bahasa Jawa",
+            "kelas": 5,
+            "jumlah": 67
+        },
+        {
+            "jenjang": "SD",
+            "mapel": "Bahasa Jawa",
+            "kelas": 6,
+            "jumlah": 44
+        },
+        {
+            "jenjang": "SMP",
+            "mapel": "Bahasa Jawa",
+            "kelas": 7,
+            "jumlah": 94
+        },
+        {
+            "jenjang": "SMP",
+            "mapel": "Bahasa Jawa",
+            "kelas": 8,
+            "jumlah": 104
+        },
+        {
+            "jenjang": "SMP",
+            "mapel": "Bahasa Jawa",
+            "kelas": 9,
+            "jumlah": 100
+        },
+        {
+            "jenjang": "SMA",
+            "mapel": "Bahasa Jawa",
+            "kelas": 10,
+            "jumlah": 110
+        },
+        {
+            "jenjang": "SMA",
+            "mapel": "Bahasa Jawa",
+            "kelas": 11,
+            "jumlah": 133
+        },
+        {
+            "jenjang": "SMA",
+            "mapel": "Bahasa Jawa",
+            "kelas": 12,
+            "jumlah": 55
+        },
+        {
+            "jenjang": "SMP",
+            "mapel": "Bahasa Sunda",
+            "kelas": 7,
+            "jumlah": 124
+        },
+        {
+            "jenjang": "SMP",
+            "mapel": "Bahasa Sunda",
+            "kelas": 8,
+            "jumlah": 78
+        },
+        {
+            "jenjang": "SMP",
+            "mapel": "Bahasa Sunda",
+            "kelas": 9,
+            "jumlah": 92
+        },
+        {
+            "jenjang": "SMA",
+            "mapel": "Bahasa Sunda",
+            "kelas": 10,
+            "jumlah": 87
+        },
+        {
+            "jenjang": "SMA",
+            "mapel": "Bahasa Sunda",
+            "kelas": 11,
+            "jumlah": 38
+        },
+        {
+            "jenjang": "SMA",
+            "mapel": "Bahasa Sunda",
+            "kelas": 12,
+            "jumlah": 20
+        },
+        {
+            "jenjang": "SD",
+            "mapel": "Bahasa Indonesia",
+            "kelas": 2,
+            "jumlah": 150
+        },
+        {
+            "jenjang": "SD",
+            "mapel": "PPKN",
+            "kelas": 4,
+            "jumlah": 20
+        },
+        {
+            "jenjang": "SD",
+            "mapel": "PPKN",
+            "kelas": 5,
+            "jumlah": 29
+        },
+        {
+            "jenjang": "SD",
+            "mapel": "PPKN",
+            "kelas": 3,
+            "jumlah": 30
+        },
+        {
+            "jenjang": "SD",
+            "mapel": "PPKN",
+            "kelas": 6,
+            "jumlah": 20
+        },
+        {
+            "jenjang": "SMP",
+            "mapel": "PPKN",
+            "kelas": 7,
+            "jumlah": 80
+        },
+        {
+            "jenjang": "SMP",
+            "mapel": "PPKN",
+            "kelas": 8,
+            "jumlah": 129
+        },
+        {
+            "jenjang": "SMP",
+            "mapel": "PPKN",
+            "kelas": 9,
+            "jumlah": 91
+        },
+        {
+            "jenjang": "SMA",
+            "mapel": "PPKN",
+            "kelas": 10,
+            "jumlah": 122
+        },
+        {
+            "jenjang": "SMA",
+            "mapel": "PPKN",
+            "kelas": 11,
+            "jumlah": 107
+        },
+        {
+            "jenjang": "SMA",
+            "mapel": "PPKN",
+            "kelas": 12,
+            "jumlah": 71
+        }
+    ]
+}

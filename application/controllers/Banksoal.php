@@ -7,7 +7,7 @@ class Banksoal extends MY_Controller {
     {
         parent::__construct();
         $this->check_role(array('super_admin', 'admin', 'kepala_sekolah', 'guru'));
-        $this->load->model(array('M_BankSoal', 'M_Mapel', 'M_Kelas', 'M_Guru'));
+        $this->load->model(array('M_BankSoal', 'M_Mapel', 'M_Kelas', 'M_Guru', 'M_GudangSoal'));
     }
 
     public function index()
@@ -28,6 +28,7 @@ class Banksoal extends MY_Controller {
         $data['bank_list']      = $this->M_BankSoal->get_all($guru_id, $active_jenjang);
         $data['mapel_list']     = $this->M_Mapel->get_all($active_jenjang);
         $data['kelas_list']     = $this->M_Kelas->get_all(null, $active_jenjang);
+        $data['gudang_index']   = $this->M_GudangSoal->get_index_data();
 
         $this->render_page('bank_soal/index', $data);
     }
@@ -58,11 +59,48 @@ class Banksoal extends MY_Controller {
 
     public function detail($bank_soal_id)
     {
-        $data['title']     = 'Kelola Detail Soal Ujian';
-        $data['bank_soal'] = $this->M_BankSoal->get_by_id($bank_soal_id);
-        $data['soal_list'] = $this->M_BankSoal->get_soal_by_bank($bank_soal_id);
+        $data['title']        = 'Kelola Detail Soal Ujian';
+        $data['bank_soal']    = $this->M_BankSoal->get_by_id($bank_soal_id);
+        $data['soal_list']    = $this->M_BankSoal->get_soal_by_bank($bank_soal_id);
+        $data['gudang_index'] = $this->M_GudangSoal->get_index_data();
 
         $this->render_page('bank_soal/detail', $data);
+    }
+
+    public function import_gudang_soal()
+    {
+        $bank_soal_id = $this->input->post('bank_soal_id', true);
+        $jumlah       = (int)$this->input->post('jumlah', true);
+        $is_random    = $this->input->post('mode', true) !== 'seq';
+
+        if (empty($bank_soal_id)) {
+            $this->session->set_flashdata('error', 'ID Bank Soal tidak valid.');
+            redirect('banksoal');
+        }
+
+        $bank_soal = $this->M_BankSoal->get_by_id($bank_soal_id);
+        if (!$bank_soal) {
+            $this->session->set_flashdata('error', 'Bank soal tidak ditemukan.');
+            redirect('banksoal');
+        }
+
+        $mapel   = isset($bank_soal['nama_mapel']) ? $bank_soal['nama_mapel'] : '';
+        $kelas   = isset($bank_soal['nama_kelas']) ? $bank_soal['nama_kelas'] : '';
+        $jenjang = isset($bank_soal['jenjang']) ? $bank_soal['jenjang'] : '';
+
+        preg_match('/\d+/', $kelas, $m);
+        $kelas_no = isset($m[0]) ? (int)$m[0] : null;
+
+        $items = $this->M_GudangSoal->get_soal_by_filter($mapel, $kelas_no, $jenjang, $jumlah, $is_random);
+        $inserted = $this->M_GudangSoal->import_to_bank_soal($bank_soal_id, $items);
+
+        if ($inserted > 0) {
+            $this->session->set_flashdata('success', "Berhasil mengimpor $inserted butir soal dari Repositori Gudang Soal IndoMMLU ($mapel $kelas).");
+        } else {
+            $this->session->set_flashdata('error', 'Tidak ada soal yang berhasil diimpor dari Gudang Soal.');
+        }
+
+        redirect('banksoal/detail/' . $bank_soal_id);
     }
 
     public function export_word($bank_soal_id)
