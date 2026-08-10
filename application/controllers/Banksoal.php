@@ -217,6 +217,42 @@ class Banksoal extends MY_Controller {
         redirect('banksoal/detail/' . encrypt_id($bank_soal_id));
     }
 
+    public function hapus_massal_soal()
+    {
+        $raw_bank_id  = $this->input->post('bank_soal_id', true);
+        $bank_soal_id = decrypt_id($raw_bank_id);
+        $action       = $this->input->post('action', true);
+        $raw_soal_ids = $this->input->post('soal_ids');
+
+        if (empty($bank_soal_id)) {
+            $this->session->set_flashdata('error', 'Bank Soal tidak valid.');
+            redirect('banksoal');
+        }
+
+        if ($action === 'empty_all') {
+            $this->M_BankSoal->delete_massal_soal('all', $bank_soal_id);
+            $this->session->set_flashdata('success', 'Seluruh butir soal pada paket ini telah berhasil dikosongkan.');
+        } elseif (is_array($raw_soal_ids) && !empty($raw_soal_ids)) {
+            $soal_ids = array();
+            foreach ($raw_soal_ids as $enc_id) {
+                $dec = decrypt_id($enc_id);
+                if ($dec > 0) $soal_ids[] = $dec;
+            }
+
+            if (!empty($soal_ids)) {
+                $count_deleted = count($soal_ids);
+                $this->M_BankSoal->delete_massal_soal($soal_ids, $bank_soal_id);
+                $this->session->set_flashdata('success', "Berhasil menghapus $count_deleted butir soal terpilih.");
+            } else {
+                $this->session->set_flashdata('error', 'Tidak ada soal valid yang dipilih untuk dihapus.');
+            }
+        } else {
+            $this->session->set_flashdata('error', 'Pilih minimal satu soal yang ingin dihapus.');
+        }
+
+        redirect('banksoal/detail/' . encrypt_id($bank_soal_id));
+    }
+
     public function import_massal()
     {
         $raw_bank_id  = $this->input->post('bank_soal_id', true);

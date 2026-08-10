@@ -98,6 +98,32 @@ class M_BankSoal extends CI_Model {
         return $this->db->where('id', $bank_soal_id)->update('bank_soal', array('jumlah_soal' => $count));
     }
 
+    public function delete_massal_soal($soal_ids, $bank_soal_id)
+    {
+        if (empty($soal_ids)) return 0;
+        
+        if (is_array($soal_ids) && !empty($soal_ids)) {
+            $this->db->where_in('id', $soal_ids);
+            $this->db->where('bank_soal_id', $bank_soal_id);
+            $this->db->delete('soal');
+        } elseif ($soal_ids === 'all') {
+            $this->db->delete('soal', array('bank_soal_id' => $bank_soal_id));
+        }
+
+        // Re-index nomor_soal sequentially
+        $remaining = $this->get_soal_by_bank($bank_soal_id);
+        $no = 1;
+        foreach ($remaining as $r) {
+            $this->db->where('id', $r['id'])->update('soal', array('nomor_soal' => $no));
+            $no++;
+        }
+
+        $count = count($remaining);
+        $this->db->where('id', $bank_soal_id)->update('bank_soal', array('jumlah_soal' => $count));
+
+        return $count;
+    }
+
     // Smart Suggestion Engine (Rekomendasi Soal)
     public function get_rekomendasi_soal($murid_id, $mata_pelajaran_id)
     {
