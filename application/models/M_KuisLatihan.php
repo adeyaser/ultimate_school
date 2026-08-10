@@ -299,6 +299,8 @@ class M_KuisLatihan extends CI_Model {
         $raw_text = $this->call_ai_engine($prompt, $jumlah_soal);
         if (empty($raw_text)) return false;
 
+        $this->ensure_db_connection();
+
         $clean_json = trim($raw_text);
         if (strpos($clean_json, '```') !== false) {
             $clean_json = preg_replace('/^```(?:json)?\s*/i', '', $clean_json);
@@ -514,5 +516,12 @@ class M_KuisLatihan extends CI_Model {
         }
 
         return false;
+    }
+
+    public function ensure_db_connection()
+    {
+        if (!isset($this->db->conn_id) || !is_object($this->db->conn_id) || @$this->db->conn_id->ping() === false) {
+            $this->db->reconnect();
+        }
     }
 }
