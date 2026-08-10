@@ -38,14 +38,63 @@ class M_GudangSoal extends CI_Model {
         if (empty($m)) return '';
 
         // Strip grade/curriculum suffixes
-        $m = preg_replace('/\b(sd|smp|sma|smk|wajib|peminatan|terpadu|kesenian|utama|kelompok\s+[a-c])\b/i', '', $m);
-        $m = trim($m);
+        $m = preg_replace('/\b(sd|smp|sma|smk|wajib|peminatan|terpadu|kesenian|utama|kelompok\s+[a-c]|\bkelas\s+\d+\b)\b/i', '', $m);
+        $m = trim(preg_replace('/\s+/', ' ', $m));
 
+        // Exact & specific subject aliases mapping
         if (preg_match('/\b(inggris|english)\b/i', $m)) {
             return 'bahasa inggris';
         }
         if (preg_match('/\b(indonesia)\b/i', $m)) {
             return 'bahasa indonesia';
+        }
+        if (preg_match('/\b(matematika|mtk|math)\b/i', $m)) {
+            return 'matematika';
+        }
+        if ($m === 'ipa' || preg_match('/\b(ilmu pengetahuan alam|sains|science)\b/i', $m)) {
+            return 'ipa';
+        }
+        if ($m === 'ips' || preg_match('/\b(ilmu pengetahuan sosial|social studies)\b/i', $m)) {
+            return 'ips';
+        }
+        if (preg_match('/\b(fisika|physics)\b/i', $m)) {
+            return 'fisika';
+        }
+        if (preg_match('/\b(kimia|chemistry)\b/i', $m)) {
+            return 'kimia';
+        }
+        if (preg_match('/\b(biologi|biology)\b/i', $m)) {
+            return 'biologi';
+        }
+        if (preg_match('/\b(sejarah|history)\b/i', $m)) {
+            return 'sejarah';
+        }
+        if (preg_match('/\b(geografi|geography)\b/i', $m)) {
+            return 'geografi';
+        }
+        if (preg_match('/\b(sosiologi|sociology)\b/i', $m)) {
+            return 'sosiologi';
+        }
+        if (preg_match('/\b(ekonomi|economy|akuntansi)\b/i', $m)) {
+            return 'ekonomi';
+        }
+        if (preg_match('/\b(pjok|penjaskes|pendidikan jasmani|olahraga)\b/i', $m)) {
+            return 'pjok';
+        }
+        if (preg_match('/\b(ppkn|pkn|pendidikan pancasila|kewarganegaraan)\b/i', $m)) {
+            return 'ppkn';
+        }
+        if (preg_match('/\b(pai|pendidikan agama islam|agama islam)\b/i', $m)) {
+            return 'pendidikan agama islam';
+        }
+        if (preg_match('/\b(seni budaya|seni rupa|seni musik|seni tari)\b/i', $m)) {
+            return 'seni budaya';
+        }
+        if (preg_match('/\b(prakarya|pkwu|kewirausahaan)\b/i', $m)) {
+            return 'prakarya';
+        }
+        if (preg_match('/\b(informatika|tik|komputer)\b/i', $m)) {
+            return 'informatika';
         }
         if (preg_match('/\b(sunda)\b/i', $m)) {
             return 'bahasa sunda';
@@ -89,16 +138,21 @@ class M_GudangSoal extends CI_Model {
 
         if (empty($norm_search)) return true;
 
-        $language_subjects = array(
+        // Exact match
+        if ($norm_search === $norm_item) {
+            return true;
+        }
+
+        // Distinct short subjects that must never cross-match
+        $strict_subjects = array(
+            'ipa', 'ips', 'pjok', 'ppkn', 'tik', 'informatika', 'fisika', 'kimia', 'biologi',
+            'sejarah', 'geografi', 'sosiologi', 'ekonomi', 'matematika',
             'bahasa inggris', 'bahasa indonesia', 'bahasa sunda', 'bahasa jawa',
             'bahasa bali', 'bahasa lampung', 'bahasa madura', 'bahasa makassar',
             'bahasa banjar', 'bahasa dayak ngaju', 'budaya alam minangkabau'
         );
 
-        $is_search_lang = in_array($norm_search, $language_subjects);
-        $is_item_lang   = in_array($norm_item, $language_subjects);
-
-        if ($is_search_lang || $is_item_lang) {
+        if (in_array($norm_search, $strict_subjects) || in_array($norm_item, $strict_subjects)) {
             return $norm_search === $norm_item;
         }
 
@@ -115,15 +169,42 @@ class M_GudangSoal extends CI_Model {
         $kelas_val     = is_numeric($kelas) ? (int)$kelas : (function_exists('parse_kelas_number') ? parse_kelas_number($kelas) : 0);
         $jenjang_clean = !empty($jenjang) ? strtoupper(trim($jenjang)) : '';
 
-        $result   = array();
-        $used_ids = array();
+        $result      = array();
+        $used_ids    = array();
+        $used_hashes = array();
 
-        $add_items = function($list) use (&$result, &$used_ids, $limit, $random) {
-            if ($random) shuffle($list);
+        // Helper to validate and deduplicate questions
+        $is_valid_and_unique = function($item) use (&$used_ids, &$used_hashes, $mapel) {
+            if (empty($item['pertanyaan']) || empty($item['id'])) return false;
+            if (isset($used_ids[$item['id']])) return false;
+
+            // Content deduplication hash
+            $clean_text = preg_replace('/[\s\W]+/u', '', mb_strtolower(trim($item['pertanyaan'])));
+            if (mb_strlen($clean_text) < 5) return false;
+            $hash = md5($clean_text);
+            if (isset($used_hashes[$hash])) return false;
+
+            // Special language verification
+            $norm_search = $this->normalize_mapel_name($mapel);
+            if ($norm_search === 'bahasa inggris') {
+                // Must not contain obvious Indonesian words in English questions
+                if (preg_match('/\b(tersusun dalam bentuk|paragraf di atas|tokoh utama|watak|latar tempat|pemakaian tanda baca)\b/i', $item['pertanyaan'])) {
+                    return false;
+                }
+            }
+
+            $used_ids[$item['id']] = true;
+            $used_hashes[$hash]    = true;
+            return true;
+        };
+
+        $add_items = function($list) use (&$result, $limit, $random, $is_valid_and_unique) {
+            if ($random) {
+                shuffle($list);
+            }
             foreach ($list as $item) {
                 if ($limit > 0 && count($result) >= $limit) break;
-                if (!isset($used_ids[$item['id']])) {
-                    $used_ids[$item['id']] = true;
+                if ($is_valid_and_unique($item)) {
                     $result[] = $item;
                 }
             }
@@ -166,6 +247,10 @@ class M_GudangSoal extends CI_Model {
                 }
             }
             $add_items($p3);
+        }
+
+        if ($random) {
+            shuffle($result);
         }
 
         return $result;

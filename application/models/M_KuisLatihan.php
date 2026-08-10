@@ -7,108 +7,139 @@ class M_KuisLatihan extends CI_Model {
     {
         $this->load->model(array('M_GudangSoal', 'M_Mapel', 'M_Murid'));
 
-        // 1. First attempt: get existing questions in DB 'soal' for this subject (only teacher-published bank_soal)
-        $this->db->select('soal.id');
+        $mapel = $this->M_Mapel->get_by_id($mata_pelajaran_id);
+        $nama_mapel = isset($mapel['nama_mapel']) ? $mapel['nama_mapel'] : '';
+        $base_mapel = $this->M_GudangSoal->normalize_mapel_name($nama_mapel);
+
+        $murid = $this->M_Murid->get_by_id($murid_id);
+        $kelas_name = isset($murid['nama_kelas']) ? $murid['nama_kelas'] : '';
+        $kelas_num  = function_exists('parse_kelas_number') ? parse_kelas_number($kelas_name) : 0;
+
+        $CI =& get_instance();
+        $jenjang = isset($mapel['jenjang']) ? $mapel['jenjang'] : $CI->session->userdata('active_jenjang');
+        if (empty($jenjang)) {
+            if (isset($CI->school_info) && is_array($CI->school_info) && !empty($CI->school_info['jenjang'])) {
+                $jenjang = $CI->school_info['jenjang'];
+            } else {
+                $sekolah = $this->db->get('sekolah')->row_array();
+                $jenjang = !empty($sekolah['jenjang']) ? $sekolah['jenjang'] : 'SMA';
+            }
+        }
+
+        // 1. Fetch fresh, randomized, deduplicated questions from 15.330+ Gudang Soal dataset
+        $gudang_items = $this->M_GudangSoal->get_soal_by_filter($base_mapel, $kelas_num, $jenjang, (int)$jumlah_soal, true);
+
+        if (!empty($gudang_items)) {
+            // Ensure system Bank Soal exists
+            $system_bank = $this->db->get_where('bank_soal', array(
+                'mata_pelajaran_id' => $mata_pelajaran_id,
+                'jenis_soal' => 'Kuis Latihan Gudang Soal'
+            ))->row_array();
+
+            if (!$system_bank) {
+                $default_kelas_id = isset($murid['kelas_id']) ? $murid['kelas_id'] : 1;
+
+                $guru_mapel = $this->db->get_where('guru_mapel', array('mata_pelajaran_id' => $mata_pelajaran_id))->row_array();
+                if ($guru_mapel && !empty($guru_mapel['guru_id'])) {
+                    $default_guru_id = $guru_mapel['guru_id'];
+                } else {
+                    $first_guru = $this->db->select('id')->get('guru')->row_array();
+                    if ($first_guru && !empty($first_guru['id'])) {
+                        $default_guru_id = $first_guru['id'];
+                    } else {
+                        $this->db->insert('guru', array(
+                            'nip' => '199000000000000001',
+                            'user_id' => 1,
+                            'status_kepegawaian' => 'Sistem'
+                        ));
+                        $default_guru_id = $this->db->insert_id();
+                    }
+                }
+
+                $bank_data = array(
+                    'kode_soal' => 'GUDANG-' . strtoupper(substr(md5($base_mapel), 0, 4)) . '-' . rand(100, 999),
+                    'judul' => 'Bank Soal Kuis Latihan - ' . $nama_mapel,
+                    'mata_pelajaran_id' => $mata_pelajaran_id,
+                    'kelas_id' => $default_kelas_id,
+                    'guru_id' => $default_guru_id,
+                    'jenis_soal' => 'Kuis Latihan Gudang Soal',
+                    'jumlah_soal' => count($gudang_items),
+                    'kkm' => 70,
+                    'status' => 'Published',
+                    'created_by' => 1
+                );
+                $this->db->insert('bank_soal', $bank_data);
+                $system_bank_id = $this->db->insert_id();
+            } else {
+                $system_bank_id = $system_bank['id'];
+            }
+
+            // Insert newly randomized questions into DB soal table and obtain their IDs
+            $inserted_ids = array();
+            $nomor = 1;
+            foreach ($gudang_items as $g_item) {
+                if (empty($g_item['pertanyaan'])) continue;
+
+                $soal_data = array(
+                    'bank_soal_id'      => $system_bank_id,
+                    'nomor_soal'        => $nomor++,
+                    'pertanyaan'        => $g_item['pertanyaan'],
+                    'jenis'             => isset($g_item['jenis']) ? $g_item['jenis'] : 'Pilihan Ganda',
+                    'pilihan_a'         => isset($g_item['pilihan_a']) ? $g_item['pilihan_a'] : '',
+                    'pilihan_b'         => isset($g_item['pilihan_b']) ? $g_item['pilihan_b'] : '',
+                    'pilihan_c'         => isset($g_item['pilihan_c']) ? $g_item['pilihan_c'] : '',
+                    'pilihan_d'         => isset($g_item['pilihan_d']) ? $g_item['pilihan_d'] : '',
+                    'pilihan_e'         => isset($g_item['pilihan_e']) ? $g_item['pilihan_e'] : '',
+                    'kunci_jawaban'     => isset($g_item['kunci_jawaban']) ? strtoupper(trim($g_item['kunci_jawaban'])) : 'A',
+                    'pembahasan'        => isset($g_item['pembahasan']) ? $g_item['pembahasan'] : '',
+                    'bobot'             => 10,
+                    'tingkat_kesulitan' => 'Sedang'
+                );
+                $this->db->insert('soal', $soal_data);
+                $inserted_ids[] = $this->db->insert_id();
+            }
+
+            if (!empty($inserted_ids)) {
+                $data = array(
+                    'murid_id' => $murid_id,
+                    'mata_pelajaran_id' => $mata_pelajaran_id,
+                    'soal_ids' => json_encode($inserted_ids),
+                    'jumlah_soal' => count($inserted_ids),
+                    'tanggal_mulai' => date('Y-m-d H:i:s'),
+                    'status' => 'Sedang'
+                );
+                $this->db->insert('kuis_latihan', $data);
+                return $this->db->insert_id();
+            }
+        }
+
+        // 2. Fallback: Get questions from existing DB bank_soal packages
+        $this->db->select('soal.id, soal.pertanyaan');
         $this->db->from('soal');
         $this->db->join('bank_soal', 'bank_soal.id = soal.bank_soal_id');
         $this->db->where('bank_soal.mata_pelajaran_id', $mata_pelajaran_id);
-        $this->db->where('bank_soal.jenis_soal !=', 'Kuis Latihan Gudang Soal');
         $this->db->order_by('RAND()');
-        $this->db->limit($jumlah_soal);
+        $this->db->limit($jumlah_soal * 2);
         $res = $this->db->get()->result_array();
-
-        // 2. If DB questions for this subject are less than requested, fetch directly from Gudang Soal (14.977 dataset)!
-        if (count($res) < $jumlah_soal) {
-            $mapel = $this->M_Mapel->get_by_id($mata_pelajaran_id);
-            $nama_mapel = isset($mapel['nama_mapel']) ? $mapel['nama_mapel'] : '';
-            $base_mapel = preg_replace('/\b(SD|SMP|SMA|SMK|Wajib|Peminatan|Terpadu|Kesenian|Utama)\b/i', '', $nama_mapel);
-            $base_mapel = trim($base_mapel);
-
-            $murid = $this->M_Murid->get_by_id($murid_id);
-            $kelas_name = isset($murid['nama_kelas']) ? $murid['nama_kelas'] : '';
-            $kelas_num  = function_exists('parse_kelas_number') ? parse_kelas_number($kelas_name) : 0;
-
-            $CI =& get_instance();
-            $jenjang = isset($mapel['jenjang']) ? $mapel['jenjang'] : $CI->session->userdata('active_jenjang');
-            if (empty($jenjang)) {
-                if (isset($CI->school_info) && is_array($CI->school_info) && !empty($CI->school_info['jenjang'])) {
-                    $jenjang = $CI->school_info['jenjang'];
-                } else {
-                    $sekolah = $this->db->get('sekolah')->row_array();
-                    $jenjang = !empty($sekolah['jenjang']) ? $sekolah['jenjang'] : 'SMA';
-                }
-            }
-
-            // Fetch questions from 14.977 Gudang Soal dataset
-            $gudang_items = $this->M_GudangSoal->get_soal_by_filter($base_mapel, $kelas_num, $jenjang, $jumlah_soal, true);
-
-            if (!empty($gudang_items)) {
-                // Ensure a system Bank Soal package exists for Gudang Soal Kuis Latihan
-                $system_bank = $this->db->get_where('bank_soal', array(
-                    'mata_pelajaran_id' => $mata_pelajaran_id,
-                    'jenis_soal' => 'Kuis Latihan Gudang Soal'
-                ))->row_array();
-
-                if (!$system_bank) {
-                    $default_kelas_id = isset($murid['kelas_id']) ? $murid['kelas_id'] : 1;
-
-                    // Resolve valid guru_id to satisfy foreign key constraint bank_soal_ibfk_3
-                    $guru_mapel = $this->db->get_where('guru_mapel', array('mata_pelajaran_id' => $mata_pelajaran_id))->row_array();
-                    if ($guru_mapel && !empty($guru_mapel['guru_id'])) {
-                        $default_guru_id = $guru_mapel['guru_id'];
-                    } else {
-                        $first_guru = $this->db->select('id')->get('guru')->row_array();
-                        if ($first_guru && !empty($first_guru['id'])) {
-                            $default_guru_id = $first_guru['id'];
-                        } else {
-                            $this->db->insert('guru', array(
-                                'nip' => '199000000000000001',
-                                'user_id' => 1,
-                                'status_kepegawaian' => 'Sistem'
-                            ));
-                            $default_guru_id = $this->db->insert_id();
-                        }
-                    }
-
-                    $bank_data = array(
-                        'kode_soal' => 'GUDANG-' . strtoupper(substr(md5($base_mapel), 0, 4)) . '-' . rand(100, 999),
-                        'judul' => 'Bank Soal Kuis Latihan - ' . $nama_mapel,
-                        'mata_pelajaran_id' => $mata_pelajaran_id,
-                        'kelas_id' => $default_kelas_id,
-                        'guru_id' => $default_guru_id,
-                        'jenis_soal' => 'Kuis Latihan Gudang Soal',
-                        'jumlah_soal' => 0,
-                        'kkm' => 70,
-                        'status' => 'Published',
-                        'created_by' => 1
-                    );
-                    $this->db->insert('bank_soal', $bank_data);
-                    $system_bank_id = $this->db->insert_id();
-                } else {
-                    $system_bank_id = $system_bank['id'];
-                    $this->db->where('bank_soal_id', $system_bank_id);
-                    $this->db->delete('soal');
-                }
-
-                // Import Gudang Soal items into 'soal' DB table
-                $this->M_GudangSoal->import_to_bank_soal($system_bank_id, $gudang_items);
-
-                // Query again from DB 'soal' table
-                $this->db->select('soal.id');
-                $this->db->from('soal');
-                $this->db->join('bank_soal', 'bank_soal.id = soal.bank_soal_id');
-                $this->db->where('bank_soal.mata_pelajaran_id', $mata_pelajaran_id);
-                $this->db->order_by('RAND()');
-                $this->db->limit($jumlah_soal);
-                $res = $this->db->get()->result_array();
-            }
-        }
 
         if (empty($res)) {
             return false;
         }
 
-        $soal_ids = array_column($res, 'id');
+        // Deduplicate
+        $soal_ids = array();
+        $seen_hashes = array();
+        foreach ($res as $r) {
+            $clean = preg_replace('/[\s\W]+/u', '', mb_strtolower(trim($r['pertanyaan'])));
+            $hash = md5($clean);
+            if (!isset($seen_hashes[$hash])) {
+                $seen_hashes[$hash] = true;
+                $soal_ids[] = (int)$r['id'];
+                if (count($soal_ids) >= $jumlah_soal) break;
+            }
+        }
+
+        if (empty($soal_ids)) return false;
 
         $data = array(
             'murid_id' => $murid_id,
@@ -148,39 +179,28 @@ class M_KuisLatihan extends CI_Model {
         if (empty($soal_ids)) return array();
 
         $this->db->where_in('id', $soal_ids);
-        $soal_list = $this->db->get('soal')->result_array();
+        $raw_list = $this->db->get('soal')->result_array();
 
-        if ($kuis_id && !empty($soal_list)) {
-            $kuis = $this->get_kuis($kuis_id);
-            if ($kuis && isset($kuis['nama_mapel'])) {
-                $is_inggris = (stripos($kuis['nama_mapel'], 'Inggris') !== false);
-                $has_bad_question = false;
+        if (empty($raw_list)) return array();
 
-                if ($is_inggris) {
-                    foreach ($soal_list as $s) {
-                        if (preg_match('/\b(kancil|petani|paragraf|adalah|merupakan|tersusun|diketahui|berikut|sejarah|geografi|taman|raja|kebudayaan|bangsa|peristiwa|pernyataan|dibawah|diatas|kalimat|kutipan|iklan|terdapat|jawaban|pembahasan)\b/i', $s['pertanyaan'])) {
-                            $has_bad_question = true;
-                            break;
-                        }
-                    }
-                }
+        // Preserve order and remove any duplicate questions by text
+        $soal_list = array();
+        $seen_hashes = array();
 
-                if ($has_bad_question) {
-                    $new_kuis_id = $this->generate_kuis($kuis['murid_id'], $kuis['mata_pelajaran_id'], $kuis['jumlah_soal']);
-                    if ($new_kuis_id) {
-                        $new_kuis = $this->get_kuis($new_kuis_id);
-                        if (!empty($new_kuis['soal_ids'])) {
-                            $this->db->where('id', $kuis_id);
-                            $this->db->update('kuis_latihan', array('soal_ids' => $new_kuis['soal_ids']));
+        // Index raw_list by ID
+        $indexed = array();
+        foreach ($raw_list as $item) {
+            $indexed[$item['id']] = $item;
+        }
 
-                            $this->db->where('id', $new_kuis_id);
-                            $this->db->delete('kuis_latihan');
-
-                            $soal_ids = json_decode($new_kuis['soal_ids'], true);
-                            $this->db->where_in('id', $soal_ids);
-                            $soal_list = $this->db->get('soal')->result_array();
-                        }
-                    }
+        foreach ($soal_ids as $sid) {
+            if (isset($indexed[$sid])) {
+                $item = $indexed[$sid];
+                $clean = preg_replace('/[\s\W]+/u', '', mb_strtolower(trim($item['pertanyaan'])));
+                $hash = md5($clean);
+                if (!isset($seen_hashes[$hash])) {
+                    $seen_hashes[$hash] = true;
+                    $soal_list[] = $item;
                 }
             }
         }
@@ -278,6 +298,7 @@ class M_KuisLatihan extends CI_Model {
         $prompt .= "- Tingkat/Kelas: {$kelas_name}\n";
         $prompt .= "- Topik Spesifik Kuis: {$topik}\n";
         $prompt .= "- Tingkat Kesulitan: {$tingkat_kesulitan}\n";
+        $prompt .= "- ATURAN PENTING: Setiap butir soal HARUS benar-benar unik, berbeda, tidak boleh ada soal atau pertanyaan yang berulang/duplikat.\n";
         $prompt .= "\nATURAN FORMAT MATEMATIKA: Jangan membungkus angka polos dengan tanda dollar (JANGAN tulis $1$, tulis angka polos 1). Untuk persamaan matematika gunakan LaTeX diapit $ (contoh: $\\frac{1}{2}$).";
         $prompt .= "\nWAJIB: Format output HANYA array JSON murni tanpa pembungkus markdown/backticks. Array berisi JSON object untuk setiap butir soal dengan struktur:\n";
         $prompt .= "[\n";
@@ -330,8 +351,14 @@ class M_KuisLatihan extends CI_Model {
 
         $soal_ids = array();
         $nomor = 1;
+        $seen_ai_hashes = array();
         foreach ($items as $item) {
             if (empty($item['pertanyaan'])) continue;
+            $clean = preg_replace('/[\s\W]+/u', '', mb_strtolower(trim($item['pertanyaan'])));
+            $hash = md5($clean);
+            if (isset($seen_ai_hashes[$hash])) continue;
+            $seen_ai_hashes[$hash] = true;
+
             $soal_data = array(
                 'bank_soal_id' => $bank_soal_id,
                 'nomor_soal' => $nomor++,
