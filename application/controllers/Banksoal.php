@@ -65,6 +65,31 @@ class Banksoal extends MY_Controller {
         $this->render_page('bank_soal/detail', $data);
     }
 
+    public function export_word($bank_soal_id)
+    {
+        $bank_soal = $this->M_BankSoal->get_by_id($bank_soal_id);
+        if (!$bank_soal) {
+            $this->session->set_flashdata('error', 'Data Bank Soal tidak ditemukan.');
+            redirect('banksoal');
+        }
+
+        $soal_list = $this->M_BankSoal->get_soal_by_bank($bank_soal_id);
+
+        $data['bank_soal']   = $bank_soal;
+        $data['soal_list']   = $soal_list;
+        $data['school_info'] = $this->school_info;
+
+        $clean_title = preg_replace('/[^a-zA-Z0-9_-]/', '_', $bank_soal['judul']);
+        $filename    = "Naskah_Soal_" . $clean_title . "_" . date('Ymd_His') . ".doc";
+
+        header("Content-Type: application/vnd.ms-word; charset=utf-8");
+        header("Content-Disposition: attachment; filename=\"$filename\"");
+        header("Cache-Control: private, max-age=0, must-revalidate");
+        header("Pragma: public");
+
+        $this->load->view('bank_soal/export_word', $data);
+    }
+
     public function simpan_soal_item()
     {
         $bank_soal_id = $this->input->post('bank_soal_id', true);

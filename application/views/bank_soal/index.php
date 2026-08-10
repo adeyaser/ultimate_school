@@ -54,7 +54,12 @@
                       <td><span class="badge text-bg-secondary"><?= $b['jumlah_soal'] ?> Soal</span></td>
                       <td><span class="badge text-bg-success"><?= $b['status'] ?></span></td>
                       <td class="text-end">
-                        <a href="<?= base_url('banksoal/detail/' . $b['id']) ?>" class="btn btn-sm btn-outline-primary fw-bold"><i class="bi bi-gear-fill me-1"></i> Kelola Detail Soal</a>
+                        <a href="<?= base_url('banksoal/export_word/' . $b['id']) ?>" class="btn btn-sm btn-outline-info me-1 fw-bold" title="Export to Word (.doc)">
+                          <i class="bi bi-file-earmark-word-fill me-1"></i> Word
+                        </a>
+                        <a href="<?= base_url('banksoal/detail/' . $b['id']) ?>" class="btn btn-sm btn-outline-primary fw-bold">
+                          <i class="bi bi-gear-fill me-1"></i> Kelola Soal
+                        </a>
                       </td>
                     </tr>
                   <?php endforeach; ?>

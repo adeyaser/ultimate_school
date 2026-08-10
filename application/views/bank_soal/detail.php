@@ -39,11 +39,14 @@ MathJax = {
               <p class="mb-0 opacity-90">Mata Pelajaran: <?= $bank_soal['nama_mapel'] ?> | Kelas: <?= $bank_soal['nama_kelas'] ?> | Total: <?= $bank_soal['jumlah_soal'] ?> Soal</p>
             </div>
             <div>
+              <a href="<?= base_url('banksoal/export_word/' . $bank_soal['id']) ?>" class="btn btn-info text-white btn-lg fw-bold shadow-sm me-2">
+                <i class="bi bi-file-earmark-word-fill me-1"></i> Export to Word
+              </a>
               <button class="btn btn-gradient text-white btn-lg fw-bold shadow-sm me-2" style="background: linear-gradient(135deg, #6366f1 0%, #a855f7 100%); border: none;" data-bs-toggle="modal" data-bs-target="#modalGenerateAiSoal">
-                <i class="bi bi-stars me-2"></i> Generate Soal AI Gemini
+                <i class="bi bi-stars me-2"></i> Generate Soal AI
               </button>
               <button class="btn btn-light btn-lg fw-bold shadow-sm me-2 text-primary" data-bs-toggle="modal" data-bs-target="#modalImportMassalSoal">
-                <i class="bi bi-file-earmark-arrow-up-fill me-2"></i> Import Massal / Copas Soal & Kunci
+                <i class="bi bi-file-earmark-arrow-up-fill me-2"></i> Import Massal
               </button>
               <button class="btn btn-warning btn-lg fw-bold shadow-sm" data-bs-toggle="modal" data-bs-target="#modalTambahSoalItem">
                 <i class="bi bi-plus-circle-fill me-2"></i> Tambah Soal Satuan
