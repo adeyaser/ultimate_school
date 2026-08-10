@@ -40,7 +40,7 @@ MathJax = {
             </div>
             <div class="col-lg-7">
               <div class="d-flex flex-wrap justify-content-lg-end gap-2">
-                <a href="<?= base_url('banksoal/export_word/' . $bank_soal['id']) ?>" class="btn btn-light btn-md fw-bold text-dark shadow-sm rounded-pill border-0 px-3">
+                <a href="<?= base_url('banksoal/export_word/' . encrypt_id($bank_soal['id'])) ?>" class="btn btn-light btn-md fw-bold text-dark shadow-sm rounded-pill border-0 px-3">
                   <i class="bi bi-file-earmark-word-fill me-1 text-info fs-6"></i> Export Word
                 </a>
                 <button class="btn btn-light btn-md fw-bold text-dark shadow-sm rounded-pill border-0 px-3" data-bs-toggle="modal" data-bs-target="#modalGudangSoal">
@@ -66,7 +66,7 @@ MathJax = {
         <div class="modal-dialog modal-lg modal-dialog-centered">
           <div class="modal-content border-0 shadow-lg rounded-4">
             <form action="<?= base_url('banksoal/import_gudang_soal') ?>" method="POST">
-              <input type="hidden" name="bank_soal_id" value="<?= $bank_soal['id'] ?>" />
+              <input type="hidden" name="bank_soal_id" value="<?= encrypt_id($bank_soal['id']) ?>" />
               <div class="modal-header text-white p-3 bg-success">
                 <h5 class="modal-title fw-bold"><i class="bi bi-box-seam-fill me-2"></i> Ambil Soal dari Repositori Gudang Soal</h5>
                 <button type="button" class="btn-close btn-close-white" data-bs-dismiss="modal"></button>
@@ -129,7 +129,7 @@ MathJax = {
                   <h5 class="fw-bold mb-0 text-primary">Soal No. <?= $s['nomor_soal'] ?> <span class="badge text-bg-secondary ms-2"><?= $s['jenis'] ?></span></h5>
                   <div>
                     <span class="badge text-bg-info me-2">Bobot: <?= $s['bobot'] ?> Poin</span>
-                    <a href="<?= base_url('banksoal/hapus_soal/' . $s['id'] . '/' . $bank_soal['id']) ?>" onclick="return confirm('Hapus soal ini?')" class="btn btn-sm btn-outline-danger"><i class="bi bi-trash-fill"></i> Hapus</a>
+                    <a href="<?= base_url('banksoal/hapus_soal/' . encrypt_id($s['id']) . '/' . encrypt_id($bank_soal['id'])) ?>" onclick="return confirm('Hapus soal ini?')" class="btn btn-sm btn-outline-danger"><i class="bi bi-trash-fill"></i> Hapus</a>
                   </div>
                 </div>
                 <div class="card-body">
@@ -168,7 +168,7 @@ MathJax = {
   <div class="modal-dialog modal-xl modal-dialog-centered">
     <div class="modal-content border-0 shadow-lg rounded-4">
       <form action="<?= base_url('banksoal/simpan_soal_item') ?>" method="post">
-        <input type="hidden" name="bank_soal_id" value="<?= $bank_soal['id'] ?>" />
+        <input type="hidden" name="bank_soal_id" value="<?= encrypt_id($bank_soal['id']) ?>" />
         <div class="modal-header bg-primary text-white p-3">
           <h5 class="modal-title fw-bold"><i class="bi bi-pencil-square me-2"></i> Tambah Butir Soal Satuan (Bisa Input Banyak Soal)</h5>
           <button type="button" class="btn-close btn-close-white" data-bs-dismiss="modal"></button>
@@ -244,7 +244,7 @@ MathJax = {
   <div class="modal-dialog modal-xl modal-dialog-centered">
     <div class="modal-content border-0 shadow-lg rounded-4">
       <form action="<?= base_url('banksoal/import_massal') ?>" method="post">
-        <input type="hidden" name="bank_soal_id" value="<?= $bank_soal['id'] ?>" />
+        <input type="hidden" name="bank_soal_id" value="<?= encrypt_id($bank_soal['id']) ?>" />
         <div class="modal-header bg-success text-white p-3">
           <h5 class="modal-title fw-bold"><i class="bi bi-lightning-charge-fill me-2"></i> Fast Copy-Paste / Import Massal Soal & Kunci Jawaban</h5>
           <button type="button" class="btn-close btn-close-white" data-bs-dismiss="modal"></button>
@@ -331,7 +331,7 @@ MathJax = {
   <div class="modal-dialog modal-lg modal-dialog-centered">
     <div class="modal-content border-0 shadow-lg rounded-4">
       <form id="formGenerateAiSoal">
-        <input type="hidden" name="bank_soal_id" value="<?= $bank_soal['id'] ?>" />
+        <input type="hidden" name="bank_soal_id" value="<?= encrypt_id($bank_soal['id']) ?>" />
         <div class="modal-header text-white p-3" style="background: linear-gradient(135deg, #6366f1 0%, #a855f7 100%);">
           <h5 class="modal-title fw-bold"><i class="bi bi-robot me-2"></i> Generate Soal Otomatis dengan Multi-AI Engine</h5>
           <button type="button" class="btn-close btn-close-white" data-bs-dismiss="modal"></button>

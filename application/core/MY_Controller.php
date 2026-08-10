@@ -13,7 +13,7 @@ class MY_Controller extends CI_Controller {
         parent::__construct();
         $this->load->database();
         $this->load->library('session');
-        $this->load->helper(array('url', 'html', 'file', 'turnstile'));
+        $this->load->helper(array('url', 'html', 'file', 'turnstile', 'security'));
 
         // Fetch School Info & Active Academic Year
         $this->school_info = $this->db->get('sekolah')->row_array();

@@ -75,15 +75,17 @@ class Ujian extends MY_Controller {
         redirect('ujian');
     }
 
-    public function toggle_status($ujian_id, $status)
+    public function toggle_status($encrypted_ujian_id, $status)
     {
+        $ujian_id = decrypt_id($encrypted_ujian_id);
         $this->M_Ujian->update($ujian_id, array('is_active' => $status));
         $this->session->set_flashdata('success', 'Status ujian berhasil diperbarui.');
         redirect('ujian');
     }
 
-    public function reset_peserta($ujian_id)
+    public function reset_peserta($encrypted_ujian_id)
     {
+        $ujian_id = decrypt_id($encrypted_ujian_id);
         $peserta_list = $this->db->get_where('ujian_peserta', array('ujian_id' => $ujian_id))->result_array();
         foreach ($peserta_list as $p) {
             $this->db->delete('ujian_jawaban', array('ujian_peserta_id' => $p['id']));

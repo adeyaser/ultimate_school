@@ -57,8 +57,14 @@ class Banksoal extends MY_Controller {
         redirect('banksoal');
     }
 
-    public function detail($bank_soal_id)
+    public function detail($encrypted_id)
     {
+        $bank_soal_id = decrypt_id($encrypted_id);
+        if (!$bank_soal_id) {
+            $this->session->set_flashdata('error', 'Paket Bank Soal tidak valid.');
+            redirect('banksoal');
+        }
+
         $data['title']        = 'Kelola Detail Soal Ujian';
         $data['bank_soal']    = $this->M_BankSoal->get_by_id($bank_soal_id);
         $data['soal_list']    = $this->M_BankSoal->get_soal_by_bank($bank_soal_id);
@@ -69,7 +75,7 @@ class Banksoal extends MY_Controller {
 
     public function import_gudang_soal()
     {
-        $bank_soal_id = $this->input->post('bank_soal_id', true);
+        $bank_soal_id = decrypt_id($this->input->post('bank_soal_id', true));
         $jumlah       = (int)$this->input->post('jumlah', true);
         $is_random    = $this->input->post('mode', true) !== 'seq';
 
@@ -95,16 +101,17 @@ class Banksoal extends MY_Controller {
         $inserted = $this->M_GudangSoal->import_to_bank_soal($bank_soal_id, $items);
 
         if ($inserted > 0) {
-            $this->session->set_flashdata('success', "Berhasil mengimpor $inserted butir soal dari Repositori Gudang Soal IndoMMLU ($mapel $kelas).");
+            $this->session->set_flashdata('success', "Berhasil mengimpor $inserted butir soal dari Repositori Gudang Soal ($mapel $kelas).");
         } else {
             $this->session->set_flashdata('error', 'Tidak ada soal yang berhasil diimpor dari Gudang Soal.');
         }
 
-        redirect('banksoal/detail/' . $bank_soal_id);
+        redirect('banksoal/detail/' . encrypt_id($bank_soal_id));
     }
 
-    public function export_word($bank_soal_id)
+    public function export_word($encrypted_id)
     {
+        $bank_soal_id = decrypt_id($encrypted_id);
         $bank_soal = $this->M_BankSoal->get_by_id($bank_soal_id);
         if (!$bank_soal) {
             $this->session->set_flashdata('error', 'Data Bank Soal tidak ditemukan.');
@@ -130,7 +137,8 @@ class Banksoal extends MY_Controller {
 
     public function simpan_soal_item()
     {
-        $bank_soal_id = $this->input->post('bank_soal_id', true);
+        $raw_bank_id  = $this->input->post('bank_soal_id', true);
+        $bank_soal_id = decrypt_id($raw_bank_id);
         $pertanyaan_post = $this->input->post('pertanyaan');
 
         if (is_array($pertanyaan_post)) {
@@ -196,36 +204,40 @@ class Banksoal extends MY_Controller {
             $this->session->set_flashdata('success', 'Soal berhasil ditambahkan ke repositori.');
         }
 
-        redirect('banksoal/detail/' . $bank_soal_id);
+        redirect('banksoal/detail/' . encrypt_id($bank_soal_id));
     }
 
-    public function hapus_soal($soal_id, $bank_soal_id)
+    public function hapus_soal($encrypted_soal_id, $encrypted_bank_soal_id)
     {
+        $soal_id = decrypt_id($encrypted_soal_id);
+        $bank_soal_id = decrypt_id($encrypted_bank_soal_id);
+
         $this->M_BankSoal->delete_soal($soal_id, $bank_soal_id);
         $this->session->set_flashdata('success', 'Soal berhasil dihapus.');
-        redirect('banksoal/detail/' . $bank_soal_id);
+        redirect('banksoal/detail/' . encrypt_id($bank_soal_id));
     }
 
     public function import_massal()
     {
-        $bank_soal_id = $this->input->post('bank_soal_id', true);
+        $raw_bank_id  = $this->input->post('bank_soal_id', true);
+        $bank_soal_id = decrypt_id($raw_bank_id);
         $raw_text     = $this->input->post('raw_text');
 
         if (empty($raw_text)) {
             $this->session->set_flashdata('error', 'Teks soal massal tidak boleh kosong.');
-            redirect('banksoal/detail/' . $bank_soal_id);
+            redirect('banksoal/detail/' . encrypt_id($bank_soal_id));
             return;
         }
 
         $total_imported = $this->M_BankSoal->parse_and_import_bulk_soal($bank_soal_id, $raw_text);
 
         if ($total_imported > 0) {
-            $this->session->set_flashdata('success', "Berhasil mengimpor $total_imported soal & kunci jawaban otomatis ke bank soal!");
+            $this->session->set_flashdata('success', "Berhasil mengimpor $total_imported butir soal ke repositori.");
         } else {
-            $this->session->set_flashdata('error', 'Gagal memproses teks soal. Pastikan format penulisan nomor soal (1. 2. 3.) dan opsi (a. b. c. d.) sesuai.');
+            $this->session->set_flashdata('error', 'Format naskah tidak dapat dikenali. Gunakan format standar 1. Pertanyaan, pilihan a-e, kunci: A');
         }
 
-        redirect('banksoal/detail/' . $bank_soal_id);
+        redirect('banksoal/detail/' . encrypt_id($bank_soal_id));
     }
 
     public function download_template()

@@ -32,7 +32,7 @@
 
               <div class="d-grid gap-2">
                 <?php if (isset($hasil['ujian_id'])): ?>
-                  <a href="<?= base_url('cbt/ulangi_ujian/' . $hasil['ujian_id']) ?>" onclick="return confirm('Ulangi pengerjaan ujian ini? Jawaban sebelumnya akan di-reset.')" class="btn btn-warning btn-lg fw-bold text-dark"><i class="bi bi-arrow-repeat me-2"></i> Ulangi Pengerjaan Ujian (Remidi)</a>
+                  <a href="<?= base_url('cbt/ulangi_ujian/' . encrypt_id($hasil['ujian_id'])) ?>" onclick="return confirm('Ulangi pengerjaan ujian ini? Jawaban sebelumnya akan di-reset.')" class="btn btn-warning btn-lg fw-bold text-dark"><i class="bi bi-arrow-repeat me-2"></i> Ulangi Pengerjaan Ujian (Remidi)</a>
                 <?php endif; ?>
                 <a href="<?= base_url('cbt') ?>" class="btn btn-primary btn-lg fw-bold"><i class="bi bi-list-check me-2"></i> Kembali ke Daftar Ujian</a>
                 <a href="<?= base_url('kuislatihan') ?>" class="btn btn-outline-info fw-bold"><i class="bi bi-ui-checks me-2"></i> Coba Latihan Soal Mandiri</a>

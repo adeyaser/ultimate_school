@@ -36,7 +36,7 @@
               </div>
 
               <form action="<?= base_url('cbt/mulai_ujian') ?>" method="post">
-                <input type="hidden" name="ujian_id" value="<?= $ujian['id'] ?>" />
+                <input type="hidden" name="ujian_id" value="<?= encrypt_id($ujian['id']) ?>" />
                 <div class="mb-4">
                   <label class="form-label fw-bold text-center d-block fs-5">Masukkan Token Ujian (6 Karakter):</label>
                   <input type="text" name="token" class="form-control form-control-lg text-center fw-bold fs-3 text-primary text-uppercase" placeholder="AAAAAA" maxlength="6" required autofocus />

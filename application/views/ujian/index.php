@@ -56,13 +56,13 @@
                         <?php endif; ?>
                       </td>
                       <td class="text-end">
-                        <a href="<?= base_url('ujian/reset_peserta/' . $u['id']) ?>" onclick="return confirm('Reset seluruh pengerjaan peserta pada ujian ini? Seluruh jawaban peserta akan dihapus agar peserta bisa mengulangi ujian.')" class="btn btn-sm btn-outline-warning me-1" title="Reset Pengerjaan Peserta">
+                        <a href="<?= base_url('ujian/reset_peserta/' . encrypt_id($u['id'])) ?>" onclick="return confirm('Reset seluruh pengerjaan peserta pada ujian ini? Seluruh jawaban peserta akan dihapus agar peserta bisa mengulangi ujian.')" class="btn btn-sm btn-outline-warning me-1" title="Reset Pengerjaan Peserta">
                           <i class="bi bi-arrow-repeat"></i> Reset Ujian
                         </a>
                         <?php if ($u['is_active']): ?>
-                          <a href="<?= base_url('ujian/toggle_status/' . $u['id'] . '/0') ?>" class="btn btn-sm btn-outline-danger">Nonaktifkan</a>
+                          <a href="<?= base_url('ujian/toggle_status/' . encrypt_id($u['id']) . '/0') ?>" class="btn btn-sm btn-outline-danger">Nonaktifkan</a>
                         <?php else: ?>
-                          <a href="<?= base_url('ujian/toggle_status/' . $u['id'] . '/1') ?>" class="btn btn-sm btn-outline-success">Aktifkan</a>
+                          <a href="<?= base_url('ujian/toggle_status/' . encrypt_id($u['id']) . '/1') ?>" class="btn btn-sm btn-outline-success">Aktifkan</a>
                         <?php endif; ?>
                       </td>
                     </tr>

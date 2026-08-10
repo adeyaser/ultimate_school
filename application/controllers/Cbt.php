@@ -29,8 +29,9 @@ class Cbt extends MY_Controller {
         $this->render_page('cbt/index', $data);
     }
 
-    public function konfirmasi($ujian_id)
+    public function konfirmasi($encrypted_ujian_id)
     {
+        $ujian_id = decrypt_id($encrypted_ujian_id);
         $data['title'] = 'Konfirmasi Ujian CBT';
         $data['ujian'] = $this->M_Ujian->get_by_id($ujian_id);
 
@@ -39,8 +40,9 @@ class Cbt extends MY_Controller {
 
     public function mulai_ujian()
     {
-        $ujian_id = $this->input->post('ujian_id', true);
-        $token = $this->input->post('token', true);
+        $raw_ujian_id = $this->input->post('ujian_id', true);
+        $ujian_id     = decrypt_id($raw_ujian_id);
+        $token        = $this->input->post('token', true);
 
         $murid = $this->M_Murid->get_by_user_id($this->user_data['id']);
         $murid_id = isset($murid['id']) ? $murid['id'] : 1;
@@ -48,15 +50,16 @@ class Cbt extends MY_Controller {
         $res = $this->M_Ujian->start_exam($ujian_id, $murid_id, $token);
 
         if ($res['status']) {
-            redirect('cbt/lembar_ujian/' . $res['peserta_id']);
+            redirect('cbt/lembar_ujian/' . encrypt_id($res['peserta_id']));
         } else {
             $this->session->set_flashdata('error', $res['message']);
-            redirect('cbt/konfirmasi/' . $ujian_id);
+            redirect('cbt/konfirmasi/' . encrypt_id($ujian_id));
         }
     }
 
-    public function lembar_ujian($peserta_id)
+    public function lembar_ujian($encrypted_peserta_id)
     {
+        $peserta_id = decrypt_id($encrypted_peserta_id);
         $peserta = $this->db->get_where('ujian_peserta', array('id' => $peserta_id))->row_array();
         if (!$peserta || $peserta['status'] === 'Selesai') {
             redirect('cbt');
@@ -88,17 +91,19 @@ class Cbt extends MY_Controller {
 
     public function simpan_jawaban_ajax()
     {
-        $peserta_id = $this->input->post('peserta_id', true);
-        $soal_id    = $this->input->post('soal_id', true);
-        $jawaban    = $this->input->post('jawaban', true);
+        $raw_peserta_id = $this->input->post('peserta_id', true);
+        $peserta_id     = decrypt_id($raw_peserta_id);
+        $soal_id        = $this->input->post('soal_id', true);
+        $jawaban        = $this->input->post('jawaban', true);
 
         $res = $this->M_Ujian->save_jawaban_item($peserta_id, $soal_id, $jawaban);
 
         echo json_encode(array('status' => true, 'message' => 'Jawaban tersimpan otomatis.'));
     }
 
-    public function selesai($peserta_id)
+    public function selesai($encrypted_peserta_id)
     {
+        $peserta_id = decrypt_id($encrypted_peserta_id);
         $res = $this->M_Ujian->finish_exam($peserta_id);
         
         $data['title'] = 'Ujian Selesai';
@@ -107,8 +112,9 @@ class Cbt extends MY_Controller {
         $this->render_page('cbt/selesai', $data);
     }
 
-    public function ulangi_ujian($ujian_id)
+    public function ulangi_ujian($encrypted_ujian_id)
     {
+        $ujian_id = decrypt_id($encrypted_ujian_id);
         $murid = $this->M_Murid->get_by_user_id($this->user_data['id']);
         $murid_id = isset($murid['id']) ? $murid['id'] : null;
 
@@ -126,7 +132,7 @@ class Cbt extends MY_Controller {
         }
 
         $this->session->set_flashdata('success', 'Sesi pengerjaan Anda telah di-reset. Silakan masukkan token ujian kembali untuk mengulangi ujian.');
-        redirect('cbt/konfirmasi/' . $ujian_id);
+        redirect('cbt/konfirmasi/' . encrypt_id($ujian_id));
     }
 }
 

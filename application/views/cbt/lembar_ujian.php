@@ -154,7 +154,7 @@
                               name="jawaban_<?= $s['id'] ?>"
                               value="<?= $opt_key ?>"
                               class="form-check-input me-3 opt-radio"
-                              data-peserta-id="<?= $peserta['id'] ?>"
+                              data-peserta-id="<?= encrypt_id($peserta['id']) ?>"
                               data-soal-id="<?= $s['id'] ?>"
                               data-index="<?= $index + 1 ?>"
                               <?= (strtoupper($selected_ans) === $opt_key) ? 'checked' : '' ?>
@@ -169,7 +169,7 @@
                       class="form-control form-control-lg essay-input"
                       rows="4"
                       placeholder="Tuliskan jawaban essay Anda di sini..."
-                      data-peserta-id="<?= $peserta['id'] ?>"
+                      data-peserta-id="<?= encrypt_id($peserta['id']) ?>"
                       data-soal-id="<?= $s['id'] ?>"
                       data-index="<?= $index + 1 ?>"
                     ><?= htmlspecialchars($selected_ans) ?></textarea>
@@ -262,7 +262,7 @@
     <script>
       let violations = 0;
       const maxViolations = 3;
-      const pesertaId = <?= $peserta['id'] ?>;
+      const pesertaId = '<?= encrypt_id($peserta['id']) ?>';
       let isKioskActive = false;
       let isSubmitting = false;
 
