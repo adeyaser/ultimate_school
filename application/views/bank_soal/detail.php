@@ -30,50 +30,52 @@ MathJax = {
         <div class="alert alert-success alert-dismissible fade show mb-3"><i class="bi bi-check-circle-fill me-2"></i><?= $this->session->flashdata('success') ?><button type="button" class="btn-close" data-bs-dismiss="alert"></button></div>
       <?php endif; ?>
 
-      <div class="card border-0 shadow-sm mb-4 bg-primary text-white">
+      <div class="card border-0 shadow-sm mb-4 bg-primary text-white rounded-4">
         <div class="card-body p-4">
-          <div class="d-flex justify-content-between align-items-center">
-            <div>
-              <span class="badge text-bg-warning fs-6 mb-2"><?= $bank_soal['kode_soal'] ?></span>
-              <h3 class="fw-bold mb-1"><?= $bank_soal['judul'] ?></h3>
-              <p class="mb-0 opacity-90">Mata Pelajaran: <?= $bank_soal['nama_mapel'] ?> | Kelas: <?= $bank_soal['nama_kelas'] ?> | Total: <?= $bank_soal['jumlah_soal'] ?> Soal</p>
+          <div class="row align-items-center g-3">
+            <div class="col-lg-5">
+              <span class="badge text-bg-warning fs-6 mb-2"><i class="bi bi-qr-code me-1"></i> <?= $bank_soal['kode_soal'] ?></span>
+              <h3 class="fw-bold mb-1 text-white"><?= $bank_soal['judul'] ?></h3>
+              <p class="mb-0 text-white opacity-90 small"><i class="bi bi-book me-1"></i> Mata Pelajaran: <?= $bank_soal['nama_mapel'] ?> | Kelas: <?= $bank_soal['nama_kelas'] ?> | Total: <?= $bank_soal['jumlah_soal'] ?> Soal</p>
             </div>
-            <div>
-              <a href="<?= base_url('banksoal/export_word/' . $bank_soal['id']) ?>" class="btn btn-info text-white btn-lg fw-bold shadow-sm me-2">
-                <i class="bi bi-file-earmark-word-fill me-1"></i> Export to Word
-              </a>
-              <button class="btn btn-success btn-lg fw-bold shadow-sm me-2" data-bs-toggle="modal" data-bs-target="#modalGudangSoal">
-                <i class="bi bi-box-seam-fill me-2"></i> Gudang Soal (IndoMMLU)
-              </button>
-              <button class="btn btn-gradient text-white btn-lg fw-bold shadow-sm me-2" style="background: linear-gradient(135deg, #6366f1 0%, #a855f7 100%); border: none;" data-bs-toggle="modal" data-bs-target="#modalGenerateAiSoal">
-                <i class="bi bi-stars me-2"></i> Generate Soal AI
-              </button>
-              <button class="btn btn-light btn-lg fw-bold shadow-sm me-2 text-primary" data-bs-toggle="modal" data-bs-target="#modalImportMassalSoal">
-                <i class="bi bi-file-earmark-arrow-up-fill me-2"></i> Import Massal
-              </button>
-              <button class="btn btn-warning btn-lg fw-bold shadow-sm" data-bs-toggle="modal" data-bs-target="#modalTambahSoalItem">
-                <i class="bi bi-plus-circle-fill me-2"></i> Tambah Soal Satuan
-              </button>
+            <div class="col-lg-7">
+              <div class="d-flex flex-wrap justify-content-lg-end gap-2">
+                <a href="<?= base_url('banksoal/export_word/' . $bank_soal['id']) ?>" class="btn btn-light btn-md fw-bold text-dark shadow-sm rounded-pill border-0 px-3">
+                  <i class="bi bi-file-earmark-word-fill me-1 text-info fs-6"></i> Export Word
+                </a>
+                <button class="btn btn-light btn-md fw-bold text-dark shadow-sm rounded-pill border-0 px-3" data-bs-toggle="modal" data-bs-target="#modalGudangSoal">
+                  <i class="bi bi-box-seam-fill me-1 text-success fs-6"></i> Gudang Soal
+                </button>
+                <button class="btn btn-warning text-dark btn-md fw-bold shadow-sm rounded-pill border-0 px-3" data-bs-toggle="modal" data-bs-target="#modalGenerateAiSoal">
+                  <i class="bi bi-stars me-1 text-dark fs-6"></i> Generate AI
+                </button>
+                <button class="btn btn-light btn-md fw-bold text-dark shadow-sm rounded-pill border-0 px-3" data-bs-toggle="modal" data-bs-target="#modalImportMassalSoal">
+                  <i class="bi bi-file-earmark-arrow-up-fill me-1 text-primary fs-6"></i> Import Massal
+                </button>
+                <button class="btn btn-light btn-md fw-bold text-dark shadow-sm rounded-pill border-0 px-3" data-bs-toggle="modal" data-bs-target="#modalTambahSoalItem">
+                  <i class="bi bi-plus-circle-fill me-1 text-warning fs-6"></i> Tambah Soal
+                </button>
+              </div>
             </div>
           </div>
         </div>
       </div>
 
-      <!-- Modal Gudang Soal IndoMMLU -->
+      <!-- Modal Gudang Soal -->
       <div class="modal fade" id="modalGudangSoal" tabindex="-1">
         <div class="modal-dialog modal-lg modal-dialog-centered">
           <div class="modal-content border-0 shadow-lg rounded-4">
             <form action="<?= base_url('banksoal/import_gudang_soal') ?>" method="POST">
               <input type="hidden" name="bank_soal_id" value="<?= $bank_soal['id'] ?>" />
               <div class="modal-header text-white p-3 bg-success">
-                <h5 class="modal-title fw-bold"><i class="bi bi-box-seam-fill me-2"></i> Ambil Soal dari Repositori Gudang Soal IndoMMLU</h5>
+                <h5 class="modal-title fw-bold"><i class="bi bi-box-seam-fill me-2"></i> Ambil Soal dari Repositori Gudang Soal</h5>
                 <button type="button" class="btn-close btn-close-white" data-bs-dismiss="modal"></button>
               </div>
               <div class="modal-body p-4">
                 <div class="alert alert-success d-flex align-items-center mb-3">
                   <i class="bi bi-check-circle-fill me-3 fs-3"></i>
                   <div>
-                    <h6 class="fw-bold mb-1">Repositori Gudang Soal IndoMMLU Aktif (14.977 Soal Terindeks)</h6>
+                    <h6 class="fw-bold mb-1">Repositori Gudang Soal Aktif (14.977 Soal Terindeks)</h6>
                     <p class="mb-0 small">Sistem akan secara otomatis menyaring butir soal yang sesuai dengan Mata Pelajaran <strong><?= isset($bank_soal['nama_mapel']) ? $bank_soal['nama_mapel'] : '' ?></strong> (Kelas <strong><?= isset($bank_soal['nama_kelas']) ? $bank_soal['nama_kelas'] : '' ?></strong><?php if (!empty($bank_soal['jenjang'])): ?> / <strong><?= $bank_soal['jenjang'] ?></strong><?php endif; ?>).</p>
                   </div>
                 </div>

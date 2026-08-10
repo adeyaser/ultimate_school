@@ -17,8 +17,8 @@
       <div class="alert alert-success d-flex align-items-center mb-4 rounded-4 shadow-sm border-0 bg-success bg-opacity-10 text-success">
         <i class="bi bi-database-fill-check me-3 fs-2"></i>
         <div>
-          <h6 class="fw-bold mb-1"><i class="bi bi-box-seam-fill me-1"></i> Gudang Soal Local Storage IndoMMLU Aktif (14.977 Soal Terindeks)</h6>
-          <p class="mb-0 small">Pembuatan soal dapat dilakukan melalui <strong>Generate AI</strong>, <strong>Gudang Soal Local Storage (IndoMMLU)</strong>, <strong>Import Massal</strong>, atau <strong>Input Satuan</strong>.</p>
+          <h6 class="fw-bold mb-1"><i class="bi bi-box-seam-fill me-1"></i> Gudang Soal Local Storage Aktif (14.977 Soal Terindeks)</h6>
+          <p class="mb-0 small">Pembuatan soal dapat dilakukan melalui <strong>Generate AI</strong>, <strong>Gudang Soal Local Storage</strong>, <strong>Import Massal</strong>, atau <strong>Input Satuan</strong>.</p>
         </div>
       </div>
 
