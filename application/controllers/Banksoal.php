@@ -417,6 +417,7 @@ No\tJawaban\tPembahasan
             return;
         }
 
+        $this->db->reconnect();
         $existing = $this->M_BankSoal->get_soal_by_bank($bank_soal_id);
         $start_nomor = count($existing) + 1;
         $inserted_count = 0;

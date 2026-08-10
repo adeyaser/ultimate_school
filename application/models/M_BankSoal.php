@@ -58,6 +58,7 @@ class M_BankSoal extends CI_Model {
     // Detail Soal
     public function get_soal_by_bank($bank_soal_id)
     {
+        $this->db->reconnect();
         $this->db->where('bank_soal_id', $bank_soal_id);
         $this->db->order_by('nomor_soal', 'ASC');
         return $this->db->get('soal')->result_array();
