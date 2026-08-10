@@ -82,6 +82,20 @@ class M_BankSoal extends CI_Model {
         $count = $this->db->where('bank_soal_id', $data['bank_soal_id'])->count_all_results('soal');
         $this->db->where('id', $data['bank_soal_id'])->update('bank_soal', array('jumlah_soal' => $count));
 
+        // Automatically save/append new questions to Gudang Soal repository JSON
+        $bank = $this->get_by_id($data['bank_soal_id']);
+        if ($bank && isset($bank['jenis_soal']) && $bank['jenis_soal'] !== 'Kuis Latihan Gudang Soal') {
+            $this->load->model('M_GudangSoal');
+            $sumber = 'Kontributor ' . (isset($bank['jenis_soal']) ? $bank['jenis_soal'] : 'Manual/AI');
+            $this->M_GudangSoal->save_to_gudang_soal(
+                array($data),
+                isset($bank['nama_mapel']) ? $bank['nama_mapel'] : '',
+                isset($bank['nama_kelas']) ? $bank['nama_kelas'] : 0,
+                isset($bank['jenjang']) ? $bank['jenjang'] : 'SMA',
+                $sumber
+            );
+        }
+
         return $soal_id;
     }
 

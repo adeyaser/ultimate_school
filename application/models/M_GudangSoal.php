@@ -135,4 +135,89 @@ class M_GudangSoal extends CI_Model {
 
         return $inserted;
     }
+
+    public function save_to_gudang_soal($items, $mapel_name, $kelas = 0, $jenjang = 'SMA', $sumber = 'Kontributor AI & Manual')
+    {
+        if (empty($items) || !is_array($items)) return 0;
+
+        $master_path = FCPATH . 'application/data/gudang_soal/gudang_soal_master.json';
+        $index_path  = FCPATH . 'application/data/gudang_soal/gudang_soal_index.json';
+
+        if (!file_exists($master_path)) return 0;
+
+        $raw_master = file_get_contents($master_path);
+        $master = json_decode($raw_master, true);
+        if (!is_array($master)) $master = array();
+
+        $start_id = count($master);
+        $added_count = 0;
+
+        $clean_mapel = preg_replace('/\b(SD|SMP|SMA|SMK|Wajib|Peminatan|Terpadu|Kesenian|Utama)\b/i', '', $mapel_name);
+        $clean_mapel = trim($clean_mapel);
+        if (empty($clean_mapel)) $clean_mapel = $mapel_name;
+
+        $kelas_val = is_numeric($kelas) ? (int)$kelas : (function_exists('parse_kelas_number') ? parse_kelas_number($kelas) : 0);
+        $jenjang_val = !empty($jenjang) ? strtoupper(trim($jenjang)) : 'SMA';
+
+        foreach ($items as $item) {
+            $pertanyaan = isset($item['pertanyaan']) ? trim($item['pertanyaan']) : '';
+            if (empty($pertanyaan)) continue;
+
+            $is_dup = false;
+            foreach ($master as $existing) {
+                if (mb_strtolower(trim($existing['pertanyaan'])) === mb_strtolower($pertanyaan)) {
+                    $is_dup = true;
+                    break;
+                }
+            }
+            if ($is_dup) continue;
+
+            $new_entry = array(
+                'id' => $start_id++,
+                'sumber' => $sumber,
+                'jenjang' => $jenjang_val,
+                'kelas' => $kelas_val,
+                'mapel' => $clean_mapel,
+                'pertanyaan' => $pertanyaan,
+                'jenis' => isset($item['jenis']) ? $item['jenis'] : 'Pilihan Ganda',
+                'pilihan_a' => isset($item['pilihan_a']) ? $item['pilihan_a'] : '',
+                'pilihan_b' => isset($item['pilihan_b']) ? $item['pilihan_b'] : '',
+                'pilihan_c' => isset($item['pilihan_c']) ? $item['pilihan_c'] : '',
+                'pilihan_d' => isset($item['pilihan_d']) ? $item['pilihan_d'] : '',
+                'pilihan_e' => isset($item['pilihan_e']) ? $item['pilihan_e'] : '',
+                'kunci_jawaban' => isset($item['kunci_jawaban']) ? strtoupper(trim($item['kunci_jawaban'])) : 'A',
+                'pembahasan' => isset($item['pembahasan']) ? $item['pembahasan'] : ''
+            );
+
+            $master[] = $new_entry;
+            $added_count++;
+        }
+
+        if ($added_count > 0) {
+            file_put_contents($master_path, json_encode($master, JSON_PRETTY_PRINT | JSON_UNESCAPED_UNICODE));
+
+            $categories = array();
+            foreach ($master as $m) {
+                $j = isset($m['jenjang']) ? $m['jenjang'] : 'SMA';
+                $map = isset($m['mapel']) ? $m['mapel'] : 'Umum';
+                $k = isset($m['kelas']) ? (int)$m['kelas'] : 0;
+                $key = "$j|$map|$k";
+                if (!isset($categories[$key])) {
+                    $categories[$key] = array('jenjang' => $j, 'mapel' => $map, 'kelas' => $k, 'jumlah' => 0);
+                }
+                $categories[$key]['jumlah']++;
+            }
+
+            $index_data = array(
+                'title' => 'Gudang Soal Repositori IndoMMLU & Kontributor AI/Manual',
+                'total_soal' => count($master),
+                'generated_at' => date('Y-m-d H:i:s'),
+                'categories' => array_values($categories)
+            );
+
+            file_put_contents($index_path, json_encode($index_data, JSON_PRETTY_PRINT | JSON_UNESCAPED_UNICODE));
+        }
+
+        return $added_count;
+    }
 }
