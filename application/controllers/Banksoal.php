@@ -311,7 +311,7 @@ No\tJawaban\tPembahasan
                 $groq_key = defined('GROQ_API_KEY') ? GROQ_API_KEY : '';
                 if (empty($groq_key)) continue;
 
-                $endpoint = 'https://api.groq.com/openai/v1/chat/completions';
+                $endpoint = defined('GROQ_API_ENDPOINT') ? GROQ_API_ENDPOINT : 'https://api.groq.com/openai/v1/chat/completions';
                 $post_data = array(
                     'model' => 'llama-3.3-70b-versatile',
                     'messages' => array(
@@ -352,7 +352,7 @@ No\tJawaban\tPembahasan
                 elseif ($p === 'openrouter_gemini') $or_model = 'google/gemini-2.5-flash';
                 elseif ($p === 'openrouter_deepseek') $or_model = 'deepseek/deepseek-chat';
 
-                $endpoint = 'https://openrouter.ai/api/v1/chat/completions';
+                $endpoint = defined('OPENROUTER_API_ENDPOINT') ? OPENROUTER_API_ENDPOINT : 'https://openrouter.ai/api/v1/chat/completions';
                 $post_data = array(
                     'model' => $or_model,
                     'max_tokens' => $or_max_tokens,
@@ -397,8 +397,10 @@ No\tJawaban\tPembahasan
 
                 shuffle($api_key_list);
 
+                $gemini_base_url = defined('GEMINI_API_ENDPOINT') ? GEMINI_API_ENDPOINT : 'https://generativelanguage.googleapis.com/v1beta/models/gemini-flash-latest:generateContent';
+
                 foreach ($api_key_list as $active_key) {
-                    $endpoint = "https://generativelanguage.googleapis.com/v1beta/models/gemini-flash-latest:generateContent?key=" . $active_key;
+                    $endpoint = $gemini_base_url . "?key=" . $active_key;
 
                     $post_data = array(
                         'contents' => array(
