@@ -346,7 +346,8 @@ No\tJawaban\tPembahasan
         if (empty($provider)) {
             $provider = 'auto';
         }
-        $bank_soal_id       = $this->input->post('bank_soal_id', true);
+        $raw_bank_id        = $this->input->post('bank_soal_id', true);
+        $bank_soal_id       = decrypt_id($raw_bank_id);
         $topik              = $this->input->post('topik', true);
         $jumlah             = (int)$this->input->post('jumlah', true);
         $jenis              = $this->input->post('jenis', true);
