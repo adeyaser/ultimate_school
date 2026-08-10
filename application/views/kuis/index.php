@@ -22,7 +22,14 @@
               <h4 class="fw-bold mb-0"><i class="bi bi-magic me-2"></i> Kuis Latihan Adaptif (Google Forms Style)</h4>
             </div>
             <div class="card-body p-4">
-              <p class="text-secondary mb-4">Pilih Mata Pelajaran untuk memulai sesi latihan soal interaktif dari repositori bank soal sekolah. Sistem secara otomatis memberikan soal sesuai tingkat kemampuan Anda.</p>
+              <div class="alert alert-success d-flex align-items-center mb-3 rounded-3 bg-success bg-opacity-10 text-success border-0">
+                <i class="bi bi-box-seam-fill me-3 fs-3"></i>
+                <div class="small">
+                  <strong>Terhubung ke Gudang Soal (14.977 Soal Terindeks)</strong><br>
+                  Soal kuis latihan diambil secara otomatis dari repositori nasional Kurikulum SD, SMP, SMA sesuai mata pelajaran yang dipilih.
+                </div>
+              </div>
+              <p class="text-secondary mb-4">Pilih Mata Pelajaran untuk memulai sesi latihan soal interaktif. Sistem secara otomatis memberikan soal sesuai tingkat kelas dan kemampuan Anda.</p>
 
               <form action="<?= base_url('kuislatihan/mulai') ?>" method="post">
                 <div class="mb-3">

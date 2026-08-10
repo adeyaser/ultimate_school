@@ -5,7 +5,9 @@ class M_KuisLatihan extends CI_Model {
 
     public function generate_kuis($murid_id, $mata_pelajaran_id, $jumlah_soal = 10)
     {
-        // 1. Try questions matching the selected subject
+        $this->load->model(array('M_GudangSoal', 'M_Mapel', 'M_Murid'));
+
+        // 1. First attempt: get existing questions in DB 'soal' for this subject
         $this->db->select('soal.id');
         $this->db->from('soal');
         $this->db->join('bank_soal', 'bank_soal.id = soal.bank_soal_id');
@@ -14,7 +16,72 @@ class M_KuisLatihan extends CI_Model {
         $this->db->limit($jumlah_soal);
         $res = $this->db->get()->result_array();
 
-        // 2. Fallback: if no questions for that subject, pick any available questions in repository
+        // 2. If DB questions for this subject are less than requested, fetch directly from Gudang Soal (14.977 dataset)!
+        if (count($res) < $jumlah_soal) {
+            $mapel = $this->M_Mapel->get_by_id($mata_pelajaran_id);
+            $nama_mapel = isset($mapel['nama_mapel']) ? $mapel['nama_mapel'] : '';
+            $base_mapel = preg_replace('/\b(SD|SMP|SMA|SMK|Wajib|Peminatan|Terpadu|Kesenian|Utama)\b/i', '', $nama_mapel);
+            $base_mapel = trim($base_mapel);
+
+            $murid = $this->M_Murid->get_by_id($murid_id);
+            $kelas_name = isset($murid['nama_kelas']) ? $murid['nama_kelas'] : '';
+            $kelas_num  = function_exists('parse_kelas_number') ? parse_kelas_number($kelas_name) : 0;
+
+            $CI =& get_instance();
+            $jenjang = isset($mapel['jenjang']) ? $mapel['jenjang'] : $CI->session->userdata('active_jenjang');
+            if (empty($jenjang)) {
+                if (isset($CI->school_info) && is_array($CI->school_info) && !empty($CI->school_info['jenjang'])) {
+                    $jenjang = $CI->school_info['jenjang'];
+                } else {
+                    $sekolah = $this->db->get('sekolah')->row_array();
+                    $jenjang = !empty($sekolah['jenjang']) ? $sekolah['jenjang'] : 'SMA';
+                }
+            }
+
+            // Fetch questions from 14.977 Gudang Soal dataset
+            $gudang_items = $this->M_GudangSoal->get_soal_by_filter($base_mapel, $kelas_num, $jenjang, $jumlah_soal, true);
+
+            if (!empty($gudang_items)) {
+                // Ensure a system Bank Soal package exists for Gudang Soal Kuis Latihan
+                $system_bank = $this->db->get_where('bank_soal', array(
+                    'mata_pelajaran_id' => $mata_pelajaran_id,
+                    'jenis_soal' => 'Kuis Latihan Gudang Soal'
+                ))->row_array();
+
+                if (!$system_bank) {
+                    $default_kelas_id = isset($murid['kelas_id']) ? $murid['kelas_id'] : 1;
+                    $bank_data = array(
+                        'kode_soal' => 'GUDANG-' . strtoupper(substr(md5($base_mapel), 0, 4)) . '-' . rand(100, 999),
+                        'judul' => 'Bank Soal Kuis Latihan - ' . $nama_mapel,
+                        'mata_pelajaran_id' => $mata_pelajaran_id,
+                        'kelas_id' => $default_kelas_id,
+                        'jenis_soal' => 'Kuis Latihan Gudang Soal',
+                        'jumlah_soal' => 0,
+                        'kkm' => 70,
+                        'status' => 'Published',
+                        'created_by' => 1
+                    );
+                    $this->db->insert('bank_soal', $bank_data);
+                    $system_bank_id = $this->db->insert_id();
+                } else {
+                    $system_bank_id = $system_bank['id'];
+                }
+
+                // Import Gudang Soal items into 'soal' DB table
+                $this->M_GudangSoal->import_to_bank_soal($system_bank_id, $gudang_items);
+
+                // Query again from DB 'soal' table
+                $this->db->select('soal.id');
+                $this->db->from('soal');
+                $this->db->join('bank_soal', 'bank_soal.id = soal.bank_soal_id');
+                $this->db->where('bank_soal.mata_pelajaran_id', $mata_pelajaran_id);
+                $this->db->order_by('RAND()');
+                $this->db->limit($jumlah_soal);
+                $res = $this->db->get()->result_array();
+            }
+        }
+
+        // 3. Fallback: if no questions found for specific subject, fetch any available in repository
         if (empty($res)) {
             $this->db->select('soal.id');
             $this->db->from('soal');
