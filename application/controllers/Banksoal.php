@@ -344,41 +344,49 @@ No\tJawaban\tPembahasan
                     }
                 }
             } elseif ($p === 'github_models') {
-                $gh_key = defined('GITHUB_MODELS_API_KEY') ? GITHUB_MODELS_API_KEY : '';
-                if (empty($gh_key)) continue;
+                $raw_gh_keys = defined('GITHUB_MODELS_API_KEY') ? GITHUB_MODELS_API_KEY : '';
+                if (empty($raw_gh_keys)) continue;
+
+                $gh_key_list = array_filter(array_map('trim', explode(',', $raw_gh_keys)));
+                if (empty($gh_key_list)) continue;
+
+                shuffle($gh_key_list);
 
                 $endpoint = defined('GITHUB_MODELS_API_ENDPOINT') ? GITHUB_MODELS_API_ENDPOINT : 'https://models.github.ai/inference/chat/completions';
-                $post_data = array(
-                    'model' => 'gpt-4o-mini',
-                    'messages' => array(
-                        array('role' => 'user', 'content' => $prompt)
-                    )
-                );
 
-                $ch = curl_init($endpoint);
-                curl_setopt($ch, CURLOPT_RETURNTRANSFER, true);
-                curl_setopt($ch, CURLOPT_POST, true);
-                curl_setopt($ch, CURLOPT_POSTFIELDS, json_encode($post_data));
-                curl_setopt($ch, CURLOPT_HTTPHEADER, array(
-                    'Content-Type: application/json',
-                    'Authorization: Bearer ' . $gh_key,
-                    'X-GitHub-Api-Version: 2022-11-28',
-                    'User-Agent: Ultimate-School-App'
-                ));
-                curl_setopt($ch, CURLOPT_SSL_VERIFYPEER, false);
-                curl_setopt($ch, CURLOPT_TIMEOUT, 180);
+                foreach ($gh_key_list as $active_gh_key) {
+                    $post_data = array(
+                        'model' => 'gpt-4o-mini',
+                        'messages' => array(
+                            array('role' => 'user', 'content' => $prompt)
+                        )
+                    );
 
-                $response   = curl_exec($ch);
-                $curl_err   = curl_error($ch);
-                curl_close($ch);
+                    $ch = curl_init($endpoint);
+                    curl_setopt($ch, CURLOPT_RETURNTRANSFER, true);
+                    curl_setopt($ch, CURLOPT_POST, true);
+                    curl_setopt($ch, CURLOPT_POSTFIELDS, json_encode($post_data));
+                    curl_setopt($ch, CURLOPT_HTTPHEADER, array(
+                        'Content-Type: application/json',
+                        'Authorization: Bearer ' . $active_gh_key,
+                        'X-GitHub-Api-Version: 2022-11-28',
+                        'User-Agent: Ultimate-School-App'
+                    ));
+                    curl_setopt($ch, CURLOPT_SSL_VERIFYPEER, false);
+                    curl_setopt($ch, CURLOPT_TIMEOUT, 180);
 
-                if (!$curl_err && !empty($response)) {
-                    $res_json = json_decode($response, true);
-                    if (isset($res_json['choices'][0]['message']['content']) && !empty($res_json['choices'][0]['message']['content'])) {
-                        $raw_text = $res_json['choices'][0]['message']['content'];
-                        break;
-                    } elseif (isset($res_json['error']['message'])) {
-                        $last_error = 'GitHub Models Error: ' . $res_json['error']['message'];
+                    $response   = curl_exec($ch);
+                    $curl_err   = curl_error($ch);
+                    curl_close($ch);
+
+                    if (!$curl_err && !empty($response)) {
+                        $res_json = json_decode($response, true);
+                        if (isset($res_json['choices'][0]['message']['content']) && !empty($res_json['choices'][0]['message']['content'])) {
+                            $raw_text = $res_json['choices'][0]['message']['content'];
+                            break 2;
+                        } elseif (isset($res_json['error']['message'])) {
+                            $last_error = 'GitHub Models Error: ' . $res_json['error']['message'];
+                        }
                     }
                 }
             } elseif (strpos($p, 'openrouter') === 0) {
