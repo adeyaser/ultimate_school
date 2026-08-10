@@ -5,6 +5,9 @@ if (!function_exists('clean_word_math')) {
 
         // Remove \text{...}, \mathrm{...}, \mbox{...}, \mathbf{...}, \mathit{...}, \mathsf{...}
         $text = preg_replace('/\\\\(text|mathrm|mbox|mathbf|mathit|mathsf)\{([^{}]+)\}/u', '$2', $text);
+        
+        // Remove standalone \text or \mathrm if any
+        $text = preg_replace('/\\\\(text|mathrm|mbox|mathbf|mathit|mathsf)\s+/u', ' ', $text);
 
         // Replace fractions \frac{a}{b} -> (a / b)
         $text = preg_replace('/\\\\frac\{([^{}]+)\}\{([^{}]+)\}/u', '($1 / $2)', $text);
@@ -77,9 +80,15 @@ if (!function_exists('clean_word_math')) {
 
         // Strip any leftover curly braces around numbers or single words like {3} -> 3
         $text = preg_replace('/\{([^{}]+)\}/u', '$1', $text);
+        
+        // Strip leftover curly braces
+        $text = str_replace(array('{', '}'), '', $text);
 
         // Remove $ delimiters
         $text = str_replace(array('$$', '$'), '', $text);
+
+        // Clean up double spaces
+        $text = preg_replace('/\s+/', ' ', $text);
 
         return trim($text);
     }
@@ -90,6 +99,20 @@ if (!function_exists('clean_word_math')) {
 <head>
 <meta charset="utf-8">
 <title><?= isset($bank_soal['judul']) ? $bank_soal['judul'] : 'Naskah Soal Ujian' ?></title>
+<script>
+MathJax = {
+  tex: {
+    inlineMath: [['$', '$'], ['\\(', '\\)']],
+    displayMath: [['$$', '$$'], ['\\[', '\\]']]
+  },
+  svg: {
+    fontCache: 'global'
+  }
+};
+</script>
+<script type="text/javascript" id="MathJax-script" async
+  src="https://cdn.jsdelivr.net/npm/mathjax@3/es5/tex-mml-chtml.js">
+</script>
 <style>
   body {
     font-family: 'Times New Roman', Times, serif;
