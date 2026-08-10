@@ -32,12 +32,86 @@ class M_GudangSoal extends CI_Model {
         return is_array($data) ? $data : array();
     }
 
+    public function normalize_mapel_name($mapel)
+    {
+        $m = strtolower(trim($mapel));
+        if (empty($m)) return '';
+
+        // Strip grade/curriculum suffixes
+        $m = preg_replace('/\b(sd|smp|sma|smk|wajib|peminatan|terpadu|kesenian|utama|kelompok\s+[a-c])\b/i', '', $m);
+        $m = trim($m);
+
+        if (preg_match('/\b(inggris|english)\b/i', $m)) {
+            return 'bahasa inggris';
+        }
+        if (preg_match('/\b(indonesia)\b/i', $m)) {
+            return 'bahasa indonesia';
+        }
+        if (preg_match('/\b(sunda)\b/i', $m)) {
+            return 'bahasa sunda';
+        }
+        if (preg_match('/\b(jawa|jawa\s+kuno)\b/i', $m)) {
+            return 'bahasa jawa';
+        }
+        if (preg_match('/\b(bali)\b/i', $m)) {
+            return 'bahasa bali';
+        }
+        if (preg_match('/\b(lampung)\b/i', $m)) {
+            return 'bahasa lampung';
+        }
+        if (preg_match('/\b(madura)\b/i', $m)) {
+            return 'bahasa madura';
+        }
+        if (preg_match('/\b(makassar|bugis)\b/i', $m)) {
+            return 'bahasa makassar';
+        }
+        if (preg_match('/\b(banjar)\b/i', $m)) {
+            return 'bahasa banjar';
+        }
+        if (preg_match('/\b(dayak|ngaju)\b/i', $m)) {
+            return 'bahasa dayak ngaju';
+        }
+        if (preg_match('/\b(minangkabau|bam)\b/i', $m)) {
+            return 'budaya alam minangkabau';
+        }
+
+        if ($m === 'bahasa') {
+            return 'bahasa indonesia';
+        }
+
+        return $m;
+    }
+
+    private function match_mapel($search_mapel, $item_mapel)
+    {
+        $norm_search = $this->normalize_mapel_name($search_mapel);
+        $norm_item   = $this->normalize_mapel_name($item_mapel);
+
+        if (empty($norm_search)) return true;
+
+        $language_subjects = array(
+            'bahasa inggris', 'bahasa indonesia', 'bahasa sunda', 'bahasa jawa',
+            'bahasa bali', 'bahasa lampung', 'bahasa madura', 'bahasa makassar',
+            'bahasa banjar', 'bahasa dayak ngaju', 'budaya alam minangkabau'
+        );
+
+        $is_search_lang = in_array($norm_search, $language_subjects);
+        $is_item_lang   = in_array($norm_item, $language_subjects);
+
+        if ($is_search_lang || $is_item_lang) {
+            return $norm_search === $norm_item;
+        }
+
+        return ($norm_search === $norm_item) ||
+               (strpos($norm_item, $norm_search) !== false) ||
+               (strpos($norm_search, $norm_item) !== false);
+    }
+
     public function get_soal_by_filter($mapel = null, $kelas = null, $jenjang = null, $limit = 10, $random = true)
     {
         $all = $this->get_master_data();
         if (empty($all)) return array();
 
-        $mapel_clean   = !empty($mapel) ? strtolower(trim($mapel)) : '';
         $kelas_val     = is_numeric($kelas) ? (int)$kelas : (function_exists('parse_kelas_number') ? parse_kelas_number($kelas) : 0);
         $jenjang_clean = !empty($jenjang) ? strtoupper(trim($jenjang)) : '';
 
@@ -58,10 +132,9 @@ class M_GudangSoal extends CI_Model {
         // Pass 1: Strict Match (Mapel + Exact Kelas + Jenjang)
         $p1 = array();
         foreach ($all as $item) {
-            $item_mapel = strtolower($item['mapel']);
-            $match_mapel = empty($mapel_clean) || (strpos($item_mapel, $mapel_clean) !== false || strpos($mapel_clean, $item_mapel) !== false);
+            $match_mapel   = $this->match_mapel($mapel, $item['mapel']);
             $match_jenjang = empty($jenjang_clean) || (strtoupper($item['jenjang']) === $jenjang_clean);
-            $match_kelas = ($kelas_val <= 0) || ((int)$item['kelas'] === $kelas_val);
+            $match_kelas   = ($kelas_val <= 0) || ((int)$item['kelas'] === $kelas_val);
 
             if ($match_mapel && $match_jenjang && $match_kelas) {
                 $p1[] = $item;
@@ -73,8 +146,7 @@ class M_GudangSoal extends CI_Model {
         if ($limit <= 0 || count($result) < $limit) {
             $p2 = array();
             foreach ($all as $item) {
-                $item_mapel = strtolower($item['mapel']);
-                $match_mapel = empty($mapel_clean) || (strpos($item_mapel, $mapel_clean) !== false || strpos($mapel_clean, $item_mapel) !== false);
+                $match_mapel   = $this->match_mapel($mapel, $item['mapel']);
                 $match_jenjang = empty($jenjang_clean) || (strtoupper($item['jenjang']) === $jenjang_clean);
 
                 if ($match_mapel && $match_jenjang) {
@@ -88,9 +160,7 @@ class M_GudangSoal extends CI_Model {
         if ($limit <= 0 || count($result) < $limit) {
             $p3 = array();
             foreach ($all as $item) {
-                $item_mapel = strtolower($item['mapel']);
-                $match_mapel = empty($mapel_clean) || (strpos($item_mapel, $mapel_clean) !== false || strpos($mapel_clean, $item_mapel) !== false);
-
+                $match_mapel = $this->match_mapel($mapel, $item['mapel']);
                 if ($match_mapel) {
                     $p3[] = $item;
                 }
