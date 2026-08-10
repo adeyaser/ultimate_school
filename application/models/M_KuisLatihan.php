@@ -50,11 +50,31 @@ class M_KuisLatihan extends CI_Model {
 
                 if (!$system_bank) {
                     $default_kelas_id = isset($murid['kelas_id']) ? $murid['kelas_id'] : 1;
+
+                    // Resolve valid guru_id to satisfy foreign key constraint bank_soal_ibfk_3
+                    $guru_mapel = $this->db->get_where('guru_mapel', array('mata_pelajaran_id' => $mata_pelajaran_id))->row_array();
+                    if ($guru_mapel && !empty($guru_mapel['guru_id'])) {
+                        $default_guru_id = $guru_mapel['guru_id'];
+                    } else {
+                        $first_guru = $this->db->select('id')->get('guru')->row_array();
+                        if ($first_guru && !empty($first_guru['id'])) {
+                            $default_guru_id = $first_guru['id'];
+                        } else {
+                            $this->db->insert('guru', array(
+                                'nip' => '199000000000000001',
+                                'user_id' => 1,
+                                'status_kepegawaian' => 'Sistem'
+                            ));
+                            $default_guru_id = $this->db->insert_id();
+                        }
+                    }
+
                     $bank_data = array(
                         'kode_soal' => 'GUDANG-' . strtoupper(substr(md5($base_mapel), 0, 4)) . '-' . rand(100, 999),
                         'judul' => 'Bank Soal Kuis Latihan - ' . $nama_mapel,
                         'mata_pelajaran_id' => $mata_pelajaran_id,
                         'kelas_id' => $default_kelas_id,
+                        'guru_id' => $default_guru_id,
                         'jenis_soal' => 'Kuis Latihan Gudang Soal',
                         'jumlah_soal' => 0,
                         'kkm' => 70,
