@@ -301,14 +301,7 @@ class M_KuisLatihan extends CI_Model {
 
         $this->ensure_db_connection();
 
-        $clean_json = trim($raw_text);
-        if (strpos($clean_json, '```') !== false) {
-            $clean_json = preg_replace('/^```(?:json)?\s*/i', '', $clean_json);
-            $clean_json = preg_replace('/\s*```$/', '', $clean_json);
-            $clean_json = trim($clean_json);
-        }
-
-        $items = json_decode($clean_json, true);
+        $items = $this->extract_json_array($raw_text);
         if (!is_array($items) || empty($items)) return false;
 
         $default_kelas_id = isset($murid['kelas_id']) ? $murid['kelas_id'] : 1;
@@ -354,8 +347,10 @@ class M_KuisLatihan extends CI_Model {
                 'bobot' => 10,
                 'tingkat_kesulitan' => $tingkat_kesulitan
             );
-            $this->M_BankSoal->insert_soal($soal_data);
-            $soal_ids[] = $this->db->insert_id();
+            $inserted_id = $this->M_BankSoal->insert_soal($soal_data);
+            if ($inserted_id) {
+                $soal_ids[] = $inserted_id;
+            }
         }
 
         if (empty($soal_ids)) return false;
@@ -513,6 +508,44 @@ class M_KuisLatihan extends CI_Model {
                     }
                 }
             }
+        }
+
+        return false;
+    }
+
+    private function extract_json_array($raw_text)
+    {
+        $soal_array = json_decode($raw_text, true);
+        if (is_array($soal_array)) return $soal_array;
+
+        $cleaned = preg_replace('/^```(?:json)?\s*/i', '', trim($raw_text));
+        $cleaned = preg_replace('/\s*```$/i', '', $cleaned);
+        $soal_array = json_decode($cleaned, true);
+        if (is_array($soal_array)) return $soal_array;
+
+        $start_pos = strpos($raw_text, '[');
+        $end_pos   = strrpos($raw_text, ']');
+
+        if ($start_pos !== false && $end_pos !== false && $end_pos > $start_pos) {
+            $json_substr = substr($raw_text, $start_pos, $end_pos - $start_pos + 1);
+            $soal_array  = json_decode($json_substr, true);
+            if (is_array($soal_array)) return $soal_array;
+
+            $sanitized = preg_replace('/[\x00-\x1F\x7F]/', '', $json_substr);
+            $sanitized = preg_replace('/,\s*([\}\]])/', '$1', $sanitized);
+            $soal_array = json_decode($sanitized, true);
+            if (is_array($soal_array)) return $soal_array;
+        }
+
+        if (preg_match_all('/\{[^{}]*"(?:pertanyaan|question)"[^{}]*\}/is', $raw_text, $matches)) {
+            $items = array();
+            foreach ($matches[0] as $json_obj_str) {
+                $obj = json_decode($json_obj_str, true);
+                if (is_array($obj)) {
+                    $items[] = $obj;
+                }
+            }
+            if (!empty($items)) return $items;
         }
 
         return false;
