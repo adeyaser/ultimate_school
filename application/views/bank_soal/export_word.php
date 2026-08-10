@@ -3,8 +3,21 @@ if (!function_exists('clean_word_math')) {
     function clean_word_math($text) {
         if (empty($text)) return '';
 
+        // Remove \text{...}, \mathrm{...}, \mbox{...}, \mathbf{...}, \mathit{...}, \mathsf{...}
+        $text = preg_replace('/\\\\(text|mathrm|mbox|mathbf|mathit|mathsf)\{([^{}]+)\}/u', '$2', $text);
+
         // Replace fractions \frac{a}{b} -> (a / b)
         $text = preg_replace('/\\\\frac\{([^{}]+)\}\{([^{}]+)\}/u', '($1 / $2)', $text);
+
+        // Replace square roots \sqrt[n]{x} -> ⁿ√(x), \sqrt{x} -> √(x) or √x
+        $text = preg_replace('/\\\\sqrt\[([^{}]+)\]\{([^{}]+)\}/u', '$1√($2)', $text);
+        $text = preg_replace_callback('/\\\\sqrt\{([^{}]+)\}/u', function($m) {
+            $val = trim($m[1]);
+            if (mb_strlen($val) == 1 || is_numeric($val)) {
+                return '√' . $val;
+            }
+            return '√(' . $val . ')';
+        }, $text);
 
         // Common TeX symbols
         $replacements = array(
@@ -32,6 +45,13 @@ if (!function_exists('clean_word_math')) {
             '\\log'    => 'log',
             '\\ln'     => 'ln',
             '\\lim'    => 'lim',
+            '\\left'   => '',
+            '\\right'  => '',
+            '\\quad'   => ' ',
+            '\\qquad'  => '  ',
+            '\\,'      => ' ',
+            '\\;'      => ' ',
+            '\\!'      => '',
             '{,}'      => ','
         );
 
@@ -54,6 +74,9 @@ if (!function_exists('clean_word_math')) {
             }
             return $res;
         }, $text);
+
+        // Strip any leftover curly braces around numbers or single words like {3} -> 3
+        $text = preg_replace('/\{([^{}]+)\}/u', '$1', $text);
 
         // Remove $ delimiters
         $text = str_replace(array('$$', '$'), '', $text);
