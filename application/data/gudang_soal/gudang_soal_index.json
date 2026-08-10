@@ -1,7 +1,7 @@
 {
     "title": "Gudang Soal Repositori IndoMMLU & Bahasa Inggris",
-    "total_soal": 15007,
-    "generated_at": "2026-08-10 17:30:43",
+    "total_soal": 15023,
+    "generated_at": "2026-08-10 17:36:29",
     "categories": [
         {
             "jenjang": "SMA",
@@ -1159,37 +1159,37 @@
             "jenjang": "SMP",
             "mapel": "Bahasa Inggris",
             "kelas": 7,
-            "jumlah": 6
+            "jumlah": 9
         },
         {
             "jenjang": "SMP",
             "mapel": "Bahasa Inggris",
             "kelas": 8,
-            "jumlah": 6
+            "jumlah": 10
         },
         {
             "jenjang": "SMP",
             "mapel": "Bahasa Inggris",
             "kelas": 9,
-            "jumlah": 8
+            "jumlah": 12
         },
         {
             "jenjang": "SMA",
             "mapel": "Bahasa Inggris",
             "kelas": 10,
-            "jumlah": 4
+            "jumlah": 6
         },
         {
             "jenjang": "SMA",
             "mapel": "Bahasa Inggris",
             "kelas": 11,
-            "jumlah": 4
+            "jumlah": 6
         },
         {
             "jenjang": "SMA",
             "mapel": "Bahasa Inggris",
             "kelas": 12,
-            "jumlah": 2
+            "jumlah": 3
         }
     ]
 }

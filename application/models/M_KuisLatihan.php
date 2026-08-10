@@ -158,7 +158,7 @@ class M_KuisLatihan extends CI_Model {
 
                 if ($is_inggris) {
                     foreach ($soal_list as $s) {
-                        if (preg_match('/\b(kancil|petani|paragraf|adalah|merupakan|tersusun|diketahui|berikut|sejarah|geografi)\b/i', $s['pertanyaan'])) {
+                        if (preg_match('/\b(kancil|petani|paragraf|adalah|merupakan|tersusun|diketahui|berikut|sejarah|geografi|taman|raja|kebudayaan|bangsa|peristiwa|pernyataan|dibawah|diatas|kalimat|kutipan|iklan|terdapat|jawaban|pembahasan)\b/i', $s['pertanyaan'])) {
                             $has_bad_question = true;
                             break;
                         }

@@ -41,82 +41,64 @@ class M_GudangSoal extends CI_Model {
         $kelas_val     = is_numeric($kelas) ? (int)$kelas : (function_exists('parse_kelas_number') ? parse_kelas_number($kelas) : 0);
         $jenjang_clean = !empty($jenjang) ? strtoupper(trim($jenjang)) : '';
 
-        // Priority 1: Strict Match (Mapel + Exact Kelas + Jenjang)
-        $strict = array();
+        $result   = array();
+        $used_ids = array();
+
+        $add_items = function($list) use (&$result, &$used_ids, $limit, $random) {
+            if ($random) shuffle($list);
+            foreach ($list as $item) {
+                if ($limit > 0 && count($result) >= $limit) break;
+                if (!isset($used_ids[$item['id']])) {
+                    $used_ids[$item['id']] = true;
+                    $result[] = $item;
+                }
+            }
+        };
+
+        // Pass 1: Strict Match (Mapel + Exact Kelas + Jenjang)
+        $p1 = array();
         foreach ($all as $item) {
-            $match_mapel   = true;
-            $match_jenjang = true;
-            $match_kelas   = true;
-
-            if (!empty($mapel_clean)) {
-                $item_mapel = strtolower($item['mapel']);
-                if (strpos($item_mapel, $mapel_clean) === false && strpos($mapel_clean, $item_mapel) === false) {
-                    $match_mapel = false;
-                }
-            }
-
-            if (!empty($jenjang_clean)) {
-                if (strtoupper($item['jenjang']) !== $jenjang_clean) {
-                    $match_jenjang = false;
-                }
-            }
-
-            if ($kelas_val > 0) {
-                if ((int)$item['kelas'] !== $kelas_val) {
-                    $match_kelas = false;
-                }
-            }
+            $item_mapel = strtolower($item['mapel']);
+            $match_mapel = empty($mapel_clean) || (strpos($item_mapel, $mapel_clean) !== false || strpos($mapel_clean, $item_mapel) !== false);
+            $match_jenjang = empty($jenjang_clean) || (strtoupper($item['jenjang']) === $jenjang_clean);
+            $match_kelas = ($kelas_val <= 0) || ((int)$item['kelas'] === $kelas_val);
 
             if ($match_mapel && $match_jenjang && $match_kelas) {
-                $strict[] = $item;
+                $p1[] = $item;
             }
         }
+        $add_items($p1);
 
-        if (!empty($strict)) {
-            $filtered = $strict;
-        } else {
-            // Priority 2: Match Mapel + Exact Kelas (ignore jenjang if discrepancy)
-            $kelas_match = array();
-            if ($kelas_val > 0) {
-                foreach ($all as $item) {
-                    $item_mapel = strtolower($item['mapel']);
-                    $match_mapel = empty($mapel_clean) || strpos($item_mapel, $mapel_clean) !== false || strpos($mapel_clean, $item_mapel) !== false;
-                    if ($match_mapel && (int)$item['kelas'] === $kelas_val) {
-                        $kelas_match[] = $item;
-                    }
+        // Pass 2: Match Mapel + Jenjang (other classes in same school level)
+        if ($limit <= 0 || count($result) < $limit) {
+            $p2 = array();
+            foreach ($all as $item) {
+                $item_mapel = strtolower($item['mapel']);
+                $match_mapel = empty($mapel_clean) || (strpos($item_mapel, $mapel_clean) !== false || strpos($mapel_clean, $item_mapel) !== false);
+                $match_jenjang = empty($jenjang_clean) || (strtoupper($item['jenjang']) === $jenjang_clean);
+
+                if ($match_mapel && $match_jenjang) {
+                    $p2[] = $item;
                 }
             }
+            $add_items($p2);
+        }
 
-            if (!empty($kelas_match)) {
-                $filtered = $kelas_match;
-            } else {
-                // Priority 3: Fallback Match Mapel + Jenjang (only if exact class has 0 questions in repository)
-                $filtered = array();
-                foreach ($all as $item) {
-                    $item_mapel = strtolower($item['mapel']);
-                    $match_mapel = empty($mapel_clean) || strpos($item_mapel, $mapel_clean) !== false || strpos($mapel_clean, $item_mapel) !== false;
-                    $match_jenjang = empty($jenjang_clean) || strtoupper($item['jenjang']) === $jenjang_clean;
+        // Pass 3: Match Mapel (any level/class for same subject)
+        if ($limit <= 0 || count($result) < $limit) {
+            $p3 = array();
+            foreach ($all as $item) {
+                $item_mapel = strtolower($item['mapel']);
+                $match_mapel = empty($mapel_clean) || (strpos($item_mapel, $mapel_clean) !== false || strpos($mapel_clean, $item_mapel) !== false);
 
-                    if ($match_mapel && $match_jenjang) {
-                        $filtered[] = $item;
-                    }
+                if ($match_mapel) {
+                    $p3[] = $item;
                 }
             }
+            $add_items($p3);
         }
 
-        if (empty($filtered)) {
-            return array();
-        }
-
-        if ($random) {
-            shuffle($filtered);
-        }
-
-        if ($limit > 0 && count($filtered) > $limit) {
-            $filtered = array_slice($filtered, 0, $limit);
-        }
-
-        return $filtered;
+        return $result;
     }
 
     public function import_to_bank_soal($bank_soal_id, $items)
