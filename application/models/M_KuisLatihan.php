@@ -101,15 +101,6 @@ class M_KuisLatihan extends CI_Model {
             }
         }
 
-        // 3. Fallback: if no questions found for specific subject, fetch any available in repository
-        if (empty($res)) {
-            $this->db->select('soal.id');
-            $this->db->from('soal');
-            $this->db->order_by('RAND()');
-            $this->db->limit($jumlah_soal);
-            $res = $this->db->get()->result_array();
-        }
-
         if (empty($res)) {
             return false;
         }

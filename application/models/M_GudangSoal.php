@@ -105,7 +105,7 @@ class M_GudangSoal extends CI_Model {
         }
 
         if (empty($filtered)) {
-            $filtered = $all;
+            return array();
         }
 
         if ($random) {
