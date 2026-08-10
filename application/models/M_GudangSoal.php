@@ -206,6 +206,18 @@ class M_GudangSoal extends CI_Model {
         return $inserted;
     }
 
+    public function build_question_key($pertanyaan, $pilihan_a = '', $pilihan_b = '')
+    {
+        $clean = preg_replace('/[\s\W]+/u', '', mb_strtolower(trim($pertanyaan)));
+        if (mb_strlen($clean) > 10) {
+            return md5($clean);
+        } else {
+            $pa = preg_replace('/[\s\W]+/u', '', mb_strtolower(trim($pilihan_a)));
+            $pb = preg_replace('/[\s\W]+/u', '', mb_strtolower(trim($pilihan_b)));
+            return md5($clean . '|' . $pa . '|' . $pb);
+        }
+    }
+
     public function save_to_gudang_soal($items, $mapel_name, $kelas = 0, $jenjang = 'SMA', $sumber = 'Kontributor AI & Manual')
     {
         if (empty($items) || !is_array($items)) return 0;
@@ -219,7 +231,23 @@ class M_GudangSoal extends CI_Model {
         $master = json_decode($raw_master, true);
         if (!is_array($master)) $master = array();
 
-        $start_id = count($master);
+        // Build seen keys map for fast duplicate detection
+        $seen_keys = array();
+        $max_id = 0;
+        foreach ($master as $existing) {
+            $p  = isset($existing['pertanyaan']) ? $existing['pertanyaan'] : '';
+            $pa = isset($existing['pilihan_a']) ? $existing['pilihan_a'] : '';
+            $pb = isset($existing['pilihan_b']) ? $existing['pilihan_b'] : '';
+            $key = $this->build_question_key($p, $pa, $pb);
+            $seen_keys[$key] = true;
+
+            $eid = isset($existing['id']) ? (int)$existing['id'] : 0;
+            if ($eid > $max_id) {
+                $max_id = $eid;
+            }
+        }
+
+        $next_id = $max_id + 1;
         $added_count = 0;
 
         $clean_mapel = preg_replace('/\b(SD|SMP|SMA|SMK|Wajib|Peminatan|Terpadu|Kesenian|Utama)\b/i', '', $mapel_name);
@@ -233,17 +261,18 @@ class M_GudangSoal extends CI_Model {
             $pertanyaan = isset($item['pertanyaan']) ? trim($item['pertanyaan']) : '';
             if (empty($pertanyaan)) continue;
 
-            $is_dup = false;
-            foreach ($master as $existing) {
-                if (mb_strtolower(trim($existing['pertanyaan'])) === mb_strtolower($pertanyaan)) {
-                    $is_dup = true;
-                    break;
-                }
+            $pa = isset($item['pilihan_a']) ? $item['pilihan_a'] : '';
+            $pb = isset($item['pilihan_b']) ? $item['pilihan_b'] : '';
+            $key = $this->build_question_key($pertanyaan, $pa, $pb);
+
+            // Skip if question already exists in Gudang Soal master
+            if (isset($seen_keys[$key])) {
+                continue;
             }
-            if ($is_dup) continue;
+            $seen_keys[$key] = true;
 
             $new_entry = array(
-                'id' => $start_id++,
+                'id' => $next_id++,
                 'sumber' => $sumber,
                 'jenjang' => $jenjang_val,
                 'kelas' => $kelas_val,
