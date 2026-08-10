@@ -55,10 +55,18 @@ class M_BankSoal extends CI_Model {
         return $this->db->delete('bank_soal', array('id' => $id));
     }
 
+    public function ensure_db_connection()
+    {
+        if (!isset($this->db->conn_id) || !is_object($this->db->conn_id) || @$this->db->conn_id->ping() === false) {
+            @$this->db->close();
+            $this->db->initialize();
+        }
+    }
+
     // Detail Soal
     public function get_soal_by_bank($bank_soal_id)
     {
-        $this->db->reconnect();
+        $this->ensure_db_connection();
         $this->db->where('bank_soal_id', $bank_soal_id);
         $this->db->order_by('nomor_soal', 'ASC');
         return $this->db->get('soal')->result_array();
@@ -66,6 +74,7 @@ class M_BankSoal extends CI_Model {
 
     public function insert_soal($data)
     {
+        $this->ensure_db_connection();
         $this->db->insert('soal', $data);
         $soal_id = $this->db->insert_id();
 

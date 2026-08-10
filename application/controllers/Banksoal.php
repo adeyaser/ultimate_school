@@ -404,7 +404,7 @@ No\tJawaban\tPembahasan
             return;
         }
 
-        $this->db->reconnect();
+        $this->ensure_db_connection();
 
         $soal_array = $this->extract_json_array($raw_text);
         $inserted_count = 0;

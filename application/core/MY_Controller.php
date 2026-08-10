@@ -96,4 +96,12 @@ class MY_Controller extends CI_Controller {
 
         $this->load->view('templates/layout', $data);
     }
+
+    protected function ensure_db_connection()
+    {
+        if (!isset($this->db->conn_id) || !is_object($this->db->conn_id) || @$this->db->conn_id->ping() === false) {
+            @$this->db->close();
+            $this->db->initialize();
+        }
+    }
 }
