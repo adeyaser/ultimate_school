@@ -309,40 +309,48 @@ No\tJawaban\tPembahasan
 
         foreach ($candidate_providers as $p) {
             if ($p === 'groq') {
-                $groq_key = defined('GROQ_API_KEY') ? GROQ_API_KEY : '';
-                if (empty($groq_key)) continue;
+                $raw_groq_keys = defined('GROQ_API_KEY') ? GROQ_API_KEY : '';
+                if (empty($raw_groq_keys)) continue;
+
+                $groq_key_list = array_filter(array_map('trim', explode(',', $raw_groq_keys)));
+                if (empty($groq_key_list)) continue;
+
+                shuffle($groq_key_list);
 
                 $endpoint = defined('GROQ_API_ENDPOINT') ? GROQ_API_ENDPOINT : 'https://api.groq.com/openai/v1/chat/completions';
-                $post_data = array(
-                    'model' => 'llama-3.3-70b-versatile',
-                    'messages' => array(
-                        array('role' => 'user', 'content' => $prompt)
-                    )
-                );
 
-                $ch = curl_init($endpoint);
-                curl_setopt($ch, CURLOPT_RETURNTRANSFER, true);
-                curl_setopt($ch, CURLOPT_POST, true);
-                curl_setopt($ch, CURLOPT_POSTFIELDS, json_encode($post_data));
-                curl_setopt($ch, CURLOPT_HTTPHEADER, array(
-                    'Content-Type: application/json',
-                    'Authorization: Bearer ' . $groq_key
-                ));
-                curl_setopt($ch, CURLOPT_SSL_VERIFYPEER, false);
-                curl_setopt($ch, CURLOPT_TIMEOUT, 180);
+                foreach ($groq_key_list as $active_groq_key) {
+                    $post_data = array(
+                        'model' => 'llama-3.3-70b-versatile',
+                        'messages' => array(
+                            array('role' => 'user', 'content' => $prompt)
+                        )
+                    );
 
-                $response   = curl_exec($ch);
-                $curl_err   = curl_error($ch);
-                curl_close($ch);
+                    $ch = curl_init($endpoint);
+                    curl_setopt($ch, CURLOPT_RETURNTRANSFER, true);
+                    curl_setopt($ch, CURLOPT_POST, true);
+                    curl_setopt($ch, CURLOPT_POSTFIELDS, json_encode($post_data));
+                    curl_setopt($ch, CURLOPT_HTTPHEADER, array(
+                        'Content-Type: application/json',
+                        'Authorization: Bearer ' . $active_groq_key
+                    ));
+                    curl_setopt($ch, CURLOPT_SSL_VERIFYPEER, false);
+                    curl_setopt($ch, CURLOPT_TIMEOUT, 180);
 
-                if (!$curl_err && !empty($response)) {
-                    $res_json = json_decode($response, true);
-                    if (isset($res_json['choices'][0]['message']['content']) && !empty($res_json['choices'][0]['message']['content'])) {
-                        $raw_text = $res_json['choices'][0]['message']['content'];
-                        $used_provider_name = 'Groq Cloud AI (Llama 3.3 70B)';
-                        break;
-                    } elseif (isset($res_json['error']['message'])) {
-                        $last_error = 'Groq Error: ' . $res_json['error']['message'];
+                    $response   = curl_exec($ch);
+                    $curl_err   = curl_error($ch);
+                    curl_close($ch);
+
+                    if (!$curl_err && !empty($response)) {
+                        $res_json = json_decode($response, true);
+                        if (isset($res_json['choices'][0]['message']['content']) && !empty($res_json['choices'][0]['message']['content'])) {
+                            $raw_text = $res_json['choices'][0]['message']['content'];
+                            $used_provider_name = 'Groq Cloud AI (Llama 3.3 70B)';
+                            break 2;
+                        } elseif (isset($res_json['error']['message'])) {
+                            $last_error = 'Groq Error: ' . $res_json['error']['message'];
+                        }
                     }
                 }
             } elseif ($p === 'github_models') {
@@ -393,8 +401,13 @@ No\tJawaban\tPembahasan
                     }
                 }
             } elseif (strpos($p, 'openrouter') === 0) {
-                $or_key = defined('OPENROUTER_API_KEY') ? OPENROUTER_API_KEY : '';
-                if (empty($or_key)) continue;
+                $raw_or_keys = defined('OPENROUTER_API_KEY') ? OPENROUTER_API_KEY : '';
+                if (empty($raw_or_keys)) continue;
+
+                $or_key_list = array_filter(array_map('trim', explode(',', $raw_or_keys)));
+                if (empty($or_key_list)) continue;
+
+                shuffle($or_key_list);
 
                 $or_model = 'openai/gpt-4o';
                 if ($p === 'openrouter_gpt4o_mini') $or_model = 'openai/gpt-4o-mini';
@@ -402,39 +415,42 @@ No\tJawaban\tPembahasan
                 elseif ($p === 'openrouter_deepseek') $or_model = 'deepseek/deepseek-chat';
 
                 $endpoint = defined('OPENROUTER_API_ENDPOINT') ? OPENROUTER_API_ENDPOINT : 'https://openrouter.ai/api/v1/chat/completions';
-                $post_data = array(
-                    'model' => $or_model,
-                    'max_tokens' => $or_max_tokens,
-                    'messages' => array(
-                        array('role' => 'user', 'content' => $prompt)
-                    )
-                );
 
-                $ch = curl_init($endpoint);
-                curl_setopt($ch, CURLOPT_RETURNTRANSFER, true);
-                curl_setopt($ch, CURLOPT_POST, true);
-                curl_setopt($ch, CURLOPT_POSTFIELDS, json_encode($post_data));
-                curl_setopt($ch, CURLOPT_HTTPHEADER, array(
-                    'Content-Type: application/json',
-                    'Authorization: Bearer ' . $or_key,
-                    'HTTP-Referer: http://localhost/ultimate_school',
-                    'X-Title: Ultimate School'
-                ));
-                curl_setopt($ch, CURLOPT_SSL_VERIFYPEER, false);
-                curl_setopt($ch, CURLOPT_TIMEOUT, 180);
+                foreach ($or_key_list as $active_or_key) {
+                    $post_data = array(
+                        'model' => $or_model,
+                        'max_tokens' => $or_max_tokens,
+                        'messages' => array(
+                            array('role' => 'user', 'content' => $prompt)
+                        )
+                    );
 
-                $response   = curl_exec($ch);
-                $curl_err   = curl_error($ch);
-                curl_close($ch);
+                    $ch = curl_init($endpoint);
+                    curl_setopt($ch, CURLOPT_RETURNTRANSFER, true);
+                    curl_setopt($ch, CURLOPT_POST, true);
+                    curl_setopt($ch, CURLOPT_POSTFIELDS, json_encode($post_data));
+                    curl_setopt($ch, CURLOPT_HTTPHEADER, array(
+                        'Content-Type: application/json',
+                        'Authorization: Bearer ' . $active_or_key,
+                        'HTTP-Referer: http://localhost/ultimate_school',
+                        'X-Title: Ultimate School'
+                    ));
+                    curl_setopt($ch, CURLOPT_SSL_VERIFYPEER, false);
+                    curl_setopt($ch, CURLOPT_TIMEOUT, 180);
 
-                if (!$curl_err && !empty($response)) {
-                    $res_json = json_decode($response, true);
-                    if (isset($res_json['choices'][0]['message']['content']) && !empty($res_json['choices'][0]['message']['content'])) {
-                        $raw_text = $res_json['choices'][0]['message']['content'];
-                        $used_provider_name = 'OpenRouter (' . $or_model . ')';
-                        break;
-                    } elseif (isset($res_json['error']['message'])) {
-                        $last_error = 'OpenRouter Error (' . $or_model . '): ' . $res_json['error']['message'];
+                    $response   = curl_exec($ch);
+                    $curl_err   = curl_error($ch);
+                    curl_close($ch);
+
+                    if (!$curl_err && !empty($response)) {
+                        $res_json = json_decode($response, true);
+                        if (isset($res_json['choices'][0]['message']['content']) && !empty($res_json['choices'][0]['message']['content'])) {
+                            $raw_text = $res_json['choices'][0]['message']['content'];
+                            $used_provider_name = 'OpenRouter (' . $or_model . ')';
+                            break 2;
+                        } elseif (isset($res_json['error']['message'])) {
+                            $last_error = 'OpenRouter Error (' . $or_model . '): ' . $res_json['error']['message'];
+                        }
                     }
                 }
             } else {
