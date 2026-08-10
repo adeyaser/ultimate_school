@@ -404,60 +404,93 @@ No\tJawaban\tPembahasan
             return;
         }
 
-        $soal_array = json_decode($raw_text, true);
-
-        if (!is_array($soal_array)) {
-            $cleaned = preg_replace('/^```(?:json)?\s*/i', '', trim($raw_text));
-            $cleaned = preg_replace('/\s*```$/i', '', $cleaned);
-            $soal_array = json_decode($cleaned, true);
-        }
-
-        if (!is_array($soal_array)) {
-            echo json_encode(array('status' => 'error', 'message' => 'Format balasan dari AI Gemini bukan format JSON yang valid.'));
-            return;
-        }
-
         $this->db->reconnect();
-        $existing = $this->M_BankSoal->get_soal_by_bank($bank_soal_id);
-        $start_nomor = count($existing) + 1;
+
+        $soal_array = $this->extract_json_array($raw_text);
         $inserted_count = 0;
 
-        foreach ($soal_array as $item) {
-            if (empty($item['pertanyaan'])) continue;
+        if (is_array($soal_array) && !empty($soal_array)) {
+            $existing = $this->M_BankSoal->get_soal_by_bank($bank_soal_id);
+            $start_nomor = count($existing) + 1;
 
-            $jenis_item = isset($item['jenis']) && in_array($item['jenis'], array('Essay', 'Pilihan Ganda')) ? $item['jenis'] : 'Pilihan Ganda';
-            $diff_item  = isset($item['tingkat_kesulitan']) && in_array($item['tingkat_kesulitan'], array('Mudah', 'Sedang', 'Sulit')) ? $item['tingkat_kesulitan'] : $tingkat_kesulitan;
+            foreach ($soal_array as $item) {
+                if (empty($item['pertanyaan'])) continue;
 
-            $data_soal = array(
-                'bank_soal_id'      => $bank_soal_id,
-                'nomor_soal'        => $start_nomor + $inserted_count,
-                'pertanyaan'        => $item['pertanyaan'],
-                'jenis'             => $jenis_item,
-                'pilihan_a'         => isset($item['pilihan_a']) ? $item['pilihan_a'] : '',
-                'pilihan_b'         => isset($item['pilihan_b']) ? $item['pilihan_b'] : '',
-                'pilihan_c'         => isset($item['pilihan_c']) ? $item['pilihan_c'] : '',
-                'pilihan_d'         => isset($item['pilihan_d']) ? $item['pilihan_d'] : '',
-                'pilihan_e'         => isset($item['pilihan_e']) ? $item['pilihan_e'] : '',
-                'kunci_jawaban'     => isset($item['kunci_jawaban']) ? $item['kunci_jawaban'] : '',
-                'pembahasan'        => isset($item['pembahasan']) ? $item['pembahasan'] : '',
-                'bobot'             => isset($item['bobot']) && is_numeric($item['bobot']) ? (int)$item['bobot'] : 10,
-                'tingkat_kesulitan' => $diff_item
-            );
+                $jenis_item = isset($item['jenis']) && in_array($item['jenis'], array('Essay', 'Pilihan Ganda')) ? $item['jenis'] : 'Pilihan Ganda';
+                $diff_item  = isset($item['tingkat_kesulitan']) && in_array($item['tingkat_kesulitan'], array('Mudah', 'Sedang', 'Sulit')) ? $item['tingkat_kesulitan'] : $tingkat_kesulitan;
 
-            $this->M_BankSoal->insert_soal($data_soal);
-            $inserted_count++;
+                $data_soal = array(
+                    'bank_soal_id'      => $bank_soal_id,
+                    'nomor_soal'        => $start_nomor + $inserted_count,
+                    'pertanyaan'        => $item['pertanyaan'],
+                    'jenis'             => $jenis_item,
+                    'pilihan_a'         => isset($item['pilihan_a']) ? $item['pilihan_a'] : '',
+                    'pilihan_b'         => isset($item['pilihan_b']) ? $item['pilihan_b'] : '',
+                    'pilihan_c'         => isset($item['pilihan_c']) ? $item['pilihan_c'] : '',
+                    'pilihan_d'         => isset($item['pilihan_d']) ? $item['pilihan_d'] : '',
+                    'pilihan_e'         => isset($item['pilihan_e']) ? $item['pilihan_e'] : '',
+                    'kunci_jawaban'     => isset($item['kunci_jawaban']) ? $item['kunci_jawaban'] : '',
+                    'pembahasan'        => isset($item['pembahasan']) ? $item['pembahasan'] : '',
+                    'bobot'             => isset($item['bobot']) && is_numeric($item['bobot']) ? (int)$item['bobot'] : 10,
+                    'tingkat_kesulitan' => $diff_item
+                );
+
+                $this->M_BankSoal->insert_soal($data_soal);
+                $inserted_count++;
+            }
+        } else {
+            // Fallback: try parsing as bulk text format
+            $inserted_count = $this->M_BankSoal->parse_and_import_bulk_soal($bank_soal_id, $raw_text);
         }
 
         if ($inserted_count > 0) {
-            $this->session->set_flashdata('success', "Berhasil membuat $inserted_count butir soal secara otomatis menggunakan AI Gemini!");
+            $this->session->set_flashdata('success', "Berhasil membuat $inserted_count butir soal secara otomatis menggunakan AI!");
             echo json_encode(array(
                 'status' => 'success',
                 'message' => "$inserted_count soal berhasil digenerate dan disimpan.",
                 'total_generated' => $inserted_count
             ));
         } else {
-            echo json_encode(array('status' => 'error', 'message' => 'Tidak ada soal yang berhasil diproses dan disimpan.'));
+            echo json_encode(array('status' => 'error', 'message' => 'Gagal mengurai format balasan AI. Silakan coba kembali.'));
         }
+    }
+
+    private function extract_json_array($raw_text)
+    {
+        $soal_array = json_decode($raw_text, true);
+        if (is_array($soal_array)) return $soal_array;
+
+        $cleaned = preg_replace('/^```(?:json)?\s*/i', '', trim($raw_text));
+        $cleaned = preg_replace('/\s*```$/i', '', $cleaned);
+        $soal_array = json_decode($cleaned, true);
+        if (is_array($soal_array)) return $soal_array;
+
+        $start_pos = strpos($raw_text, '[');
+        $end_pos   = strrpos($raw_text, ']');
+
+        if ($start_pos !== false && $end_pos !== false && $end_pos > $start_pos) {
+            $json_substr = substr($raw_text, $start_pos, $end_pos - $start_pos + 1);
+            $soal_array  = json_decode($json_substr, true);
+            if (is_array($soal_array)) return $soal_array;
+
+            $sanitized = preg_replace('/[\x00-\x1F\x7F]/', '', $json_substr);
+            $sanitized = preg_replace('/,\s*([\}\]])/', '$1', $sanitized);
+            $soal_array = json_decode($sanitized, true);
+            if (is_array($soal_array)) return $soal_array;
+        }
+
+        if (preg_match_all('/\{[^{}]*"(?:pertanyaan|question)"[^{}]*\}/is', $raw_text, $matches)) {
+            $items = array();
+            foreach ($matches[0] as $json_obj_str) {
+                $obj = json_decode($json_obj_str, true);
+                if (is_array($obj)) {
+                    $items[] = $obj;
+                }
+            }
+            if (!empty($items)) return $items;
+        }
+
+        return false;
     }
 }
 
