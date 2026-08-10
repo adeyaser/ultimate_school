@@ -293,6 +293,7 @@ No\tJawaban\tPembahasan
         $prompt .= "]\n";
 
         $raw_text = '';
+        $used_provider_name = 'AI Engine';
         $last_error = 'Tidak ada provider AI yang berhasil memproses pembuatan soal.';
         $or_max_tokens = min(2500, max(800, $jumlah * 120));
 
@@ -338,6 +339,7 @@ No\tJawaban\tPembahasan
                     $res_json = json_decode($response, true);
                     if (isset($res_json['choices'][0]['message']['content']) && !empty($res_json['choices'][0]['message']['content'])) {
                         $raw_text = $res_json['choices'][0]['message']['content'];
+                        $used_provider_name = 'Groq Cloud AI (Llama 3.3 70B)';
                         break;
                     } elseif (isset($res_json['error']['message'])) {
                         $last_error = 'Groq Error: ' . $res_json['error']['message'];
@@ -383,6 +385,7 @@ No\tJawaban\tPembahasan
                         $res_json = json_decode($response, true);
                         if (isset($res_json['choices'][0]['message']['content']) && !empty($res_json['choices'][0]['message']['content'])) {
                             $raw_text = $res_json['choices'][0]['message']['content'];
+                            $used_provider_name = 'GitHub Models (GPT-4o Mini)';
                             break 2;
                         } elseif (isset($res_json['error']['message'])) {
                             $last_error = 'GitHub Models Error: ' . $res_json['error']['message'];
@@ -428,6 +431,7 @@ No\tJawaban\tPembahasan
                     $res_json = json_decode($response, true);
                     if (isset($res_json['choices'][0]['message']['content']) && !empty($res_json['choices'][0]['message']['content'])) {
                         $raw_text = $res_json['choices'][0]['message']['content'];
+                        $used_provider_name = 'OpenRouter (' . $or_model . ')';
                         break;
                     } elseif (isset($res_json['error']['message'])) {
                         $last_error = 'OpenRouter Error (' . $or_model . '): ' . $res_json['error']['message'];
@@ -474,6 +478,7 @@ No\tJawaban\tPembahasan
                         $res_json = json_decode($response, true);
                         if (isset($res_json['candidates'][0]['content']['parts'][0]['text'])) {
                             $raw_text = $res_json['candidates'][0]['content']['parts'][0]['text'];
+                            $used_provider_name = 'Google Gemini Direct';
                             break 2;
                         } elseif (isset($res_json['error']['message'])) {
                             $last_error = 'Gemini Error: ' . $res_json['error']['message'];
@@ -528,10 +533,11 @@ No\tJawaban\tPembahasan
         }
 
         if ($inserted_count > 0) {
-            $this->session->set_flashdata('success', "Berhasil membuat $inserted_count butir soal secara otomatis menggunakan AI!");
+            $this->session->set_flashdata('success', "Berhasil membuat $inserted_count butir soal secara otomatis menggunakan AI ($used_provider_name)!");
             echo json_encode(array(
                 'status' => 'success',
-                'message' => "$inserted_count soal berhasil digenerate dan disimpan.",
+                'message' => "$inserted_count soal berhasil digenerate dan disimpan menggunakan $used_provider_name.",
+                'provider_name' => $used_provider_name,
                 'total_generated' => $inserted_count
             ));
         } else {

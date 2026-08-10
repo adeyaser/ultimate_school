@@ -273,7 +273,7 @@ MathJax = {
       <form id="formGenerateAiSoal">
         <input type="hidden" name="bank_soal_id" value="<?= $bank_soal['id'] ?>" />
         <div class="modal-header text-white p-3" style="background: linear-gradient(135deg, #6366f1 0%, #a855f7 100%);">
-          <h5 class="modal-title fw-bold"><i class="bi bi-robot me-2"></i> Generate Soal Otomatis dengan AI Gemini</h5>
+          <h5 class="modal-title fw-bold"><i class="bi bi-robot me-2"></i> Generate Soal Otomatis dengan Multi-AI Engine</h5>
           <button type="button" class="btn-close btn-close-white" data-bs-dismiss="modal"></button>
         </div>
         <div class="modal-body p-4">
@@ -282,7 +282,7 @@ MathJax = {
           <div class="alert alert-primary d-flex align-items-center mb-3">
             <i class="bi bi-info-circle-fill me-2 fs-4"></i>
             <div>
-              Pembuatan soal dilakukan menggunakan AI Google Gemini berdasarkan Mata Pelajaran <strong><?= $bank_soal['nama_mapel'] ?></strong> (Kelas <strong><?= $bank_soal['nama_kelas'] ?></strong>).
+              Pembuatan soal dilakukan menggunakan <strong>Multi-AI Engine Pool</strong> (Google Gemini, Groq Llama 3.3, GitHub Models GPT-4o, & OpenRouter) secara otomatis untuk Mata Pelajaran <strong><?= $bank_soal['nama_mapel'] ?></strong> (Kelas <strong><?= $bank_soal['nama_kelas'] ?></strong>).
             </div>
           </div>
 
@@ -511,7 +511,15 @@ No	Jawaban	Pembahasan
                 <i class="bi bi-robot fs-1 text-white"></i>
               </div>
             </div>
-            <h5 class="fw-bold mb-2 text-white"><i class="bi bi-stars me-2 text-warning"></i> AI Gemini Sedang Memproses & Menyusun Soal...</h5>
+            <h5 class="fw-bold mb-2 text-white"><i class="bi bi-stars me-2 text-warning"></i> Multi-AI Engine Sedang Memproses & Menyusun Soal...</h5>
+            
+            <div class="d-flex justify-content-center flex-wrap gap-2 my-3">
+              <span class="badge bg-white bg-opacity-25 text-white fw-semibold px-3 py-2 border border-white border-opacity-25 rounded-pill"><i class="bi bi-cpu-fill me-1 text-warning"></i> Google Gemini Direct</span>
+              <span class="badge bg-white bg-opacity-25 text-white fw-semibold px-3 py-2 border border-white border-opacity-25 rounded-pill"><i class="bi bi-lightning-charge-fill me-1 text-warning"></i> Groq Llama 3.3 70B</span>
+              <span class="badge bg-white bg-opacity-25 text-white fw-semibold px-3 py-2 border border-white border-opacity-25 rounded-pill"><i class="bi bi-github me-1 text-warning"></i> GitHub Models GPT-4o</span>
+              <span class="badge bg-white bg-opacity-25 text-white fw-semibold px-3 py-2 border border-white border-opacity-25 rounded-pill"><i class="bi bi-layers-fill me-1 text-warning"></i> OpenRouter Cascade</span>
+            </div>
+
             <p id="aiStepText" class="small text-white-50 fw-semibold mb-3">${steps[0]}</p>
             
             <div class="progress mb-2 rounded-pill shadow-sm" style="height: 14px; background: rgba(255,255,255,0.2);">
