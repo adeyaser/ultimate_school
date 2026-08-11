@@ -184,6 +184,29 @@ class Migrate extends CI_Controller {
               KEY `soal_id` (`soal_id`),
               CONSTRAINT `kuis_latihan_jawaban_ibfk_1` FOREIGN KEY (`kuis_latihan_id`) REFERENCES `kuis_latihan` (`id`) ON DELETE CASCADE,
               CONSTRAINT `kuis_latihan_jawaban_ibfk_2` FOREIGN KEY (`soal_id`) REFERENCES `soal` (`id`) ON DELETE CASCADE
+            ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4;",
+
+            // 35. materi_ocr_soal
+            "CREATE TABLE IF NOT EXISTS `materi_ocr_soal` (
+              `id` int(11) NOT NULL AUTO_INCREMENT,
+              `bank_soal_id` int(11) DEFAULT NULL,
+              `user_id` int(11) NOT NULL,
+              `judul_materi` varchar(255) DEFAULT NULL,
+              `image_path` text DEFAULT NULL,
+              `ocr_text` longtext NOT NULL,
+              `ringkasan_materi` longtext DEFAULT NULL,
+              `jumlah_soal` int(11) DEFAULT 5,
+              `jenis_soal` varchar(50) DEFAULT 'Pilihan Ganda',
+              `tingkat_kesulitan` varchar(50) DEFAULT 'Sedang',
+              `generated_json` longtext DEFAULT NULL,
+              `status` enum('draft', 'summarized', 'completed') DEFAULT 'draft',
+              `created_at` timestamp NOT NULL DEFAULT CURRENT_TIMESTAMP(),
+              `updated_at` timestamp NOT NULL DEFAULT CURRENT_TIMESTAMP ON UPDATE CURRENT_TIMESTAMP,
+              PRIMARY KEY (`id`),
+              KEY `bank_soal_id` (`bank_soal_id`),
+              KEY `user_id` (`user_id`),
+              CONSTRAINT `materi_ocr_soal_ibfk_1` FOREIGN KEY (`bank_soal_id`) REFERENCES `bank_soal` (`id`) ON DELETE SET NULL,
+              CONSTRAINT `materi_ocr_soal_ibfk_2` FOREIGN KEY (`user_id`) REFERENCES `users` (`id`) ON DELETE CASCADE
             ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4;"
         ];
 
@@ -191,6 +214,6 @@ class Migrate extends CI_Controller {
             $this->db->query($sql);
         }
 
-        echo "Migration completed successfully. All 34 tables are present.";
+        echo "Migration completed successfully. All 35 tables are present.";
     }
 }
