@@ -229,53 +229,63 @@ class M_OcrSoal extends CI_Model {
 
         shuffle($api_key_list);
 
-        $endpoint_base = 'https://generativelanguage.googleapis.com/v1beta/models/gemini-1.5-flash:generateContent';
+        $vision_models = array('gemini-flash-latest', 'gemini-3.5-flash', 'gemini-2.5-pro');
         $last_err = 'Gagal menghubungi server Gemini Vision.';
 
-        foreach ($api_key_list as $active_key) {
-            $endpoint = $endpoint_base . "?key=" . $active_key;
+        foreach ($vision_models as $v_model) {
+            $endpoint_base = 'https://generativelanguage.googleapis.com/v1beta/models/' . $v_model . ':generateContent';
 
-            $post_data = array(
-                'contents' => array(
-                    array(
-                        'parts' => array(
-                            array('text' => $prompt),
-                            array(
-                                'inline_data' => array(
-                                    'mime_type' => $mime_type,
-                                    'data' => $base64_image
+            foreach ($api_key_list as $active_key) {
+                $endpoint = $endpoint_base . "?key=" . $active_key;
+
+                $post_data = array(
+                    'contents' => array(
+                        array(
+                            'parts' => array(
+                                array('text' => $prompt),
+                                array(
+                                    'inline_data' => array(
+                                        'mime_type' => $mime_type,
+                                        'data' => $base64_image
+                                    )
                                 )
                             )
                         )
+                    ),
+                    'generationConfig' => array(
+                        'temperature' => 0.1,
+                        'maxOutputTokens' => 4096
                     )
-                ),
-                'generationConfig' => array(
-                    'temperature' => 0.2,
-                    'maxOutputTokens' => 4000
-                )
-            );
+                );
 
-            $ch = curl_init($endpoint);
-            curl_setopt($ch, CURLOPT_RETURNTRANSFER, true);
-            curl_setopt($ch, CURLOPT_POST, true);
-            curl_setopt($ch, CURLOPT_POSTFIELDS, json_encode($post_data));
-            curl_setopt($ch, CURLOPT_HTTPHEADER, array('Content-Type: application/json'));
-            curl_setopt($ch, CURLOPT_SSL_VERIFYPEER, false);
-            curl_setopt($ch, CURLOPT_TIMEOUT, 120);
+                $ch = curl_init($endpoint);
+                curl_setopt($ch, CURLOPT_RETURNTRANSFER, true);
+                curl_setopt($ch, CURLOPT_POST, true);
+                curl_setopt($ch, CURLOPT_POSTFIELDS, json_encode($post_data));
+                curl_setopt($ch, CURLOPT_HTTPHEADER, array('Content-Type: application/json'));
+                curl_setopt($ch, CURLOPT_SSL_VERIFYPEER, false);
+                curl_setopt($ch, CURLOPT_TIMEOUT, 120);
 
-            $response = curl_exec($ch);
-            $curl_err = curl_error($ch);
-            curl_close($ch);
+                $response = curl_exec($ch);
+                $curl_err = curl_error($ch);
+                curl_close($ch);
 
-            if (!$curl_err && !empty($response)) {
-                $res_json = json_decode($response, true);
-                if (isset($res_json['candidates'][0]['content']['parts'][0]['text'])) {
-                    return array(
-                        'status' => 'success',
-                        'text' => $res_json['candidates'][0]['content']['parts'][0]['text']
-                    );
-                } elseif (isset($res_json['error']['message'])) {
-                    $last_err = 'Gemini Error: ' . $res_json['error']['message'];
+                if (!$curl_err && !empty($response)) {
+                    $res_json = json_decode($response, true);
+                    if (isset($res_json['candidates'][0]['content']['parts'][0]['text'])) {
+                        $raw_ocr = trim($res_json['candidates'][0]['content']['parts'][0]['text']);
+                        // Bersihkan intro/outro basa-basi AI jika ada
+                        $clean_ocr = preg_replace('/^(?:Berikut\s+adalah\s+(?:hasil\s+)?(?:ekstraksi\s+)?teks\s+[^\n]*:\s*|Teks\s+hasil\s+OCR:\s*)/i', '', $raw_ocr);
+                        $clean_ocr = trim($clean_ocr);
+
+                        return array(
+                            'status' => 'success',
+                            'text'   => !empty($clean_ocr) ? $clean_ocr : $raw_ocr,
+                            'engine' => 'Google Gemini Vision (' . $v_model . ')'
+                        );
+                    } elseif (isset($res_json['error']['message'])) {
+                        $last_err = 'Gemini (' . $v_model . ') Error: ' . $res_json['error']['message'];
+                    }
                 }
             }
         }
