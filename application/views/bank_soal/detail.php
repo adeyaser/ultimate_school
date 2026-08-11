@@ -1242,6 +1242,21 @@ No	Jawaban	Pembahasan
     });
   }
 
+  function safeFetchJson(url, options) {
+    return fetch(url, options)
+      .then(res => res.text())
+      .then(text => {
+        try {
+          return JSON.parse(text);
+        } catch (e) {
+          let errMatch = text.match(/<p>(.*?)<\/p>/i) || text.match(/<h1[^>]*>(.*?)<\/h1>/i) || text.match(/<title>(.*?)<\/title>/i);
+          let errMsg = errMatch ? errMatch[1].replace(/<[^>]+>/g, '').trim() : text.substring(0, 150);
+          console.error("Server raw HTML response:", text);
+          throw new Error(errMsg || "Respon dari server tidak valid.");
+        }
+      });
+  }
+
   // Step 1 -> Step 2: Ekstraksi OCR & AI Summary
   if (btnProsesOcr) {
     btnProsesOcr.addEventListener('click', function() {
@@ -1269,11 +1284,10 @@ No	Jawaban	Pembahasan
         if (ocrProgressBar) ocrProgressBar.style.width = pVal + '%';
       }, 1200);
 
-      fetch('<?= base_url("banksoal/ocr_upload_extract") ?>', {
+      safeFetchJson('<?= base_url("banksoal/ocr_upload_extract") ?>', {
         method: 'POST',
         body: formData
       })
-      .then(res => res.json())
       .then(data => {
         if (data.status === 'success') {
           ocrSessionId = data.session_id;
@@ -1290,7 +1304,7 @@ No	Jawaban	Pembahasan
           if (ocrProgressBar) ocrProgressBar.style.width = '75%';
 
           // Otomatis request Summary AI
-          return fetch('<?= base_url("banksoal/ocr_generate_summary") ?>', {
+          return safeFetchJson('<?= base_url("banksoal/ocr_generate_summary") ?>', {
             method: 'POST',
             headers: { 'Content-Type': 'application/x-www-form-urlencoded' },
             body: new URLSearchParams({
@@ -1304,7 +1318,6 @@ No	Jawaban	Pembahasan
           throw new Error(data.message || 'Gagal mengekstrak teks OCR.');
         }
       })
-      .then(res => res ? res.json() : null)
       .then(sumData => {
         clearInterval(pInterval);
         if (sumData && sumData.status === 'success') {
@@ -1314,8 +1327,7 @@ No	Jawaban	Pembahasan
 
           ocrWizardGoTo(2);
         } else if (sumData) {
-          // If summary fails, still allow user to view OCR text and retry
-          if (ocrSummaryText) ocrSummaryText.value = 'Gagal membuat ringkasan otomatis. Anda dapat klik tombol "Perbarui Rangkuman AI" untuk mencoba lagi.';
+          if (ocrSummaryText) ocrSummaryText.value = 'Gagal membuat ringkasan otomatis: ' + (sumData.message || '') + '. Anda dapat klik tombol "Perbarui Rangkuman AI" untuk mencoba lagi.';
           ocrWizardGoTo(2);
         }
       })
@@ -1359,7 +1371,7 @@ No	Jawaban	Pembahasan
       btnReSummarize.disabled = true;
       btnReSummarize.innerHTML = '<span class="spinner-border spinner-border-sm me-1"></span> Merangkum...';
 
-      fetch('<?= base_url("banksoal/ocr_generate_summary") ?>', {
+      safeFetchJson('<?= base_url("banksoal/ocr_generate_summary") ?>', {
         method: 'POST',
         headers: { 'Content-Type': 'application/x-www-form-urlencoded' },
         body: new URLSearchParams({
@@ -1369,7 +1381,6 @@ No	Jawaban	Pembahasan
           topik: document.getElementById('ocrJudulMateri') ? document.getElementById('ocrJudulMateri').value : ''
         })
       })
-      .then(res => res.json())
       .then(data => {
         btnReSummarize.disabled = false;
         btnReSummarize.innerHTML = origHtml;
@@ -1385,7 +1396,7 @@ No	Jawaban	Pembahasan
       .catch(err => {
         btnReSummarize.disabled = false;
         btnReSummarize.innerHTML = origHtml;
-        alert('Terjadi kesalahan jaringan.');
+        alert('Terjadi kesalahan: ' + err.message);
         console.error(err);
       });
     });
@@ -1415,7 +1426,7 @@ No	Jawaban	Pembahasan
         if (ocrProgressBar) ocrProgressBar.style.width = pVal + '%';
       }, 1500);
 
-      fetch('<?= base_url("banksoal/ocr_generate_soal") ?>', {
+      safeFetchJson('<?= base_url("banksoal/ocr_generate_soal") ?>', {
         method: 'POST',
         headers: { 'Content-Type': 'application/x-www-form-urlencoded' },
         body: new URLSearchParams({
@@ -1429,7 +1440,6 @@ No	Jawaban	Pembahasan
           instruksi_tambahan: instVal
         })
       })
-      .then(res => res.json())
       .then(data => {
         clearInterval(pInterval);
         if (data.status === 'success' && Array.isArray(data.data) && data.data.length > 0) {
@@ -1446,7 +1456,7 @@ No	Jawaban	Pembahasan
         clearInterval(pInterval);
         setOcrLoading(false);
         ocrWizardGoTo(2);
-        alert('Terjadi kesalahan jaringan atau server saat membuat soal.');
+        alert('Terjadi kesalahan: ' + err.message);
         console.error(err);
       });
     });
@@ -1569,7 +1579,7 @@ No	Jawaban	Pembahasan
       btnSaveOcrSoal.disabled = true;
       btnSaveOcrSoal.innerHTML = '<span class="spinner-border spinner-border-sm me-2"></span> Menyimpan Soal...';
 
-      fetch('<?= base_url("banksoal/ocr_save_soal") ?>', {
+      safeFetchJson('<?= base_url("banksoal/ocr_save_soal") ?>', {
         method: 'POST',
         headers: { 'Content-Type': 'application/x-www-form-urlencoded' },
         body: new URLSearchParams({
@@ -1578,7 +1588,6 @@ No	Jawaban	Pembahasan
           soal_json: JSON.stringify(generatedOcrQuestions)
         })
       })
-      .then(res => res.json())
       .then(data => {
         if (data.status === 'success') {
           btnSaveOcrSoal.innerHTML = '<i class="bi bi-check-circle-fill me-1"></i> Tersimpan!';
@@ -1594,7 +1603,7 @@ No	Jawaban	Pembahasan
       .catch(err => {
         btnSaveOcrSoal.disabled = false;
         btnSaveOcrSoal.innerHTML = origHtml;
-        alert('Terjadi kesalahan jaringan.');
+        alert('Terjadi kesalahan: ' + err.message);
         console.error(err);
       });
     });

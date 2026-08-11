@@ -715,105 +715,114 @@ No\tJawaban\tPembahasan
      */
     public function ocr_upload_extract()
     {
-        header('Content-Type: application/json');
+        if (ob_get_length()) ob_clean();
+        header('Content-Type: application/json; charset=utf-8');
 
-        if ($this->input->method() !== 'post') {
-            echo json_encode(array('status' => 'error', 'message' => 'Metode request tidak valid.'));
-            return;
-        }
-
-        $raw_bank_id  = $this->input->post('bank_soal_id', true);
-        $bank_soal_id = decrypt_id($raw_bank_id);
-        $judul_materi = $this->input->post('judul_materi', true);
-        if (empty($judul_materi)) {
-            $judul_materi = 'Materi OCR ' . date('d/m/Y H:i');
-        }
-
-        $upload_dir = FCPATH . 'uploads/ocr_materi/';
-        if (!is_dir($upload_dir)) {
-            @mkdir($upload_dir, 0777, true);
-        }
-
-        $saved_file_path = null;
-        $mime_type = 'image/jpeg';
-        $web_image_url = '';
-
-        // Opsi 1: Base64 dari foto live kamera
-        $image_base64 = $this->input->post('image_base64');
-        if (!empty($image_base64) && strpos($image_base64, 'base64,') !== false) {
-            $parts = explode('base64,', $image_base64);
-            $image_raw_data = base64_decode($parts[1]);
-
-            if (strpos($parts[0], 'image/png') !== false) {
-                $ext = 'png';
-                $mime_type = 'image/png';
-            } elseif (strpos($parts[0], 'image/webp') !== false) {
-                $ext = 'webp';
-                $mime_type = 'image/webp';
-            } else {
-                $ext = 'jpg';
-                $mime_type = 'image/jpeg';
-            }
-
-            $filename = 'camera_' . date('Ymd_His') . '_' . rand(1000, 9999) . '.' . $ext;
-            $saved_file_path = $upload_dir . $filename;
-            file_put_contents($saved_file_path, $image_raw_data);
-            $web_image_url = base_url('uploads/ocr_materi/' . $filename);
-        }
-        // Opsi 2: Berkas upload konvensional
-        elseif (isset($_FILES['image_file']) && !empty($_FILES['image_file']['tmp_name'])) {
-            $orig_name = $_FILES['image_file']['name'];
-            $ext = strtolower(pathinfo($orig_name, PATHINFO_EXTENSION));
-            if (!in_array($ext, array('jpg', 'jpeg', 'png', 'webp', 'bmp', 'gif'))) {
-                echo json_encode(array('status' => 'error', 'message' => 'Format file gambar harus JPG, PNG, atau WEBP.'));
+        try {
+            if ($this->input->method() !== 'post') {
+                echo json_encode(array('status' => 'error', 'message' => 'Metode request tidak valid.'));
                 return;
             }
 
-            $filename = 'upload_' . date('Ymd_His') . '_' . rand(1000, 9999) . '.' . $ext;
-            $saved_file_path = $upload_dir . $filename;
+            $raw_bank_id  = $this->input->post('bank_soal_id', true);
+            $bank_soal_id = decrypt_id($raw_bank_id);
+            $judul_materi = $this->input->post('judul_materi', true);
+            if (empty($judul_materi)) {
+                $judul_materi = 'Materi OCR ' . date('d/m/Y H:i');
+            }
 
-            if (move_uploaded_file($_FILES['image_file']['tmp_name'], $saved_file_path)) {
+            $user_id = isset($this->user_data['id']) ? (int)$this->user_data['id'] : ((int)$this->session->userdata('user_id') ?: 1);
+
+            $upload_dir = FCPATH . 'uploads/ocr_materi/';
+            if (!is_dir($upload_dir)) {
+                @mkdir($upload_dir, 0777, true);
+            }
+
+            $saved_file_path = null;
+            $mime_type = 'image/jpeg';
+            $web_image_url = '';
+
+            // Opsi 1: Base64 dari foto live kamera
+            $image_base64 = $this->input->post('image_base64');
+            if (!empty($image_base64) && strpos($image_base64, 'base64,') !== false) {
+                $parts = explode('base64,', $image_base64);
+                $image_raw_data = base64_decode($parts[1]);
+
+                if (strpos($parts[0], 'image/png') !== false) {
+                    $ext = 'png';
+                    $mime_type = 'image/png';
+                } elseif (strpos($parts[0], 'image/webp') !== false) {
+                    $ext = 'webp';
+                    $mime_type = 'image/webp';
+                } else {
+                    $ext = 'jpg';
+                    $mime_type = 'image/jpeg';
+                }
+
+                $filename = 'camera_' . date('Ymd_His') . '_' . rand(1000, 9999) . '.' . $ext;
+                $saved_file_path = $upload_dir . $filename;
+                file_put_contents($saved_file_path, $image_raw_data);
                 $web_image_url = base_url('uploads/ocr_materi/' . $filename);
-                $mime_type = isset($_FILES['image_file']['type']) ? $_FILES['image_file']['type'] : 'image/jpeg';
+            }
+            // Opsi 2: Berkas upload konvensional
+            elseif (isset($_FILES['image_file']) && !empty($_FILES['image_file']['tmp_name'])) {
+                $orig_name = $_FILES['image_file']['name'];
+                $ext = strtolower(pathinfo($orig_name, PATHINFO_EXTENSION));
+                if (!in_array($ext, array('jpg', 'jpeg', 'png', 'webp', 'bmp', 'gif'))) {
+                    echo json_encode(array('status' => 'error', 'message' => 'Format file gambar harus JPG, PNG, atau WEBP.'));
+                    return;
+                }
+
+                $filename = 'upload_' . date('Ymd_His') . '_' . rand(1000, 9999) . '.' . $ext;
+                $saved_file_path = $upload_dir . $filename;
+
+                if (move_uploaded_file($_FILES['image_file']['tmp_name'], $saved_file_path)) {
+                    $web_image_url = base_url('uploads/ocr_materi/' . $filename);
+                    $mime_type = isset($_FILES['image_file']['type']) ? $_FILES['image_file']['type'] : 'image/jpeg';
+                } else {
+                    echo json_encode(array('status' => 'error', 'message' => 'Gagal mengunggah berkas gambar ke server. Pastikan folder uploads/ocr_materi memiliki izin tulis.'));
+                    return;
+                }
             } else {
-                echo json_encode(array('status' => 'error', 'message' => 'Gagal mengunggah berkas gambar ke server.'));
+                echo json_encode(array('status' => 'error', 'message' => 'Silakan pilih berkas gambar atau ambil foto menggunakan kamera.'));
                 return;
             }
-        } else {
-            echo json_encode(array('status' => 'error', 'message' => 'Silakan pilih berkas gambar atau ambil foto menggunakan kamera.'));
-            return;
-        }
 
-        // Jalankan ekstraksi OCR menggunakan Vision AI
-        $ocr_result = $this->M_OcrSoal->extract_text_from_image($saved_file_path, $mime_type);
+            // Jalankan ekstraksi OCR menggunakan Vision AI
+            $ocr_result = $this->M_OcrSoal->extract_text_from_image($saved_file_path, $mime_type);
 
-        if ($ocr_result['status'] !== 'success') {
+            if ($ocr_result['status'] !== 'success') {
+                echo json_encode(array(
+                    'status' => 'error',
+                    'message' => 'Gagal melakukan OCR: ' . $ocr_result['message']
+                ));
+                return;
+            }
+
+            // Catat sesi OCR ke tabel materi_ocr_soal
+            $session_data = array(
+                'bank_soal_id' => $bank_soal_id ? $bank_soal_id : null,
+                'user_id'      => $user_id,
+                'judul_materi' => $judul_materi,
+                'image_path'   => $saved_file_path,
+                'ocr_text'     => $ocr_result['text'],
+                'status'       => 'draft'
+            );
+            $session_id = $this->M_OcrSoal->save_session($session_data);
+
             echo json_encode(array(
-                'status' => 'error',
-                'message' => 'Gagal melakukan OCR: ' . $ocr_result['message']
+                'status'         => 'success',
+                'session_id'     => $session_id,
+                'image_url'      => $web_image_url,
+                'ocr_text'       => $ocr_result['text'],
+                'engine'         => $ocr_result['engine'],
+                'message'        => 'Ekstraksi teks materi via OCR Vision AI berhasil dilakukan.'
             ));
-            return;
+        } catch (Exception $e) {
+            echo json_encode(array('status' => 'error', 'message' => 'Terjadi kesalahan sistem: ' . $e->getMessage()));
+        } catch (Throwable $e) {
+            echo json_encode(array('status' => 'error', 'message' => 'Terjadi kesalahan sistem: ' . $e->getMessage()));
         }
-
-        // Catat sesi OCR ke tabel materi_ocr_soal
-        $session_data = array(
-            'bank_soal_id' => $bank_soal_id ? $bank_soal_id : null,
-            'user_id'      => $this->user_data['id'],
-            'judul_materi' => $judul_materi,
-            'image_path'   => $saved_file_path,
-            'ocr_text'     => $ocr_result['text'],
-            'status'       => 'draft'
-        );
-        $session_id = $this->M_OcrSoal->save_session($session_data);
-
-        echo json_encode(array(
-            'status'         => 'success',
-            'session_id'     => $session_id,
-            'image_url'      => $web_image_url,
-            'ocr_text'       => $ocr_result['text'],
-            'engine'         => $ocr_result['engine'],
-            'message'        => 'Ekstraksi teks materi via OCR Vision AI berhasil dilakukan.'
-        ));
     }
 
     /**
@@ -821,53 +830,60 @@ No\tJawaban\tPembahasan
      */
     public function ocr_generate_summary()
     {
-        header('Content-Type: application/json');
+        if (ob_get_length()) ob_clean();
+        header('Content-Type: application/json; charset=utf-8');
 
-        if ($this->input->method() !== 'post') {
-            echo json_encode(array('status' => 'error', 'message' => 'Metode request tidak valid.'));
-            return;
-        }
+        try {
+            if ($this->input->method() !== 'post') {
+                echo json_encode(array('status' => 'error', 'message' => 'Metode request tidak valid.'));
+                return;
+            }
 
-        $session_id   = (int)$this->input->post('session_id', true);
-        $raw_bank_id  = $this->input->post('bank_soal_id', true);
-        $bank_soal_id = decrypt_id($raw_bank_id);
-        $ocr_text     = $this->input->post('ocr_text');
-        $topik        = $this->input->post('topik', true);
+            $session_id   = (int)$this->input->post('session_id', true);
+            $raw_bank_id  = $this->input->post('bank_soal_id', true);
+            $bank_soal_id = decrypt_id($raw_bank_id);
+            $ocr_text     = $this->input->post('ocr_text');
+            $topik        = $this->input->post('topik', true);
 
-        if (empty($ocr_text)) {
-            echo json_encode(array('status' => 'error', 'message' => 'Teks materi hasil OCR tidak boleh kosong.'));
-            return;
-        }
+            if (empty($ocr_text)) {
+                echo json_encode(array('status' => 'error', 'message' => 'Teks materi hasil OCR tidak boleh kosong.'));
+                return;
+            }
 
-        $bank_soal = $bank_soal_id ? $this->M_BankSoal->get_by_id($bank_soal_id) : null;
-        $mapel     = isset($bank_soal['nama_mapel']) ? $bank_soal['nama_mapel'] : '';
-        $kelas     = isset($bank_soal['nama_kelas']) ? $bank_soal['nama_kelas'] : '';
+            $bank_soal = $bank_soal_id ? $this->M_BankSoal->get_by_id($bank_soal_id) : null;
+            $mapel     = isset($bank_soal['nama_mapel']) ? $bank_soal['nama_mapel'] : '';
+            $kelas     = isset($bank_soal['nama_kelas']) ? $bank_soal['nama_kelas'] : '';
 
-        $summary_res = $this->M_OcrSoal->generate_summary($ocr_text, $topik, $mapel, $kelas);
+            $summary_res = $this->M_OcrSoal->generate_summary($ocr_text, $topik, $mapel, $kelas);
 
-        if ($summary_res['status'] !== 'success') {
+            if ($summary_res['status'] !== 'success') {
+                echo json_encode(array(
+                    'status' => 'error',
+                    'message' => 'Gagal membuat ringkasan AI: ' . $summary_res['message']
+                ));
+                return;
+            }
+
+            // Update ringkasan ke database session jika ada session_id
+            if ($session_id > 0) {
+                $this->M_OcrSoal->update_session($session_id, array(
+                    'ocr_text'         => $ocr_text,
+                    'ringkasan_materi' => $summary_res['summary'],
+                    'status'           => 'summarized'
+                ));
+            }
+
             echo json_encode(array(
-                'status' => 'error',
-                'message' => 'Gagal membuat ringkasan AI: ' . $summary_res['message']
+                'status'  => 'success',
+                'summary' => $summary_res['summary'],
+                'engine'  => $summary_res['engine'],
+                'message' => 'Rangkuman & kesimpulan materi berhasil dibuat oleh AI.'
             ));
-            return;
+        } catch (Exception $e) {
+            echo json_encode(array('status' => 'error', 'message' => 'Terjadi kesalahan sistem: ' . $e->getMessage()));
+        } catch (Throwable $e) {
+            echo json_encode(array('status' => 'error', 'message' => 'Terjadi kesalahan sistem: ' . $e->getMessage()));
         }
-
-        // Update ringkasan ke database session jika ada session_id
-        if ($session_id > 0) {
-            $this->M_OcrSoal->update_session($session_id, array(
-                'ocr_text'         => $ocr_text,
-                'ringkasan_materi' => $summary_res['summary'],
-                'status'           => 'summarized'
-            ));
-        }
-
-        echo json_encode(array(
-            'status'  => 'success',
-            'summary' => $summary_res['summary'],
-            'engine'  => $summary_res['engine'],
-            'message' => 'Rangkuman & kesimpulan materi berhasil dibuat oleh AI.'
-        ));
     }
 
     /**
@@ -875,67 +891,74 @@ No\tJawaban\tPembahasan
      */
     public function ocr_generate_soal()
     {
-        header('Content-Type: application/json');
+        if (ob_get_length()) ob_clean();
+        header('Content-Type: application/json; charset=utf-8');
 
-        if ($this->input->method() !== 'post') {
-            echo json_encode(array('status' => 'error', 'message' => 'Metode request tidak valid.'));
-            return;
-        }
+        try {
+            if ($this->input->method() !== 'post') {
+                echo json_encode(array('status' => 'error', 'message' => 'Metode request tidak valid.'));
+                return;
+            }
 
-        $session_id         = (int)$this->input->post('session_id', true);
-        $raw_bank_id        = $this->input->post('bank_soal_id', true);
-        $bank_soal_id       = decrypt_id($raw_bank_id);
-        $summary_text       = $this->input->post('summary_text');
-        $ocr_text           = $this->input->post('ocr_text');
-        $jumlah             = (int)$this->input->post('jumlah', true);
-        $jenis              = $this->input->post('jenis', true);
-        $tingkat_kesulitan  = $this->input->post('tingkat_kesulitan', true);
-        $instruksi_tambahan = $this->input->post('instruksi_tambahan', true);
+            $session_id         = (int)$this->input->post('session_id', true);
+            $raw_bank_id        = $this->input->post('bank_soal_id', true);
+            $bank_soal_id       = decrypt_id($raw_bank_id);
+            $summary_text       = $this->input->post('summary_text');
+            $ocr_text           = $this->input->post('ocr_text');
+            $jumlah             = (int)$this->input->post('jumlah', true);
+            $jenis              = $this->input->post('jenis', true);
+            $tingkat_kesulitan  = $this->input->post('tingkat_kesulitan', true);
+            $instruksi_tambahan = $this->input->post('instruksi_tambahan', true);
 
-        if (empty($summary_text)) {
-            echo json_encode(array('status' => 'error', 'message' => 'Ringkasan materi tidak boleh kosong.'));
-            return;
-        }
+            if (empty($summary_text)) {
+                echo json_encode(array('status' => 'error', 'message' => 'Ringkasan materi tidak boleh kosong.'));
+                return;
+            }
 
-        if ($jumlah <= 0 || $jumlah > 50) {
-            $jumlah = 5;
-        }
+            if ($jumlah <= 0 || $jumlah > 50) {
+                $jumlah = 5;
+            }
 
-        $bank_soal = $bank_soal_id ? $this->M_BankSoal->get_by_id($bank_soal_id) : array();
+            $bank_soal = $bank_soal_id ? $this->M_BankSoal->get_by_id($bank_soal_id) : array();
 
-        $options = array(
-            'jumlah'             => $jumlah,
-            'jenis'              => $jenis ? $jenis : 'Pilihan Ganda',
-            'tingkat_kesulitan'  => $tingkat_kesulitan ? $tingkat_kesulitan : 'Sedang',
-            'instruksi_tambahan' => $instruksi_tambahan
-        );
+            $options = array(
+                'jumlah'             => $jumlah,
+                'jenis'              => $jenis ? $jenis : 'Pilihan Ganda',
+                'tingkat_kesulitan'  => $tingkat_kesulitan ? $tingkat_kesulitan : 'Sedang',
+                'instruksi_tambahan' => $instruksi_tambahan
+            );
 
-        $result = $this->M_OcrSoal->generate_soal_from_summary($summary_text, $ocr_text, $options, $bank_soal);
+            $result = $this->M_OcrSoal->generate_soal_from_summary($summary_text, $ocr_text, $options, $bank_soal);
 
-        if ($result['status'] !== 'success') {
+            if ($result['status'] !== 'success') {
+                echo json_encode(array(
+                    'status' => 'error',
+                    'message' => 'Gagal menghasilkan butir soal: ' . $result['message']
+                ));
+                return;
+            }
+
+            if ($session_id > 0) {
+                $this->M_OcrSoal->update_session($session_id, array(
+                    'jumlah_soal'       => count($result['data']),
+                    'jenis_soal'        => $options['jenis'],
+                    'tingkat_kesulitan' => $options['tingkat_kesulitan'],
+                    'generated_json'    => json_encode($result['data'])
+                ));
+            }
+
             echo json_encode(array(
-                'status' => 'error',
-                'message' => 'Gagal menghasilkan butir soal: ' . $result['message']
+                'status' => 'success',
+                'data'   => $result['data'],
+                'total'  => count($result['data']),
+                'engine' => $result['engine'],
+                'message'=> 'Berhasil menghasilkan ' . count($result['data']) . ' butir soal berdasarkan kesimpulan materi.'
             ));
-            return;
+        } catch (Exception $e) {
+            echo json_encode(array('status' => 'error', 'message' => 'Terjadi kesalahan sistem: ' . $e->getMessage()));
+        } catch (Throwable $e) {
+            echo json_encode(array('status' => 'error', 'message' => 'Terjadi kesalahan sistem: ' . $e->getMessage()));
         }
-
-        if ($session_id > 0) {
-            $this->M_OcrSoal->update_session($session_id, array(
-                'jumlah_soal'       => count($result['data']),
-                'jenis_soal'        => $options['jenis'],
-                'tingkat_kesulitan' => $options['tingkat_kesulitan'],
-                'generated_json'    => json_encode($result['data'])
-            ));
-        }
-
-        echo json_encode(array(
-            'status' => 'success',
-            'data'   => $result['data'],
-            'total'  => count($result['data']),
-            'engine' => $result['engine'],
-            'message'=> 'Berhasil menghasilkan ' . count($result['data']) . ' butir soal berdasarkan kesimpulan materi.'
-        ));
     }
 
     /**
@@ -943,71 +966,78 @@ No\tJawaban\tPembahasan
      */
     public function ocr_save_soal()
     {
-        header('Content-Type: application/json');
+        if (ob_get_length()) ob_clean();
+        header('Content-Type: application/json; charset=utf-8');
 
-        if ($this->input->method() !== 'post') {
-            echo json_encode(array('status' => 'error', 'message' => 'Metode request tidak valid.'));
-            return;
+        try {
+            if ($this->input->method() !== 'post') {
+                echo json_encode(array('status' => 'error', 'message' => 'Metode request tidak valid.'));
+                return;
+            }
+
+            $raw_bank_id  = $this->input->post('bank_soal_id', true);
+            $bank_soal_id = decrypt_id($raw_bank_id);
+            $session_id   = (int)$this->input->post('session_id', true);
+            $soal_json    = $this->input->post('soal_json');
+
+            if (empty($bank_soal_id)) {
+                echo json_encode(array('status' => 'error', 'message' => 'Paket Bank Soal tidak valid.'));
+                return;
+            }
+
+            $soal_list = json_decode($soal_json, true);
+            if (!is_array($soal_list) || empty($soal_list)) {
+                echo json_encode(array('status' => 'error', 'message' => 'Tidak ada butir soal yang valid untuk disimpan.'));
+                return;
+            }
+
+            $this->ensure_db_connection();
+            $existing = $this->M_BankSoal->get_soal_by_bank($bank_soal_id);
+            $start_nomor = count($existing) + 1;
+            $inserted_count = 0;
+
+            foreach ($soal_list as $item) {
+                if (empty(trim($item['pertanyaan']))) continue;
+
+                $jenis_item = isset($item['jenis']) && in_array($item['jenis'], array('Essay', 'Pilihan Ganda')) ? $item['jenis'] : 'Pilihan Ganda';
+                $diff_item  = isset($item['tingkat_kesulitan']) && in_array($item['tingkat_kesulitan'], array('Mudah', 'Sedang', 'Sulit')) ? $item['tingkat_kesulitan'] : 'Sedang';
+
+                $data_soal = array(
+                    'bank_soal_id'      => $bank_soal_id,
+                    'nomor_soal'        => $start_nomor + $inserted_count,
+                    'pertanyaan'        => $item['pertanyaan'],
+                    'jenis'             => $jenis_item,
+                    'pilihan_a'         => isset($item['pilihan_a']) ? $item['pilihan_a'] : '',
+                    'pilihan_b'         => isset($item['pilihan_b']) ? $item['pilihan_b'] : '',
+                    'pilihan_c'         => isset($item['pilihan_c']) ? $item['pilihan_c'] : '',
+                    'pilihan_d'         => isset($item['pilihan_d']) ? $item['pilihan_d'] : '',
+                    'pilihan_e'         => isset($item['pilihan_e']) ? $item['pilihan_e'] : '',
+                    'kunci_jawaban'     => isset($item['kunci_jawaban']) ? $item['kunci_jawaban'] : '',
+                    'pembahasan'        => isset($item['pembahasan']) ? $item['pembahasan'] : '',
+                    'bobot'             => isset($item['bobot']) && is_numeric($item['bobot']) ? (int)$item['bobot'] : 10,
+                    'tingkat_kesulitan' => $diff_item
+                );
+
+                $this->M_BankSoal->insert_soal($data_soal);
+                $inserted_count++;
+            }
+
+            if ($session_id > 0) {
+                $this->M_OcrSoal->update_session($session_id, array('status' => 'completed'));
+            }
+
+            $this->session->set_flashdata('success', "Berhasil menambahkan $inserted_count butir soal hasil Foto/OCR Materi AI ke repositori Bank Soal.");
+
+            echo json_encode(array(
+                'status'         => 'success',
+                'inserted_count' => $inserted_count,
+                'message'        => "$inserted_count butir soal berhasil disimpan ke dalam Bank Soal."
+            ));
+        } catch (Exception $e) {
+            echo json_encode(array('status' => 'error', 'message' => 'Terjadi kesalahan sistem: ' . $e->getMessage()));
+        } catch (Throwable $e) {
+            echo json_encode(array('status' => 'error', 'message' => 'Terjadi kesalahan sistem: ' . $e->getMessage()));
         }
-
-        $raw_bank_id  = $this->input->post('bank_soal_id', true);
-        $bank_soal_id = decrypt_id($raw_bank_id);
-        $session_id   = (int)$this->input->post('session_id', true);
-        $soal_json    = $this->input->post('soal_json');
-
-        if (empty($bank_soal_id)) {
-            echo json_encode(array('status' => 'error', 'message' => 'Paket Bank Soal tidak valid.'));
-            return;
-        }
-
-        $soal_list = json_decode($soal_json, true);
-        if (!is_array($soal_list) || empty($soal_list)) {
-            echo json_encode(array('status' => 'error', 'message' => 'Tidak ada butir soal yang valid untuk disimpan.'));
-            return;
-        }
-
-        $this->ensure_db_connection();
-        $existing = $this->M_BankSoal->get_soal_by_bank($bank_soal_id);
-        $start_nomor = count($existing) + 1;
-        $inserted_count = 0;
-
-        foreach ($soal_list as $item) {
-            if (empty(trim($item['pertanyaan']))) continue;
-
-            $jenis_item = isset($item['jenis']) && in_array($item['jenis'], array('Essay', 'Pilihan Ganda')) ? $item['jenis'] : 'Pilihan Ganda';
-            $diff_item  = isset($item['tingkat_kesulitan']) && in_array($item['tingkat_kesulitan'], array('Mudah', 'Sedang', 'Sulit')) ? $item['tingkat_kesulitan'] : 'Sedang';
-
-            $data_soal = array(
-                'bank_soal_id'      => $bank_soal_id,
-                'nomor_soal'        => $start_nomor + $inserted_count,
-                'pertanyaan'        => $item['pertanyaan'],
-                'jenis'             => $jenis_item,
-                'pilihan_a'         => isset($item['pilihan_a']) ? $item['pilihan_a'] : '',
-                'pilihan_b'         => isset($item['pilihan_b']) ? $item['pilihan_b'] : '',
-                'pilihan_c'         => isset($item['pilihan_c']) ? $item['pilihan_c'] : '',
-                'pilihan_d'         => isset($item['pilihan_d']) ? $item['pilihan_d'] : '',
-                'pilihan_e'         => isset($item['pilihan_e']) ? $item['pilihan_e'] : '',
-                'kunci_jawaban'     => isset($item['kunci_jawaban']) ? $item['kunci_jawaban'] : '',
-                'pembahasan'        => isset($item['pembahasan']) ? $item['pembahasan'] : '',
-                'bobot'             => isset($item['bobot']) && is_numeric($item['bobot']) ? (int)$item['bobot'] : 10,
-                'tingkat_kesulitan' => $diff_item
-            );
-
-            $this->M_BankSoal->insert_soal($data_soal);
-            $inserted_count++;
-        }
-
-        if ($session_id > 0) {
-            $this->M_OcrSoal->update_session($session_id, array('status' => 'completed'));
-        }
-
-        $this->session->set_flashdata('success', "Berhasil menambahkan $inserted_count butir soal hasil Foto/OCR Materi AI ke repositori Bank Soal.");
-
-        echo json_encode(array(
-            'status'         => 'success',
-            'inserted_count' => $inserted_count,
-            'message'        => "$inserted_count butir soal berhasil disimpan ke dalam Bank Soal."
-        ));
     }
 }
 
