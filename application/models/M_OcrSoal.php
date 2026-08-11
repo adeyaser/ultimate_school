@@ -9,53 +9,92 @@ class M_OcrSoal extends CI_Model {
         $this->ensure_table_exists();
     }
 
+    private function ensure_db()
+    {
+        if (!isset($this->db->conn_id) || !is_object($this->db->conn_id) || @$this->db->conn_id->ping() === false) {
+            @$this->db->close();
+            $this->db->initialize();
+        }
+    }
+
     private function ensure_table_exists()
     {
-        $sql = "CREATE TABLE IF NOT EXISTS `materi_ocr_soal` (
-          `id` int(11) NOT NULL AUTO_INCREMENT,
-          `bank_soal_id` int(11) DEFAULT NULL,
-          `user_id` int(11) NOT NULL,
-          `judul_materi` varchar(255) DEFAULT NULL,
-          `image_path` text DEFAULT NULL,
-          `ocr_text` longtext NOT NULL,
-          `ringkasan_materi` longtext DEFAULT NULL,
-          `jumlah_soal` int(11) DEFAULT 5,
-          `jenis_soal` varchar(50) DEFAULT 'Pilihan Ganda',
-          `tingkat_kesulitan` varchar(50) DEFAULT 'Sedang',
-          `generated_json` longtext DEFAULT NULL,
-          `status` enum('draft', 'summarized', 'completed') DEFAULT 'draft',
-          `created_at` timestamp NOT NULL DEFAULT CURRENT_TIMESTAMP(),
-          `updated_at` timestamp NOT NULL DEFAULT CURRENT_TIMESTAMP ON UPDATE CURRENT_TIMESTAMP,
-          PRIMARY KEY (`id`),
-          KEY `bank_soal_id` (`bank_soal_id`),
-          KEY `user_id` (`user_id`)
-        ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4;";
-        $this->db->query($sql);
+        try {
+            $this->ensure_db();
+            $sql = "CREATE TABLE IF NOT EXISTS `materi_ocr_soal` (
+              `id` int(11) NOT NULL AUTO_INCREMENT,
+              `bank_soal_id` int(11) DEFAULT NULL,
+              `user_id` int(11) NOT NULL,
+              `judul_materi` varchar(255) DEFAULT NULL,
+              `image_path` text DEFAULT NULL,
+              `ocr_text` longtext NOT NULL,
+              `ringkasan_materi` longtext DEFAULT NULL,
+              `jumlah_soal` int(11) DEFAULT 5,
+              `jenis_soal` varchar(50) DEFAULT 'Pilihan Ganda',
+              `tingkat_kesulitan` varchar(50) DEFAULT 'Sedang',
+              `generated_json` longtext DEFAULT NULL,
+              `status` enum('draft', 'summarized', 'completed') DEFAULT 'draft',
+              `created_at` timestamp NOT NULL DEFAULT CURRENT_TIMESTAMP(),
+              `updated_at` timestamp NOT NULL DEFAULT CURRENT_TIMESTAMP ON UPDATE CURRENT_TIMESTAMP,
+              PRIMARY KEY (`id`),
+              KEY `bank_soal_id` (`bank_soal_id`),
+              KEY `user_id` (`user_id`)
+            ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4;";
+            @$this->db->query($sql);
+        } catch (Exception $e) {} catch (Throwable $e) {}
     }
 
     public function save_session($data)
     {
-        $this->db->insert('materi_ocr_soal', $data);
-        return $this->db->insert_id();
+        try {
+            $this->ensure_db();
+            $this->db->insert('materi_ocr_soal', $data);
+            return $this->db->insert_id();
+        } catch (Exception $e) {
+            return 0;
+        } catch (Throwable $e) {
+            return 0;
+        }
     }
 
     public function update_session($id, $data)
     {
-        $this->db->where('id', $id);
-        return $this->db->update('materi_ocr_soal', $data);
+        try {
+            $this->ensure_db();
+            $this->db->where('id', $id);
+            return $this->db->update('materi_ocr_soal', $data);
+        } catch (Exception $e) {
+            return false;
+        } catch (Throwable $e) {
+            return false;
+        }
     }
 
     public function get_session($id)
     {
-        $this->db->where('id', $id);
-        return $this->db->get('materi_ocr_soal')->row_array();
+        try {
+            $this->ensure_db();
+            $this->db->where('id', $id);
+            return $this->db->get('materi_ocr_soal')->row_array();
+        } catch (Exception $e) {
+            return null;
+        } catch (Throwable $e) {
+            return null;
+        }
     }
 
     public function get_by_bank($bank_soal_id)
     {
-        $this->db->where('bank_soal_id', $bank_soal_id);
-        $this->db->order_by('id', 'DESC');
-        return $this->db->get('materi_ocr_soal')->result_array();
+        try {
+            $this->ensure_db();
+            $this->db->where('bank_soal_id', $bank_soal_id);
+            $this->db->order_by('id', 'DESC');
+            return $this->db->get('materi_ocr_soal')->result_array();
+        } catch (Exception $e) {
+            return array();
+        } catch (Throwable $e) {
+            return array();
+        }
     }
 
     /**

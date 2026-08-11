@@ -866,6 +866,7 @@ No\tJawaban\tPembahasan
 
             // Update ringkasan ke database session jika ada session_id
             if ($session_id > 0) {
+                $this->ensure_db_connection();
                 $this->M_OcrSoal->update_session($session_id, array(
                     'ocr_text'         => $ocr_text,
                     'ringkasan_materi' => $summary_res['summary'],
@@ -939,6 +940,7 @@ No\tJawaban\tPembahasan
             }
 
             if ($session_id > 0) {
+                $this->ensure_db_connection();
                 $this->M_OcrSoal->update_session($session_id, array(
                     'jumlah_soal'       => count($result['data']),
                     'jenis_soal'        => $options['jenis'],
